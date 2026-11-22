@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 8: MedCare Hospital Online Appointment Booking</title>
+  <link rel="stylesheet" href="../assets/common.css">
+  <style>
+    .doc-card { border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem; background:#fff; display:flex; gap:1rem; }
+    .doc-avatar { width:65px; height:65px; border-radius:50%; background:linear-gradient(135deg, #0ea5e9, #38bdf8); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.8rem; }
+  </style>
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon">&#127973;</div>
+        <span>MedCare Hospital Portal</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 08</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">MedCare Hospital Online Appointment Booking</h1>
+        <p class="lab-hero-desc">Streamline outpatient appointments: search doctors by medical specialty & location, flexible slot booking, online check-in form submission, visit history, doctor reviews, and hospital admin analytics.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="findDoc">&#128373; Search Doctors & Book</button>
+        <button class="tab-btn" data-tab="checkin">&#128221; Online Pre-Check-in</button>
+        <button class="tab-btn" data-tab="history">&#128203; Appointment History</button>
+        <button class="tab-btn" data-tab="admin">&#128202; Admin Statistics</button>
+      </div>
+
+      <!-- Search Doctors Tab -->
+      <div id="findDoc" class="tab-pane active">
+        <div class="card" style="margin-bottom:1.5rem;">
+          <div class="card-body">
+            <div class="grid grid-3">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Medical Specialty</label>
+                <select id="specFilter" class="form-select" onchange="renderDoctors()">
+                  <option value="All">All Specialties</option>
+                  <option value="Cardiology">Cardiology</option>
+                  <option value="Neurology">Neurology</option>
+                  <option value="Pediatrics">Pediatrics</option>
+                  <option value="Orthopedics">Orthopedics</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Hospital Location</label>
+                <select id="locFilter" class="form-select" onchange="renderDoctors()">
+                  <option value="All">All Campuses</option>
+                  <option value="Central Wing">Central City Campus</option>
+                  <option value="South Wing">South Wing Specialist Centre</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Search Doctor Name</label>
+                <input type="text" id="docSearchInput" class="form-control" placeholder="e.g. Dr. Ramesh" onkeyup="renderDoctors()">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-2" id="docList">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Online Checkin Tab -->
+      <div id="checkin" class="tab-pane">
+        <div class="card" style="max-width:700px; margin:0 auto;">
+          <div class="card-header">Online Patient Pre-Check-in Form</div>
+          <div class="card-body">
+            <form onsubmit="handleCheckin(event)">
+              <div class="grid grid-2">
+                <div class="form-group">
+                  <label class="form-label">Patient Full Name</label>
+                  <input type="text" id="chkName" class="form-control" value="Aakif" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Appointment ID / Token</label>
+                  <input type="text" id="chkToken" class="form-control" value="MED-402" required>
+                </div>
+              </div>
+              <div class="grid grid-2">
+                <div class="form-group">
+                  <label class="form-label">Age & Blood Group</label>
+                  <input type="text" id="chkBio" class="form-control" value="21 yrs, O+ve" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Emergency Contact Phone</label>
+                  <input type="text" id="chkPhone" class="form-control" value="+91 9876543210" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Primary Symptoms / Reasons for Visit</label>
+                <textarea class="form-control" id="chkSymptoms" rows="3" required placeholder="Describe pain, symptoms duration, fever..."></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Known Allergies / Existing Medications</label>
+                <input type="text" id="chkAllergies" class="form-control" placeholder="e.g. Penicillin allergy, None">
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Submit Check-in Details</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Appointment History Tab -->
+      <div id="history" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Patient Appointment Log & Doctor Reviews</div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-responsive" style="border:none;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Token ID</th>
+                    <th>Doctor Name</th>
+                    <th>Specialty</th>
+                    <th>Date & Time</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="patientApptsTable">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab -->
+      <div id="admin" class="tab-pane">
+        <div class="grid grid-4" style="margin-bottom:1.5rem;">
+          <div class="stat-card">
+            <div class="stat-icon">&#128104;&#8205;&#9877;</div>
+            <div>
+              <div class="stat-value">18</div>
+              <div class="stat-label">Doctors on Duty</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">&#128197;</div>
+            <div>
+              <div class="stat-value">64</div>
+              <div class="stat-label">Appointments Today</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">&#9989;</div>
+            <div>
+              <div class="stat-value">52</div>
+              <div class="stat-label">Completed Visits</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">&#11088;</div>
+            <div>
+              <div class="stat-value">4.9 / 5</div>
+              <div class="stat-label">Average Patient Rating</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-08: MedCare Hospital Online Appointment Booking</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let doctors = [
+      { id: 1, name: "Dr. Ramesh Sharma, MD", spec: "Cardiology", location: "Central Wing", exp: "14 Years Exp", fee: 700, rating: "4.9 &#9733;" },
+      { id: 2, name: "Dr. Ananya Iyer, MS", spec: "Neurology", location: "South Wing", exp: "11 Years Exp", fee: 850, rating: "5.0 &#9733;" },
+      { id: 3, name: "Dr. Vivek Nair, MD", spec: "Pediatrics", location: "Central Wing", exp: "9 Years Exp", fee: 500, rating: "4.8 &#9733;" },
+      { id: 4, name: "Dr. Priya Patel, MS", spec: "Orthopedics", location: "South Wing", exp: "12 Years Exp", fee: 650, rating: "4.9 &#9733;" }
+    ];
+
+    let appointments = [
+      { token: "MED-402", doctor: "Dr. Ramesh Sharma, MD", spec: "Cardiology", date: "2026-11-27 10:30 AM", status: "Scheduled" }
+    ];
+
+    function renderDoctors() {
+      const container = document.getElementById('docList');
+      const spec = document.getElementById('specFilter').value;
+      const loc = document.getElementById('locFilter').value;
+      const q = document.getElementById('docSearchInput').value.toLowerCase();
+      container.innerHTML = '';
+
+      const filtered = doctors.filter(d => {
+        return (spec === 'All' || d.spec === spec) &&
+               (loc === 'All' || d.location === loc) &&
+               d.name.toLowerCase().includes(q);
+      });
+
+      filtered.forEach(d => {
+        const card = document.createElement('div');
+        card.className = 'doc-card';
+        card.innerHTML = `
+          <div class="doc-avatar">&#9877;</div>
+          <div style="flex:1;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <div>
+                <h4 style="margin:0;">${d.name}</h4>
+                <div style="font-size:0.85rem; color:var(--primary); font-weight:600;">${d.spec} &bull; ${d.exp}</div>
+              </div>
+              <span class="badge badge-primary">${d.rating}</span>
+            </div>
+            <div style="font-size:0.8rem; color:var(--text-muted); margin:0.35rem 0;">Location: ${d.location} | Consultation Fee: Rs. ${d.fee}</div>
+            <div style="display:flex; gap:0.5rem; margin-top:0.75rem;">
+              <button class="btn btn-sm btn-primary" onclick="bookDoctor('${d.name}', '${d.spec}')">Book Consultation Slot</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function bookDoctor(name, spec) {
+      const token = 'MED-' + Math.floor(100 + Math.random() * 900);
+      const appt = {
+        token: token,
+        doctor: name,
+        spec: spec,
+        date: "2026-11-28 11:00 AM",
+        status: "Scheduled"
+      };
+      appointments.push(appt);
+      renderHistory();
+      showToast(`Appointment confirmed with ${name}! Token: ${token}`, 'success');
+    }
+
+    function renderHistory() {
+      const tbody = document.getElementById('patientApptsTable');
+      tbody.innerHTML = '';
+      appointments.forEach(a => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${a.token}</strong></td>
+          <td>${a.doctor}</td>
+          <td>${a.spec}</td>
+          <td>${a.date}</td>
+          <td><span class="badge badge-success">${a.status}</span></td>
+          <td>
+            <button class="btn btn-sm btn-outline" onclick="reviewDoctor('${a.doctor}')">&#9733; Rate</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function handleCheckin(e) {
+      e.preventDefault();
+      const token = document.getElementById('chkToken').value;
+      showToast(`Pre-check-in submitted for Token ${token}! Medical staff alerted.`, 'success');
+      e.target.reset();
+    }
+
+    function reviewDoctor(doc) {
+      const score = prompt(`Rate ${doc} (1 to 5 Stars):`, "5");
+      if (score) {
+        showToast(`Thank you for rating ${doc} ${score} stars!`, 'success');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderDoctors();
+      renderHistory();
+    });
+  </script>
+</body>
+</html>

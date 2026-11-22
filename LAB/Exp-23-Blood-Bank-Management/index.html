@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 23: Blood Management Information System</title>
+  <link rel="stylesheet" href="../assets/common.css">
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon" style="background:var(--danger);">&#129656;</div>
+        <span>LifeBlood Bank Network</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 23</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">Blood Management Information System</h1>
+        <p class="lab-hero-desc">National donor registry and hospital inventory: register as a blood donor, search donors by blood group & city, track real-time blood bank stock units, and manage emergency hospital requisitions.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="searchDonor">&#128269; Find Blood Donors</button>
+        <button class="tab-btn" data-tab="regDonor">&#129656; Register as Donor</button>
+        <button class="tab-btn" data-tab="hospitalTab">&#127973; Hospital Blood Bank Stock</button>
+      </div>
+
+      <!-- Search Donor Tab -->
+      <div id="searchDonor" class="tab-pane active">
+        <div class="card" style="margin-bottom:1.5rem;">
+          <div class="card-body">
+            <div class="grid grid-3">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Required Blood Group</label>
+                <select id="srchGroup" class="form-select" onchange="renderDonors()">
+                  <option value="All">All Groups</option>
+                  <option value="O+">O Positive (O+)</option>
+                  <option value="O-">O Negative (O-) Universal</option>
+                  <option value="A+">A Positive (A+)</option>
+                  <option value="B+">B Positive (B+)</option>
+                  <option value="AB+">AB Positive (AB+)</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">City</label>
+                <input type="text" id="srchCity" class="form-control" value="Chennai" onkeyup="renderDonors()">
+              </div>
+              <div class="form-group" style="margin-bottom:0; display:flex; align-items:flex-end;">
+                <button class="btn btn-danger btn-block" onclick="broadcastSos()">&#128680; Emergency SOS Request</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-3" id="donorsGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Register Donor Tab -->
+      <div id="regDonor" class="tab-pane">
+        <div class="card" style="max-width:650px; margin:0 auto;">
+          <div class="card-header">Register as a Voluntary Blood Donor</div>
+          <div class="card-body">
+            <form onsubmit="handleRegisterDonor(event)">
+              <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" id="dName" class="form-control" required placeholder="e.g. Aakif">
+              </div>
+              <div class="grid grid-2">
+                <div class="form-group">
+                  <label class="form-label">Blood Group</label>
+                  <select id="dGroup" class="form-select">
+                    <option>O+</option>
+                    <option>O-</option>
+                    <option>A+</option>
+                    <option>B+</option>
+                    <option>AB+</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">City</label>
+                  <input type="text" id="dCity" class="form-control" value="Chennai" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Mobile Contact Number</label>
+                <input type="text" id="dPhone" class="form-control" value="+91 9876543210" required>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Enlist in National Donor Registry</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hospital Tab -->
+      <div id="hospitalTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Hospital Central Blood Inventory Units</div>
+          <div class="card-body">
+            <div class="grid grid-4" style="text-align:center;">
+              <div class="stat-card" style="justify-content:center;">
+                <div>
+                  <div class="stat-value" style="color:var(--danger);">24 Units</div>
+                  <div class="stat-label">Blood Group O+</div>
+                </div>
+              </div>
+              <div class="stat-card" style="justify-content:center;">
+                <div>
+                  <div class="stat-value" style="color:var(--danger);">6 Units</div>
+                  <div class="stat-label">Blood Group O- (Rare)</div>
+                </div>
+              </div>
+              <div class="stat-card" style="justify-content:center;">
+                <div>
+                  <div class="stat-value" style="color:var(--danger);">18 Units</div>
+                  <div class="stat-label">Blood Group A+</div>
+                </div>
+              </div>
+              <div class="stat-card" style="justify-content:center;">
+                <div>
+                  <div class="stat-value" style="color:var(--danger);">14 Units</div>
+                  <div class="stat-label">Blood Group B+</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-23: Blood Management Information System</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let donors = [
+      { id: 1, name: "Dr. Suresh Kumar", group: "O+", city: "Chennai", phone: "+91 98401 11223", available: true },
+      { id: 2, name: "Priyanka Nair", group: "O-", city: "Chennai", phone: "+91 98402 33445", available: true },
+      { id: 3, name: "Mohammed Tariq", group: "B+", city: "Bangalore", phone: "+91 98403 55667", available: true }
+    ];
+
+    function renderDonors() {
+      const grid = document.getElementById('donorsGrid');
+      const g = document.getElementById('srchGroup').value;
+      const c = document.getElementById('srchCity').value.toLowerCase();
+      grid.innerHTML = '';
+
+      const filtered = donors.filter(d => {
+        return (g === 'All' || d.group === g) &&
+               d.city.toLowerCase().includes(c);
+      });
+
+      filtered.forEach(d => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="card-header">
+            <span>${d.name}</span>
+            <span class="badge badge-danger">${d.group}</span>
+          </div>
+          <div class="card-body">
+            <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem;">&#128205; ${d.city} &bull; ${d.phone}</div>
+            <button class="btn btn-sm btn-outline btn-block" onclick="contactDonor('${d.name}', '${d.phone}')">Contact Donor</button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function contactDonor(name, phone) {
+      showToast(`Contacting voluntary donor ${name} at ${phone}...`, 'info');
+    }
+
+    function broadcastSos() {
+      showToast('EMERGENCY BROADCAST sent to all matching blood donors in the district!', 'success');
+    }
+
+    function handleRegisterDonor(e) {
+      e.preventDefault();
+      const name = document.getElementById('dName').value;
+      const group = document.getElementById('dGroup').value;
+      const city = document.getElementById('dCity').value;
+      const phone = document.getElementById('dPhone').value;
+
+      donors.push({ id: Date.now(), name, group, city, phone, available: true });
+      renderDonors();
+      e.target.reset();
+      showToast('Enlisted as voluntary life donor! Thank you.', 'success');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderDonors();
+    });
+  </script>
+</body>
+</html>

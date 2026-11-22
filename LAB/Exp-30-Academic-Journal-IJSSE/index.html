@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 30: IJSSE - Academic Journal Publishing Portal</title>
+  <link rel="stylesheet" href="../assets/common.css">
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon" style="background:#0f766e;">&#128218;</div>
+        <span>IJSSE Scopus Journal</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 30</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">International Journal of Scientific & Social Excellence</h1>
+        <p class="lab-hero-desc">Scopus Indexed Peer-Reviewed Publisher &bull; Print ISSN: <strong>2395-1443</strong> &bull; Online ISSN: <strong>2395-1451</strong>. Dedicated portals for Authors, Peer Reviewers, and Editors.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="authorTab">&#128221; For Authors</button>
+        <button class="tab-btn" data-tab="reviewerTab">&#128269; For Reviewers</button>
+        <button class="tab-btn" data-tab="editorTab">&#128188; For Editors</button>
+        <button class="tab-btn" data-tab="archiveTab">&#128218; Current Issue & Archive</button>
+      </div>
+
+      <!-- Author Tab -->
+      <div id="authorTab" class="tab-pane active">
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="card-header">Submit Manuscript to IJSSE</div>
+            <div class="card-body">
+              <form onsubmit="handleSubmitPaper(event)">
+                <div class="form-group">
+                  <label class="form-label">Manuscript Title</label>
+                  <input type="text" id="paperTitle" class="form-control" required placeholder="e.g. Distributed Consensus in Cloud Computing">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Authors & Affiliations</label>
+                  <input type="text" id="paperAuthors" class="form-control" value="Aakif, Dr. M. Ramanathan" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Abstract</label>
+                  <textarea id="paperAbstract" class="form-control" rows="3" required placeholder="State research problem, methodology, and empirical findings..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Submit Manuscript for Peer Review</button>
+              </form>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">Author Instructions & Templates</div>
+            <div class="card-body">
+              <p style="font-size:0.9rem; margin-bottom:1rem;">Authors must follow double-blind review standards. Download IEEE/IJSSE standard LaTeX and Word templates.</p>
+              <div style="display:flex; flex-direction:column; gap:0.5rem;">
+                <button class="btn btn-outline" onclick="showToast('Downloading IJSSE_Template.docx...', 'info')">&#128229; Download Article Template (.docx)</button>
+                <button class="btn btn-outline" onclick="showToast('Downloading Copyright_Form.pdf...', 'info')">&#128229; Download Copyright Agreement (.pdf)</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reviewer Tab -->
+      <div id="reviewerTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Reviewer Queue & Scoring Rubric</div>
+          <div class="card-body" id="reviewerQueue">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Editor Tab -->
+      <div id="editorTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Editorial Board Decision Desk</div>
+          <div class="card-body">
+            <p style="font-size:0.9rem; color:var(--text-muted);">Manage manuscript reviewer allocations, examine similarity plagiarism reports, and issue final publication verdicts.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Archive Tab -->
+      <div id="archiveTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Vol. 12 No. 4 (2026): Published Articles</div>
+          <div class="card-body">
+            <div style="border-bottom:1px solid var(--border); padding-bottom:1rem; margin-bottom:1rem;">
+              <h4 style="margin:0 0 0.25rem 0;">1. Scalable Microservice Communication Protocols for IoT Fog Networks</h4>
+              <div style="font-size:0.85rem; color:var(--text-muted);">Authors: S. Venkatesh, K. Alagappan &bull; DOI: 10.2395/ijsse.2026.0401</div>
+              <p style="font-size:0.9rem; margin-top:0.35rem;">Published Open Access &bull; Citations: 14</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-30: IJSSE Academic Journal Publishing Portal</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let papers = [
+      { id: "MS-842", title: "Distributed Consensus in Cloud Computing", authors: "Aakif, Dr. M. Ramanathan", status: "Under Review" }
+    ];
+
+    function handleSubmitPaper(e) {
+      e.preventDefault();
+      const title = document.getElementById('paperTitle').value;
+      const authors = document.getElementById('paperAuthors').value;
+      const msId = 'MS-' + Math.floor(100 + Math.random() * 900);
+
+      papers.push({ id: msId, title, authors, status: "Under Review" });
+      renderReviewerQueue();
+      showToast(`Manuscript ${msId} received! Acknowledgement email sent.`, 'success');
+      e.target.reset();
+    }
+
+    function renderReviewerQueue() {
+      const q = document.getElementById('reviewerQueue');
+      q.innerHTML = '';
+      papers.forEach(p => {
+        const div = document.createElement('div');
+        div.style.padding = '1rem';
+        div.style.border = '1px solid var(--border)';
+        div.style.borderRadius = 'var(--radius)';
+        div.style.marginBottom = '0.75rem';
+        div.innerHTML = `
+          <div style="display:flex; justify-content:space-between; margin-bottom:0.35rem;">
+            <strong>${p.id}: ${p.title}</strong>
+            <span class="badge badge-primary">${p.status}</span>
+          </div>
+          <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.75rem;">Authors: ${p.authors}</div>
+          <button class="btn btn-sm btn-success" onclick="acceptPaper('${p.id}')">Submit Acceptance Verdict</button>
+        `;
+        q.appendChild(div);
+      });
+    }
+
+    function acceptPaper(id) {
+      const p = papers.find(item => item.id === id);
+      if (p) {
+        p.status = "Accepted for Publication";
+        renderReviewerQueue();
+        showToast(`Paper ${id} marked Accepted for upcoming volume!`, 'success');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderReviewerQueue();
+    });
+  </script>
+</body>
+</html>

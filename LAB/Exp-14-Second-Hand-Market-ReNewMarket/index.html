@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 14: ReNewMarket - Second-Hand Goods Marketplace</title>
+  <link rel="stylesheet" href="../assets/common.css">
+  <style>
+    .market-card { border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; background:#fff; display:flex; flex-direction:column; }
+    .market-img { height:150px; background:linear-gradient(135deg, #6366f1, #8b5cf6); display:flex; align-items:center; justify-content:center; color:#fff; font-size:3rem; }
+  </style>
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon">&#9851;</div>
+        <span>ReNewMarket</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 14</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">ReNewMarket - Second-Hand Goods Marketplace</h1>
+        <p class="lab-hero-desc">Sustainable peer-to-peer commerce for pre-loved Electronics, Furniture, and Books. List items, simulate direct price negotiations, and track shipment status (Shipped / Received).</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="browseTab">&#128717; Browse Pre-loved Items</button>
+        <button class="tab-btn" data-tab="sellTab">&#128227; List an Item for Sale</button>
+        <button class="tab-btn" data-tab="ordersTab">&#128230; Orders & Logistics</button>
+        <button class="tab-btn" data-tab="adminTab">&#9881; Market Admin</button>
+      </div>
+
+      <!-- Browse Tab -->
+      <div id="browseTab" class="tab-pane active">
+        <div class="card" style="margin-bottom:1.5rem;">
+          <div class="card-body">
+            <div class="grid grid-3">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Category</label>
+                <select id="mkCat" class="form-select" onchange="renderMarket()">
+                  <option value="All">All Categories</option>
+                  <option value="Electronics">Electronics</option>
+                  <option value="Furniture">Furniture</option>
+                  <option value="Books">Books</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Condition</label>
+                <select id="mkCond" class="form-select" onchange="renderMarket()">
+                  <option value="All">Any Condition</option>
+                  <option value="Like New">Like New</option>
+                  <option value="Good">Good</option>
+                  <option value="Fair">Fair</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Search</label>
+                <input type="text" id="mkSearch" class="form-control" placeholder="Search keywords..." onkeyup="renderMarket()">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-3" id="marketGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Sell Tab -->
+      <div id="sellTab" class="tab-pane">
+        <div class="card" style="max-width:650px; margin:0 auto;">
+          <div class="card-header">Post a Pre-Loved Item for Sale</div>
+          <div class="card-body">
+            <form onsubmit="handlePostItem(event)">
+              <div class="form-group">
+                <label class="form-label">Item Title</label>
+                <input type="text" id="postTitle" class="form-control" required placeholder="e.g. Ergonomic Office Mesh Chair">
+              </div>
+              <div class="grid grid-2">
+                <div class="form-group">
+                  <label class="form-label">Category</label>
+                  <select id="postCat" class="form-select">
+                    <option>Electronics</option>
+                    <option>Furniture</option>
+                    <option>Books</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Condition</label>
+                  <select id="postCond" class="form-select">
+                    <option>Like New</option>
+                    <option>Good</option>
+                    <option>Fair</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Asking Price ($)</label>
+                <input type="number" id="postPrice" class="form-control" value="85" required>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Publish Listing</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Orders Tab -->
+      <div id="ordersTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Order Logistics Status (Shipped / Received)</div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-responsive" style="border:none;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Order Ref</th>
+                    <th>Item</th>
+                    <th>Agreed Price</th>
+                    <th>Logistics Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="marketOrdersTbody">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab -->
+      <div id="adminTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Admin User & Commodity Management</div>
+          <div class="card-body">
+            <p style="font-size:0.9rem; color:var(--text-muted);">Manage platform users, verify genuine pre-loved listings, and moderate category taxations.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-14: ReNewMarket Second-Hand Marketplace</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let marketItems = [
+      { id: 1, title: "Kindle Paperwhite 10th Gen", cat: "Electronics", cond: "Like New", price: 65, icon: "&#128214;" },
+      { id: 2, title: "Solid Wood Study Desk", cat: "Furniture", cond: "Good", price: 110, icon: "&#129681;" },
+      { id: 3, title: "Complete Algorithm Design Manual", cat: "Books", cond: "Fair", price: 25, icon: "&#128218;" }
+    ];
+
+    let orders = [
+      { id: "RNM-401", item: "Kindle Paperwhite 10th Gen", price: "$60", status: "Shipped" }
+    ];
+
+    function renderMarket() {
+      const grid = document.getElementById('marketGrid');
+      const cat = document.getElementById('mkCat').value;
+      const cond = document.getElementById('mkCond').value;
+      const q = document.getElementById('mkSearch').value.toLowerCase();
+      grid.innerHTML = '';
+
+      const filtered = marketItems.filter(m => {
+        return (cat === 'All' || m.cat === cat) &&
+               (cond === 'All' || m.cond === cond) &&
+               m.title.toLowerCase().includes(q);
+      });
+
+      filtered.forEach(m => {
+        const card = document.createElement('div');
+        card.className = 'market-card';
+        card.innerHTML = `
+          <div class="market-img">${m.icon}</div>
+          <div style="padding:1.25rem;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:0.35rem;">
+              <h4 style="margin:0;">${m.title}</h4>
+              <span class="badge badge-primary">${m.cond}</span>
+            </div>
+            <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.75rem;">Category: ${m.cat}</div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:1.3rem; font-weight:800; color:var(--primary);">$${m.price}</span>
+              <div>
+                <button class="btn btn-sm btn-outline" onclick="makeOffer('${m.title}', ${m.price})">Negotiate</button>
+                <button class="btn btn-sm btn-primary" onclick="buyMarketItem(${m.id})">Buy</button>
+              </div>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function makeOffer(title, currentPrice) {
+      const offer = prompt(`Enter your counter-offer price for "${title}" (Listed: $${currentPrice}):`, currentPrice - 10);
+      if (offer) {
+        showToast(`Counter offer of $${offer} sent to seller for review!`, 'info');
+      }
+    }
+
+    function buyMarketItem(id) {
+      const m = marketItems.find(item => item.id === id);
+      orders.push({
+        id: 'RNM-' + Math.floor(100 + Math.random() * 900),
+        item: m.title,
+        price: '$' + m.price,
+        status: "Processing"
+      });
+      renderOrders();
+      showToast(`Purchase initiated for ${m.title}!`, 'success');
+    }
+
+    function renderOrders() {
+      const tbody = document.getElementById('marketOrdersTbody');
+      tbody.innerHTML = '';
+      orders.forEach(o => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${o.id}</strong></td>
+          <td>${o.item}</td>
+          <td>${o.price}</td>
+          <td><span class="badge ${o.status === 'Received' ? 'badge-success' : 'badge-primary'}">${o.status}</span></td>
+          <td>
+            <button class="btn btn-sm btn-outline" onclick="markReceived('${o.id}')" ${o.status === 'Received' ? 'disabled' : ''}>Mark Received</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function markReceived(id) {
+      const o = orders.find(item => item.id === id);
+      if (o) {
+        o.status = "Received";
+        renderOrders();
+        showToast(`Order ${id} marked as Received!`, 'success');
+      }
+    }
+
+    function handlePostItem(e) {
+      e.preventDefault();
+      const title = document.getElementById('postTitle').value;
+      const cat = document.getElementById('postCat').value;
+      const cond = document.getElementById('postCond').value;
+      const price = parseFloat(document.getElementById('postPrice').value);
+      marketItems.push({ id: Date.now(), title, cat, cond, price, icon: "&#9851;" });
+      renderMarket();
+      e.target.reset();
+      showToast('Pre-loved item published to marketplace!', 'success');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderMarket();
+      renderOrders();
+    });
+  </script>
+</body>
+</html>

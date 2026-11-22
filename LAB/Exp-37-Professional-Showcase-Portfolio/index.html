@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 37: MyProfessionalShowcase - Portfolio & Resume</title>
+  <link rel="stylesheet" href="../assets/common.css">
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon">&#128188;</div>
+        <span>MyProfessionalShowcase</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 37</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">Aakif - Full Stack Software Engineer</h1>
+        <p class="lab-hero-desc">Interactive portfolio showcase: technical skill matrices, featured engineering projects, career milestone timeline, and downloadable formatted resume.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="aboutTab">&#128100; About Me & Skills</button>
+        <button class="tab-btn" data-tab="projectsTab">&#128187; Featured Projects</button>
+        <button class="tab-btn" data-tab="resumeTab">&#128196; Interactive Resume</button>
+      </div>
+
+      <!-- About Tab -->
+      <div id="aboutTab" class="tab-pane active">
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="card-header">Engineering Background</div>
+            <div class="card-body">
+              <p style="font-size:0.95rem; line-height:1.7; color:var(--text-main);">Passionate Computer Science student and web technologist specializing in distributed web applications, modern responsive UI design, and scalable backend services.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">Technical Competencies</div>
+            <div class="card-body">
+              <div style="margin-bottom:0.75rem;">
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:0.25rem;">
+                  <span>HTML5 / CSS3 / JavaScript (ES6+)</span>
+                  <strong>95%</strong>
+                </div>
+                <div style="height:8px; background:var(--surface-2); border-radius:4px;"><div style="width:95%; height:100%; background:var(--primary);"></div></div>
+              </div>
+              <div style="margin-bottom:0.75rem;">
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:0.25rem;">
+                  <span>React.js / Node.js</span>
+                  <strong>90%</strong>
+                </div>
+                <div style="height:8px; background:var(--surface-2); border-radius:4px;"><div style="width:90%; height:100%; background:var(--secondary);"></div></div>
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:0.25rem;">
+                  <span>Database Engineering (SQL & NoSQL)</span>
+                  <strong>85%</strong>
+                </div>
+                <div style="height:8px; background:var(--surface-2); border-radius:4px;"><div style="width:85%; height:100%; background:var(--success);"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Projects Tab -->
+      <div id="projectsTab" class="tab-pane">
+        <div class="grid grid-3">
+          <div class="card">
+            <div class="card-header">Sportix Analytics Platform</div>
+            <div class="card-body">
+              <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">Real-time football performance analytics, automated event metrics, and match intelligence dashboard.</p>
+              <button class="btn btn-sm btn-outline btn-block" onclick="showToast('Opening repository...', 'info')">View GitHub Repository</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">Internet Programming Lab Hub</div>
+            <div class="card-body">
+              <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">46 comprehensive full-stack laboratory experiments covering university engineering curriculum.</p>
+              <button class="btn btn-sm btn-outline btn-block" onclick="showToast('Already exploring Lab Hub!', 'info')">Explore Projects</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resume Tab -->
+      <div id="resumeTab" class="tab-pane">
+        <div class="card" style="max-width:700px; margin:0 auto;">
+          <div class="card-header">Curriculum Vitae</div>
+          <div class="card-body">
+            <p><strong>Education:</strong> B.E. Computer Science & Engineering (2022 - 2026)</p>
+            <p><strong>Honors:</strong> First Class with Distinction, Dean's Merit List</p>
+            <button class="btn btn-primary" style="margin-top:1rem;" onclick="showToast('Downloading Aakif_Resume.pdf...', 'success')">&#128229; Download PDF Resume</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-37: MyProfessionalShowcase Portfolio</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+</body>
+</html>

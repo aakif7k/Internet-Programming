@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 25: On-Road Vehicle Breakdown Assistance</title>
+  <link rel="stylesheet" href="../assets/common.css">
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon">&#128295;</div>
+        <span>RoadRescue On-Demand Assistance</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 25</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">On-Road Vehicle Breakdown Assistance System</h1>
+        <p class="lab-hero-desc">Immediate roadside breakdown rescue: GPS radar locating nearest certified mechanics, service selection (tire flat, battery jumpstart, towing), mechanic job dispatch, and customer ratings.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="sosTab">&#128680; Emergency SOS Request</button>
+        <button class="tab-btn" data-tab="mechanicTab">&#128295; Mechanic Portal</button>
+      </div>
+
+      <!-- SOS Tab -->
+      <div id="sosTab" class="tab-pane active">
+        <div class="card" style="max-width:700px; margin:0 auto;">
+          <div class="card-header">Request Nearby Emergency Roadside Mechanic</div>
+          <div class="card-body">
+            <form onsubmit="handleSosRequest(event)">
+              <div class="form-group">
+                <label class="form-label">Breakdown Issue Type</label>
+                <select id="sosIssue" class="form-select">
+                  <option>Flat Tire Puncture Repair</option>
+                  <option>Dead Battery Jumpstart</option>
+                  <option>Engine Overheating / Coolant Leak</option>
+                  <option>Flatbed Towing Truck Service</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Vehicle Details</label>
+                <input type="text" id="sosVeh" class="form-control" value="Honda City (TN-09-CB-4210)" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Simulated GPS Breakdown Location</label>
+                <input type="text" class="form-control" value="OMR Expressway near Navalur Toll, Chennai" readonly>
+              </div>
+              <button type="submit" class="btn btn-danger btn-block">&#128680; Dispatch Nearest Certified Mechanic</button>
+            </form>
+
+            <div id="radarResult" style="margin-top:1.5rem; display:none; padding:1.25rem; background:var(--surface-2); border-radius:var(--radius);">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mechanic Tab -->
+      <div id="mechanicTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Licensed Mechanic Business Profile & Active Dispatches</div>
+          <div class="card-body">
+            <p style="font-size:0.9rem; color:var(--text-muted);">View incoming roadside SOS alerts, accept towing jobs, and navigate to client coordinates.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-25: On-Road Breakdown Assistance System</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    function handleSosRequest(e) {
+      e.preventDefault();
+      const issue = document.getElementById('sosIssue').value;
+      const res = document.getElementById('radarResult');
+      res.style.display = 'block';
+      res.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+          <h4 style="margin:0; color:var(--success);">&#9989; MECHANIC DISPATCHED!</h4>
+          <span class="badge badge-primary">ETA: 12 Mins</span>
+        </div>
+        <div style="font-size:0.9rem;">
+          <strong>Technician:</strong> Kumar Auto Works (Govt Certified Mechanic)<br>
+          <strong>Distance:</strong> 1.8 km away &bull; Phone: +91 98409 88771<br>
+          <strong>Assigned Service:</strong> ${issue}
+        </div>
+      `;
+      showToast('Roadside assistance team dispatched to your location!', 'success');
+    }
+  </script>
+</body>
+</html>

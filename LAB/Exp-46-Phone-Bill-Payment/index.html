@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 46: Online Phone Bill Payment System</title>
+  <link rel="stylesheet" href="../assets/common.css">
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon" style="background:#0284c7;">&#128222;</div>
+        <span>TelecomPay Mobile Billing</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 46</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">Online Phone Bill Payment System</h1>
+        <p class="lab-hero-desc">Monthly phone billing cycle, overdue fine calculation (Rs. 10 per day after last date), flexible full or custom amount payments, and digital transaction receipts.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="billTab">&#128222; Current Phone Bill & Pay</button>
+        <button class="tab-btn" data-tab="adminTab">&#9881; Telecom Billing Admin</button>
+      </div>
+
+      <!-- Bill Tab -->
+      <div id="billTab" class="tab-pane active">
+        <div class="grid grid-2">
+          <!-- Bill Breakdown -->
+          <div class="card">
+            <div class="card-header">Monthly Postpaid Bill Statement</div>
+            <div class="card-body">
+              <div style="font-size:0.9rem; line-height:1.7;">
+                <div style="display:flex; justify-content:space-between;"><span>Subscriber Number:</span><strong>+91 98401 23456</strong></div>
+                <div style="display:flex; justify-content:space-between;"><span>Billing Cycle:</span><span>01-Nov-2026 to 30-Nov-2026</span></div>
+                <div style="display:flex; justify-content:space-between;"><span>Payment Due Date:</span><strong id="dispDueDate">20-Nov-2026</strong></div>
+                <div style="border-top:1px solid var(--border); margin:0.75rem 0; padding-top:0.75rem;">
+                  <div style="display:flex; justify-content:space-between;"><span>Plan Rental (Unlimited 5G):</span><span>Rs. 699.00</span></div>
+                  <div style="display:flex; justify-content:space-between;"><span>National Roaming:</span><span>Rs. 0.00</span></div>
+                  <div style="display:flex; justify-content:space-between;"><span>GST (18%):</span><span>Rs. 125.82</span></div>
+                  <div style="display:flex; justify-content:space-between; color:var(--danger); font-weight:bold;" id="lateFineRow">
+                    <span>Late Payment Fine (Rs. 10/day):</span>
+                    <span id="fineAmtText">Rs. 20.00</span>
+                  </div>
+                </div>
+                <div style="border-top:2px solid var(--border); padding-top:0.75rem; display:flex; justify-content:space-between; font-size:1.3rem;">
+                  <span>Total Outstanding:</span>
+                  <strong style="color:var(--primary);" id="totalBillAmt">Rs. 844.82</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Payment Form -->
+          <div class="card">
+            <div class="card-header">Select Payment Amount & Method</div>
+            <div class="card-body">
+              <form onsubmit="handlePayPhoneBill(event)">
+                <div class="form-group">
+                  <label class="form-label">Payment Option</label>
+                  <div style="display:flex; gap:1.5rem; margin-top:0.35rem;">
+                    <label><input type="radio" name="payOption" value="full" checked onchange="toggleCustomAmt()"> Pay Entire Bill (Rs. 844.82)</label>
+                    <label><input type="radio" name="payOption" value="custom" onchange="toggleCustomAmt()"> Custom Partial Amount</label>
+                  </div>
+                </div>
+                <div class="form-group" id="customAmtGroup" style="display:none;">
+                  <label class="form-label">Custom Amount (Rs.)</label>
+                  <input type="number" id="customAmtInput" class="form-control" value="500">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Payment Channel</label>
+                  <select class="form-select">
+                    <option>UPI (Google Pay, PhonePe, Paytm)</option>
+                    <option>Credit / Debit Card</option>
+                    <option>Net Banking</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Confirm Payment & Email Receipt</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab -->
+      <div id="adminTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Admin Billing Cycle Configuration</div>
+          <div class="card-body">
+            <p style="font-size:0.9rem; color:var(--text-muted);">Configure postpaid cycle windows, statutory telecom taxes, and automatic Rs. 10/day overdue penalty triggers.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-46: Online Phone Bill Payment System</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    function toggleCustomAmt() {
+      const isCustom = document.querySelector('input[name="payOption"]:checked').value === 'custom';
+      document.getElementById('customAmtGroup').style.display = isCustom ? 'block' : 'none';
+    }
+
+    function handlePayPhoneBill(e) {
+      e.preventDefault();
+      const isCustom = document.querySelector('input[name="payOption"]:checked').value === 'custom';
+      const paid = isCustom ? document.getElementById('customAmtInput').value : "844.82";
+      const txId = 'TXN-' + Math.floor(100000 + Math.random() * 900000);
+      showToast(`Phone bill payment of Rs. ${paid} successful! Transaction ID: ${txId}`, 'success');
+    }
+  </script>
+</body>
+</html>

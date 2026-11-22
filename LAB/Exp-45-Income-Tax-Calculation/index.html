@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 45: Income Tax Calculation Web Application</title>
+  <link rel="stylesheet" href="../assets/common.css">
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon" style="background:#059669;">&#128181;</div>
+        <span>TaxPortal Income Tax Calculator</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 45</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">Income Tax Calculation Web Application</h1>
+        <p class="lab-hero-desc">Exact statutory tax formula implementation: Gross Pay, House Rent Allowance (HRA), Standard Deduction (Rs. 50,000), Pension (capped at Rs. 150,000), Health Insurance, with exact slab calculation.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="calcTab">&#128181; Calculate Income Tax</button>
+        <button class="tab-btn" data-tab="normsTab">&#128214; Statutory Slabs & Norms</button>
+      </div>
+
+      <!-- Calculator Tab -->
+      <div id="calcTab" class="tab-pane active">
+        <div class="grid grid-2">
+          <!-- Input Form -->
+          <div class="card">
+            <div class="card-header">Employee Financial Details</div>
+            <div class="card-body">
+              <form onsubmit="handleTaxSubmit(event)">
+                <div class="form-group">
+                  <label class="form-label">Monthly Gross Pay (Rs.)</label>
+                  <input type="number" id="taxGross" class="form-control" value="85000" required oninput="calcTax()">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Monthly House Rent Allowance - HRA (Rs.)</label>
+                  <input type="number" id="taxHra" class="form-control" value="15000" required oninput="calcTax()">
+                </div>
+                <div class="grid grid-2">
+                  <div class="form-group">
+                    <label class="form-label">Monthly Pension (Rs.)</label>
+                    <input type="number" id="taxPension" class="form-control" value="10000" required oninput="calcTax()">
+                    <span class="form-help">Max deduction capped at Rs. 1,50,000/yr</span>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Monthly Health Insurance (Rs.)</label>
+                    <input type="number" id="taxInsurance" class="form-control" value="2500" required oninput="calcTax()">
+                  </div>
+                </div>
+                <button type="button" class="btn btn-success btn-block" onclick="showToast('Tax Computation Sheet Downloaded!', 'success')">&#128229; Download Summary Report</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Tax Breakdown Output -->
+          <div class="card">
+            <div class="card-header">Tax Computation Statement</div>
+            <div class="card-body" id="taxStatement">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Norms Tab -->
+      <div id="normsTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Government Tax Calculation Norms</div>
+          <div class="card-body">
+            <div class="alert" style="background:var(--surface-2); border-left:4px solid var(--primary); padding:1rem; margin-bottom:1rem;">
+              <strong>Net Taxable Income Formula:</strong><br>
+              <code>Net Taxable Income = (Gross Pay * 12) - (HRA * 12) - 50,000 [Standard Deduction] - min(Pension * 12, 1,50,000) - (Health Insurance * 12)</code>
+            </div>
+            <p><strong>Tax Slab Rates:</strong></p>
+            <ul style="padding-left:1.25rem; font-size:0.9rem; line-height:1.7;">
+              <li>If Net Taxable Income &le; Rs. 5,00,000: <strong>Tax is NIL (Rs. 0)</strong></li>
+              <li>If Net Taxable Income &gt; Rs. 5,00,000:
+                <ul>
+                  <li>0 to 2,50,000: <strong>0%</strong></li>
+                  <li>2,50,001 to 5,00,000: <strong>5% of (Net - 2,50,000)</strong></li>
+                  <li>5,00,001 to 10,00,000: <strong>Rs. 12,500 + 20% of (Net - 5,00,000)</strong></li>
+                  <li>Above 10,00,000: <strong>Rs. 1,12,500 + 30% of (Net - 10,00,000)</strong></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-45: Income Tax Calculation Web Application</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    function calcTax() {
+      const grossMonthly = parseFloat(document.getElementById('taxGross').value) || 0;
+      const hraMonthly = parseFloat(document.getElementById('taxHra').value) || 0;
+      const pensionMonthly = parseFloat(document.getElementById('taxPension').value) || 0;
+      const insMonthly = parseFloat(document.getElementById('taxInsurance').value) || 0;
+
+      const annualGross = grossMonthly * 12;
+      const annualHra = hraMonthly * 12;
+      const standardDeduction = 50000;
+      const annualPension = Math.min(pensionMonthly * 12, 150000);
+      const annualInsurance = insMonthly * 12;
+
+      const totalDeductions = annualHra + standardDeduction + annualPension + annualInsurance;
+      const netTaxable = Math.max(0, annualGross - totalDeductions);
+
+      let tax = 0;
+      let slabDetails = '';
+
+      if (netTaxable <= 500000) {
+        tax = 0;
+        slabDetails = '<div style="color:var(--success); font-weight:bold;">Net Taxable Income is &le; Rs. 5,00,000 &bull; Tax Liability is NIL (Rs. 0)</div>';
+      } else {
+        if (netTaxable <= 1000000) {
+          tax = 12500 + (0.20 * (netTaxable - 500000));
+          slabDetails = `<div>Slab 2 (2.5L - 5L @ 5%): Rs. 12,500.00</div><div>Slab 3 (5L - 10L @ 20%): Rs. ${(0.20 * (netTaxable - 500000)).toFixed(2)}</div>`;
+        } else {
+          tax = 112500 + (0.30 * (netTaxable - 1000000));
+          slabDetails = `<div>Slab 2 & 3 (Up to 10L): Rs. 1,12,500.00</div><div>Slab 4 (> 10L @ 30%): Rs. ${(0.30 * (netTaxable - 1000000)).toFixed(2)}</div>`;
+        }
+      }
+
+      const netSalary = annualGross - tax;
+
+      document.getElementById('taxStatement').innerHTML = `
+        <div style="font-size:0.9rem; line-height:1.7;">
+          <div style="display:flex; justify-content:space-between;"><span>Annual Gross Salary:</span><strong>Rs. ${annualGross.toLocaleString()}</strong></div>
+          <div style="display:flex; justify-content:space-between;"><span>Less: HRA Exemption:</span><span>- Rs. ${annualHra.toLocaleString()}</span></div>
+          <div style="display:flex; justify-content:space-between;"><span>Less: Standard Deduction:</span><span>- Rs. ${standardDeduction.toLocaleString()}</span></div>
+          <div style="display:flex; justify-content:space-between;"><span>Less: Pension Deduction:</span><span>- Rs. ${annualPension.toLocaleString()}</span></div>
+          <div style="display:flex; justify-content:space-between;"><span>Less: Health Insurance (80D):</span><span>- Rs. ${annualInsurance.toLocaleString()}</span></div>
+          <div style="border-top:1px solid var(--border); margin:0.5rem 0; padding-top:0.5rem; display:flex; justify-content:space-between;">
+            <strong>Net Taxable Income:</strong>
+            <strong style="color:var(--primary);">Rs. ${netTaxable.toLocaleString()}</strong>
+          </div>
+          <div style="margin-top:0.75rem; padding:0.75rem; background:var(--surface-2); border-radius:6px;">
+            ${slabDetails}
+          </div>
+          <div style="border-top:2px solid var(--border); margin-top:1rem; padding-top:0.75rem; display:flex; justify-content:space-between; font-size:1.2rem;">
+            <span>Total Income Tax Payable:</span>
+            <strong style="color:var(--danger);">Rs. ${Math.round(tax).toLocaleString()}</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:0.9rem; color:var(--text-muted); margin-top:0.35rem;">
+            <span>Annual Net Take-Home Salary:</span>
+            <strong>Rs. ${Math.round(netSalary).toLocaleString()}</strong>
+          </div>
+        </div>
+      `;
+    }
+
+    function handleTaxSubmit(e) {
+      e.preventDefault();
+      calcTax();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      calcTax();
+    });
+  </script>
+</body>
+</html>

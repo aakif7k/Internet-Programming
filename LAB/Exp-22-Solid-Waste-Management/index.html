@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 22: Smart Solid Waste Management System</title>
+  <link rel="stylesheet" href="../assets/common.css">
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon">&#9851;</div>
+        <span>EcoClean Smart Waste</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 22</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">Smart Solid Waste Management System</h1>
+        <p class="lab-hero-desc">IoT sensor-monitored smart garbage bins (0-100% capacity), automated optimal route generation for collection trucks to the dumping site, driver load logging, and public overflow complaints.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="binsTab">&#128465; Smart Bins Network</button>
+        <button class="tab-btn" data-tab="driverTab">&#128667; Truck Driver Optimal Route</button>
+        <button class="tab-btn" data-tab="publicTab">&#128104; Public Complaints</button>
+      </div>
+
+      <!-- Bins Tab -->
+      <div id="binsTab" class="tab-pane active">
+        <div class="grid grid-3" id="binsGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Driver Tab -->
+      <div id="driverTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Automated Route Optimization for Garbage Truck #04</div>
+          <div class="card-body">
+            <div class="alert" style="background:#eff6ff; border:1px solid #bfdbfe; padding:1rem; border-radius:var(--radius); margin-bottom:1.5rem;">
+              <h4 style="color:#1d4ed8; margin-bottom:0.25rem;">&#128506; Calculated Optimal Collection Route</h4>
+              <p style="font-size:0.9rem; color:#1e40af;"><strong>Depot &rarr; Bin #02 (92% Fill) &rarr; Bin #03 (85% Fill) &rarr; Kodungaiyur Dumping Yard</strong><br>Estimated Mileage: 14.2 km &bull; Projected Fuel Savings: 22%</p>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Log Total Collected Load (kg)</label>
+              <div style="display:flex; gap:0.5rem; max-width:400px;">
+                <input type="number" id="truckLoad" class="form-control" value="840">
+                <button class="btn btn-primary" onclick="showToast('Garbage load of 840 kg logged at dumping facility!', 'success')">Submit Load</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Public Tab -->
+      <div id="publicTab" class="tab-pane">
+        <div class="card" style="max-width:650px; margin:0 auto;">
+          <div class="card-header">Report Overflowing Dustbin</div>
+          <div class="card-body">
+            <form onsubmit="handlePublicReport(event)">
+              <div class="form-group">
+                <label class="form-label">Street / Area Landmark</label>
+                <input type="text" id="binLoc" class="form-control" value="Corner of 4th Cross St, Besant Nagar" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Garbage Segregation Type</label>
+                <select class="form-select">
+                  <option>Mixed Municipal Solid Waste</option>
+                  <option>Organic Compostable</option>
+                  <option>Plastic / Recyclable</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Dispatch Emergency Cleaning Truck</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-22: Smart Solid Waste Management System</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let smartBins = [
+      { id: "BIN-01", loc: "Marina Beach Promenade", fill: 35, type: "Recyclable", status: "Normal" },
+      { id: "BIN-02", loc: "T. Nagar Ranganathan St", fill: 92, type: "Organic", status: "Critical Overflow" },
+      { id: "BIN-03", loc: "Central Railway Station", fill: 85, type: "Mixed", status: "Near Full" }
+    ];
+
+    function renderBins() {
+      const grid = document.getElementById('binsGrid');
+      grid.innerHTML = '';
+      smartBins.forEach(b => {
+        const isCrit = b.fill >= 80;
+        const c = document.createElement('div');
+        c.className = 'card';
+        c.innerHTML = `
+          <div class="card-header">
+            <span>${b.id}</span>
+            <span class="badge ${isCrit ? 'badge-danger' : 'badge-success'}">${b.status}</span>
+          </div>
+          <div class="card-body">
+            <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.75rem;">${b.loc} &bull; ${b.type}</div>
+            <div style="margin-bottom:0.5rem; display:flex; justify-content:space-between;">
+              <strong>Fill Level:</strong>
+              <strong>${b.fill}%</strong>
+            </div>
+            <div style="height:12px; background:var(--surface-2); border-radius:6px; overflow:hidden; margin-bottom:1rem;">
+              <div style="width:${b.fill}%; height:100%; background:${isCrit ? 'var(--danger)' : 'var(--primary)'};"></div>
+            </div>
+            <button class="btn btn-sm btn-outline btn-block" onclick="emptyBin('${b.id}')">Empty & Reset Sensor</button>
+          </div>
+        `;
+        grid.appendChild(c);
+      });
+    }
+
+    function emptyBin(id) {
+      const b = smartBins.find(item => item.id === id);
+      b.fill = 5;
+      b.status = "Normal";
+      renderBins();
+      showToast(`Bin ${id} emptied and sensor reset!`, 'success');
+    }
+
+    function handlePublicReport(e) {
+      e.preventDefault();
+      showToast('Public grievance logged! Sanitation supervisor alerted.', 'success');
+      e.target.reset();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderBins();
+    });
+  </script>
+</body>
+</html>

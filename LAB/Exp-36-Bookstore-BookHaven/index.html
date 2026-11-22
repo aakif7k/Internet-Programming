@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 36: BookHaven - Online Bookstore</title>
+  <link rel="stylesheet" href="../assets/common.css">
+  <style>
+    .bh-card { border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; background:#fff; display:flex; flex-direction:column; }
+    .bh-cover { height:180px; background:linear-gradient(135deg, #b45309, #d97706); display:flex; align-items:center; justify-content:center; color:#fff; font-size:3.5rem; }
+  </style>
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon" style="background:#b45309;">&#128214;</div>
+        <span>BookHaven Bookstore</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 36</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">BookHaven - Online Bookstore</h1>
+        <p class="lab-hero-desc">Curated books with genre filters (Fiction, Non-fiction, Academic), cover previews, synopsis, shopping cart, customer FAQ accordion, and literary blog.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="catalogTab">&#128214; Book Catalog</button>
+        <button class="tab-btn" data-tab="cartTab">&#128722; Cart (<span id="bhCartCount">0</span>)</button>
+        <button class="tab-btn" data-tab="faqTab">&#10067; FAQs & Privacy Policy</button>
+      </div>
+
+      <!-- Catalog Tab -->
+      <div id="catalogTab" class="tab-pane active">
+        <div class="grid grid-3" id="booksGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Cart Tab -->
+      <div id="cartTab" class="tab-pane">
+        <div class="card" style="max-width:650px; margin:0 auto;">
+          <div class="card-header">Your Books Cart</div>
+          <div class="card-body" id="bhCartItems">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ Tab -->
+      <div id="faqTab" class="tab-pane">
+        <div class="card" style="max-width:700px; margin:0 auto;">
+          <div class="card-header">Frequently Asked Questions</div>
+          <div class="card-body">
+            <h4 style="margin:0 0 0.25rem 0;">What is the standard shipping turnaround?</h4>
+            <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:1rem;">Orders are dispatched within 24 hours. Express delivery takes 2-3 business days.</p>
+            <h4 style="margin:0 0 0.25rem 0;">Can I return a purchased book?</h4>
+            <p style="font-size:0.9rem; color:var(--text-muted);">Unused books with original spine condition are eligible for full refund within 14 days.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-36: BookHaven Online Bookstore</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let bookCatalog = [
+      { id: 1, title: "The Pragmatic Programmer", author: "David Thomas", genre: "Academic", price: 38 },
+      { id: 2, title: "Atomic Habits", author: "James Clear", genre: "Non-fiction", price: 22 },
+      { id: 3, title: "The Midnight Library", author: "Matt Haig", genre: "Fiction", price: 18 }
+    ];
+
+    let bhCart = [];
+
+    function renderBooks() {
+      const grid = document.getElementById('booksGrid');
+      grid.innerHTML = '';
+      bookCatalog.forEach(b => {
+        const c = document.createElement('div');
+        c.className = 'bh-card';
+        c.innerHTML = `
+          <div class="bh-cover">&#128214;</div>
+          <div style="padding:1.25rem;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:0.25rem;">
+              <h4 style="margin:0;">${b.title}</h4>
+              <span class="badge badge-primary">${b.genre}</span>
+            </div>
+            <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.75rem;">By ${b.author}</div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:1.3rem; font-weight:800; color:var(--primary);">$${b.price}</span>
+              <button class="btn btn-sm btn-primary" onclick="addBook(${b.id})">Add to Cart</button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(c);
+      });
+    }
+
+    function addBook(id) {
+      const b = bookCatalog.find(item => item.id === id);
+      bhCart.push(b);
+      document.getElementById('bhCartCount').textContent = bhCart.length;
+      renderBhCart();
+      showToast(`Added "${b.title}" to cart!`, 'success');
+    }
+
+    function renderBhCart() {
+      const list = document.getElementById('bhCartItems');
+      list.innerHTML = '';
+      if (bhCart.length === 0) {
+        list.innerHTML = '<p style="color:var(--text-muted); text-align:center;">Your cart is empty.</p>';
+        return;
+      }
+      bhCart.forEach(item => {
+        const div = document.createElement('div');
+        div.style.padding = '0.75rem 0';
+        div.style.borderBottom = '1px solid var(--border)';
+        div.style.display = 'flex';
+        div.style.justifyContent = 'space-between';
+        div.innerHTML = `<span>${item.title}</span><strong>$${item.price}</strong>`;
+        list.appendChild(div);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderBooks();
+      renderBhCart();
+    });
+  </script>
+</body>
+</html>

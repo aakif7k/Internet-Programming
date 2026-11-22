@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 43: Online Placement Examination System</title>
+  <link rel="stylesheet" href="../assets/common.css">
+  <style>
+    .timer-badge { font-size:1.4rem; font-weight:800; color:var(--danger); background:var(--danger-bg); padding:0.4rem 1rem; border-radius:var(--radius); border:1px solid #fecaca; }
+  </style>
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon">&#128221;</div>
+        <span>Placement Exam Portal</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 43</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">Online Placement Examination System</h1>
+        <p class="lab-hero-desc">Admin exam scheduling & question bank, candidate timed test interface with real-time countdown timer, automated evaluation, scorecard generation, and ranking list.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="examTab">&#9997; Attempt Placement Exam</button>
+        <button class="tab-btn" data-tab="scorecardTab">&#127942; Scorecard & Merit Ranking</button>
+      </div>
+
+      <!-- Exam Tab -->
+      <div id="examTab" class="tab-pane active">
+        <div class="card" style="margin-bottom:1.5rem;">
+          <div class="card-body" style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <h3 style="margin:0;">Campus Recruitment Aptitude & Coding Test</h3>
+              <div style="font-size:0.85rem; color:var(--text-muted);">Candidate: Aakif (21CS042)</div>
+            </div>
+            <div class="timer-badge" id="examTimer">14:59</div>
+          </div>
+        </div>
+
+        <div class="card" style="max-width:800px; margin:0 auto;">
+          <div class="card-body" id="questionsContainer">
+            <div style="margin-bottom:1.5rem;">
+              <p><strong>1. What is the time complexity of searching an element in a balanced Binary Search Tree (AVL / Red-Black)?</strong></p>
+              <div style="display:flex; flex-direction:column; gap:0.5rem; margin-top:0.5rem;">
+                <label><input type="radio" name="pq1" value="A"> O(N)</label>
+                <label><input type="radio" name="pq1" value="B" id="q1Ans"> O(log N)</label>
+                <label><input type="radio" name="pq1" value="C"> O(1)</label>
+              </div>
+            </div>
+
+            <div style="margin-bottom:1.5rem;">
+              <p><strong>2. In JavaScript, which mechanism moves variable and function declarations to the top of their scope before code execution?</strong></p>
+              <div style="display:flex; flex-direction:column; gap:0.5rem; margin-top:0.5rem;">
+                <label><input type="radio" name="pq2" value="A" id="q2Ans"> Hoisting</label>
+                <label><input type="radio" name="pq2" value="B"> Memoization</label>
+                <label><input type="radio" name="pq2" value="C"> Event Bubbling</label>
+              </div>
+            </div>
+
+            <button class="btn btn-primary btn-block btn-lg" onclick="finishExam()">Submit Placement Test</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scorecard Tab -->
+      <div id="scorecardTab" class="tab-pane">
+        <div class="card" style="max-width:700px; margin:0 auto;">
+          <div class="card-header">Candidate Performance Scorecard & Leaderboard</div>
+          <div class="card-body">
+            <div id="scorecardResult" style="padding:1.5rem; background:var(--surface-2); border-radius:var(--radius); margin-bottom:1.5rem; text-align:center;">
+              <div style="font-size:0.9rem; color:var(--text-muted);">Test Score:</div>
+              <div style="font-size:2.5rem; font-weight:800; color:var(--success);" id="userScoreDisplay">Pending Submission</div>
+              <div id="userPercentile">Attempt the test to view rank</div>
+            </div>
+
+            <h4 style="margin-bottom:0.75rem;">Placement Rank List</h4>
+            <div class="table-responsive" style="border:none;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Candidate</th>
+                    <th>Roll Number</th>
+                    <th>Score</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>#1</strong></td>
+                    <td>Aakif</td>
+                    <td>21CS042</td>
+                    <td>100%</td>
+                    <td><span class="badge badge-success">Selected</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>#2</strong></td>
+                    <td>Rohan M.</td>
+                    <td>21CS089</td>
+                    <td>90%</td>
+                    <td><span class="badge badge-success">Selected</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-43: Online Placement Examination System</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let timerSec = 899;
+    setInterval(() => {
+      if (timerSec > 0) {
+        timerSec--;
+        const m = Math.floor(timerSec / 60);
+        const s = timerSec % 60;
+        document.getElementById('examTimer').textContent = `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
+      }
+    }, 1000);
+
+    function finishExam() {
+      let score = 0;
+      if (document.getElementById('q1Ans').checked) score += 50;
+      if (document.getElementById('q2Ans').checked) score += 50;
+
+      document.getElementById('userScoreDisplay').textContent = `${score}% (Passed)`;
+      document.getElementById('userPercentile').innerHTML = `<strong style="color:var(--success);">Rank: #1 &bull; Percentile: 99.4% &bull; Shortlisted for Interview Round</strong>`;
+      showToast(`Test evaluated! Score: ${score}%. Access Scorecard tab.`, 'success');
+    }
+  </script>
+</body>
+</html>

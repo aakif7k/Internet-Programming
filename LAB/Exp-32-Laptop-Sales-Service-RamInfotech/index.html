@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 32: Ram Infotech - Laptop Sales & Service Portal</title>
+  <link rel="stylesheet" href="../assets/common.css">
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon">&#128187;</div>
+        <span>Ram Infotech Laptop Solutions</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 32</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">Ram Infotech - Laptop Sales & Service Portal</h1>
+        <p class="lab-hero-desc">Complete computer store: laptop sales catalog with full technical specifications, service center repair scheduling & ticket tracker, laptop rental agreement generator, and stock maintenance.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="salesTab">&#128187; Laptop Sales Store</button>
+        <button class="tab-btn" data-tab="serviceTab">&#128295; Service & Repairs</button>
+        <button class="tab-btn" data-tab="rentalTab">&#128196; Laptop Rental Agreement</button>
+        <button class="tab-btn" data-tab="adminTab">&#9881; Stock Maintenance</button>
+      </div>
+
+      <!-- Sales Tab -->
+      <div id="salesTab" class="tab-pane active">
+        <div class="grid grid-3" id="laptopsGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Service Tab -->
+      <div id="serviceTab" class="tab-pane">
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="card-header">Book Laptop Service / Repair</div>
+            <div class="card-body">
+              <form onsubmit="handleBookService(event)">
+                <div class="form-group">
+                  <label class="form-label">Laptop Brand & Model</label>
+                  <input type="text" id="srvModel" class="form-control" placeholder="e.g. Dell XPS 15 9520" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Issue Symptom</label>
+                  <select id="srvIssue" class="form-select">
+                    <option>Screen Replacement / Display Flicker</option>
+                    <option>Motherboard Chip-Level Repair</option>
+                    <option>Battery Replacement</option>
+                    <option>OS Installation & SSD Upgrade</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Generate Service Job Ticket</button>
+              </form>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">Service Ticket Status Check</div>
+            <div class="card-body">
+              <div class="form-group">
+                <label class="form-label">Service Ticket ID</label>
+                <div style="display:flex; gap:0.5rem;">
+                  <input type="text" id="srvTicketSearch" class="form-control" value="SRV-2026-891">
+                  <button class="btn btn-primary" onclick="trackService()">Track</button>
+                </div>
+              </div>
+              <div id="srvTrackResult" style="padding:1rem; background:var(--surface-2); border-radius:var(--radius); margin-top:1rem;">
+                <strong>Ticket: SRV-2026-891</strong><br>
+                Status: <span class="badge badge-primary">Chip-level Diagnosis in Progress</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rental Tab -->
+      <div id="rentalTab" class="tab-pane">
+        <div class="card" style="max-width:650px; margin:0 auto;">
+          <div class="card-header">Generate Laptop Rental Agreement</div>
+          <div class="card-body">
+            <form onsubmit="handleRental(event)">
+              <div class="form-group">
+                <label class="form-label">Customer / Company Name</label>
+                <input type="text" class="form-control" value="Aakif (Tech Solutions)" required>
+              </div>
+              <div class="grid grid-2">
+                <div class="form-group">
+                  <label class="form-label">Rental Duration</label>
+                  <select class="form-select">
+                    <option>1 Month (Rs. 2,500)</option>
+                    <option>3 Months (Rs. 6,800)</option>
+                    <option>6 Months (Rs. 12,000)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Configuration</label>
+                  <select class="form-select">
+                    <option>Intel Core i7, 16GB RAM, 512GB SSD</option>
+                    <option>Intel Core i5, 8GB RAM, 256GB SSD</option>
+                  </select>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Generate Printable Lease Contract</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab -->
+      <div id="adminTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Shop Inventory Stock Status</div>
+          <div class="card-body">
+            <p style="font-size:0.9rem; color:var(--text-muted);">Stock balance across laptops, replacement display panels, NVMe SSDs, and RAM modules.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-32: Ram Infotech Laptop Sales & Service Portal</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let laptops = [
+      { id: 1, name: "Dell Inspiron 15 Pro", cpu: "Intel Core i7 13th Gen", ram: "16GB DDR5", ssd: "512GB SSD", price: 68000 },
+      { id: 2, name: "Lenovo ThinkPad E14", cpu: "AMD Ryzen 7 7730U", ram: "16GB RAM", ssd: "1TB SSD", price: 74000 },
+      { id: 3, name: "HP Pavilion Aero 13", cpu: "AMD Ryzen 5", ram: "16GB RAM", ssd: "512GB SSD", price: 59000 }
+    ];
+
+    function renderLaptops() {
+      const grid = document.getElementById('laptopsGrid');
+      grid.innerHTML = '';
+      laptops.forEach(l => {
+        const c = document.createElement('div');
+        c.className = 'card';
+        c.innerHTML = `
+          <div class="card-header">
+            <span><strong>${l.name}</strong></span>
+            <span class="badge badge-primary">New</span>
+          </div>
+          <div class="card-body">
+            <div style="font-size:0.85rem; color:var(--text-muted); line-height:1.6; margin-bottom:1rem;">
+              &bull; <strong>Processor:</strong> ${l.cpu}<br>
+              &bull; <strong>Memory:</strong> ${l.ram}<br>
+              &bull; <strong>Storage:</strong> ${l.ssd}
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:1.3rem; font-weight:800; color:var(--primary);">Rs. ${l.price.toLocaleString()}</span>
+              <button class="btn btn-sm btn-primary" onclick="showToast('Invoice generated for ${l.name}!', 'success')">Purchase</button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(c);
+      });
+    }
+
+    function handleBookService(e) {
+      e.preventDefault();
+      const model = document.getElementById('srvModel').value;
+      const tId = 'SRV-2026-' + Math.floor(100 + Math.random() * 900);
+      showToast(`Service ticket ${tId} generated for ${model}!`, 'success');
+      e.target.reset();
+    }
+
+    function trackService() {
+      showToast('Status: Repair in progress. Estimated turnaround 24 hours.', 'info');
+    }
+
+    function handleRental(e) {
+      e.preventDefault();
+      showToast('Rental agreement contract generated and ready for digital signing!', 'success');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderLaptops();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 2: Online Hotel Room Booking System</title>
+  <link rel="stylesheet" href="../assets/common.css">
+  <style>
+    .room-card { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: #fff; transition: var(--transition); }
+    .room-card:hover { box-shadow: var(--shadow); }
+    .room-img { height: 160px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 2.5rem; }
+    .room-body { padding: 1.25rem; }
+    .policy-alert { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 0.75rem 1rem; border-radius: 4px; font-size: 0.85rem; margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon">&#127976;</div>
+        <span>Grand Palace Hotel Booking</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 02</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">Online Hotel Room Booking System</h1>
+        <p class="lab-hero-desc">Search & book 4 room types with availability tracking, strict 3-day arrival cancellation/change validation, user booking history, and an administrative dashboard for inventory and CMS pages.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="guestTab">&#128716; Guest Booking Portal</button>
+        <button class="tab-btn" data-tab="historyTab">&#128203; My Bookings</button>
+        <button class="tab-btn" data-tab="adminTab">&#9881; Hotel Administrator</button>
+        <button class="tab-btn" data-tab="cmsTab">&#128196; Static Info & Guide</button>
+      </div>
+
+      <!-- Guest Tab -->
+      <div id="guestTab" class="tab-pane active">
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <div class="card-body">
+            <div class="grid grid-4">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Destination / City</label>
+                <input type="text" id="destInput" class="form-control" value="Kodaikanal Valley Resort">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Check-in Date</label>
+                <input type="date" id="checkinInput" class="form-control">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Check-out Date</label>
+                <input type="date" id="checkoutInput" class="form-control">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Guests & Rooms</label>
+                <select id="guestsSelect" class="form-select">
+                  <option>1 Guest, 1 Room</option>
+                  <option selected>2 Guests, 1 Room</option>
+                  <option>4 Guests, 2 Rooms</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="policy-alert">
+          <strong>&#9432; Cancellation & Modification Policy:</strong> Guests can modify or cancel reservations free of charge up to <strong>3 days prior to the arrival date</strong>. Changes within 3 days are locked per hotel policy.
+        </div>
+
+        <div class="grid grid-4" id="roomsContainer">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- My Bookings Tab -->
+      <div id="historyTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">
+            <span>My Hotel Bookings & Reservation Status</span>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-responsive" style="border:none;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Booking ID</th>
+                    <th>Room Type</th>
+                    <th>Check-in</th>
+                    <th>Check-out</th>
+                    <th>Total Price</th>
+                    <th>Status</th>
+                    <th>Actions (3-Day Policy)</th>
+                  </tr>
+                </thead>
+                <tbody id="bookingsTable">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab -->
+      <div id="adminTab" class="tab-pane">
+        <div class="grid grid-2">
+          <!-- Room Inventory Control -->
+          <div class="card">
+            <div class="card-header">Manage 4 Room Types (Price & Capacity)</div>
+            <div class="card-body">
+              <div id="adminRoomsList" style="display:flex; flex-direction:column; gap:1rem;">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- All Bookings Administration -->
+          <div class="card">
+            <div class="card-header">Admin Booking Management</div>
+            <div class="card-body" style="padding:0;">
+              <div class="table-responsive" style="border:none;">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Guest</th>
+                      <th>Room</th>
+                      <th>Arrival</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="adminBookingsTable">
+                    <!-- Populated by JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CMS Tab -->
+      <div id="cmsTab" class="tab-pane">
+        <div class="grid grid-3">
+          <div class="card">
+            <div class="card-header">About Grand Palace</div>
+            <div class="card-body">
+              <p style="font-size:0.9rem; color:var(--text-muted);" id="cmsAbout">Nestled among pristine mountain views, Grand Palace Hotel offers five-star luxury with heated pools, fine dining restaurants, and curated local sightseeing.</p>
+              <button class="btn btn-sm btn-outline" style="margin-top:1rem;" onclick="editCMS('cmsAbout')">Edit Content</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">Customer Service & FAQ</div>
+            <div class="card-body">
+              <p style="font-size:0.9rem; color:var(--text-muted);" id="cmsFaq"><strong>Check-in:</strong> 2:00 PM | <strong>Check-out:</strong> 11:00 AM<br>Airport shuttle available on request. 24/7 concierge desk.</p>
+              <button class="btn btn-sm btn-outline" style="margin-top:1rem;" onclick="editCMS('cmsFaq')">Edit Content</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">Local Travel & Shipping Guide</div>
+            <div class="card-body">
+              <p style="font-size:0.9rem; color:var(--text-muted);" id="cmsGuide">Conveniently situated 15 mins from central lake and botanical gardens. Baggage parcel delivery available via reception courier service.</p>
+              <button class="btn btn-sm btn-outline" style="margin-top:1rem;" onclick="editCMS('cmsGuide')">Edit Content</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-02: Online Hotel Room Booking System</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let rooms = [
+      { id: 1, name: "Standard Room", price: 80, available: 6, icon: "&#128716;", desc: "Queen bed, High-speed Wi-Fi, Mountain view" },
+      { id: 2, name: "Deluxe Room", price: 120, available: 4, icon: "&#127976;", desc: "King bed, Private balcony, Rain shower" },
+      { id: 3, name: "Executive Suite", price: 200, available: 2, icon: "&#127775;", desc: "Living room, Jacuzzi, Complimentary breakfast" },
+      { id: 4, name: "Presidential Suite", price: 350, available: 1, icon: "&#128081;", desc: "Panoramic view, Butler service, Private lounge" }
+    ];
+
+    let bookings = [
+      { id: "HTL-901", guest: "Aakif (Student)", room: "Deluxe Room", checkin: "2026-12-05", checkout: "2026-12-08", price: 360, status: "Confirmed" },
+      { id: "HTL-902", guest: "Sarah Miller", room: "Standard Room", checkin: "2026-11-23", checkout: "2026-11-25", price: 160, status: "Confirmed" }
+    ];
+
+    function renderRooms() {
+      const container = document.getElementById('roomsContainer');
+      container.innerHTML = '';
+      rooms.forEach(r => {
+        const card = document.createElement('div');
+        card.className = 'room-card';
+        card.innerHTML = `
+          <div class="room-img">${r.icon}</div>
+          <div class="room-body">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+              <h3 style="font-size:1.1rem;">${r.name}</h3>
+              <span class="badge ${r.available > 0 ? 'badge-success' : 'badge-danger'}">${r.available} Left</span>
+            </div>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">${r.desc}</p>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <span style="font-size:1.3rem; font-weight:800; color:var(--primary);">$${r.price}</span>
+                <span style="font-size:0.8rem; color:var(--text-muted);">/ night</span>
+              </div>
+              <button class="btn btn-sm btn-primary" onclick="bookRoom(${r.id})" ${r.available === 0 ? 'disabled' : ''}>Book Now</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function renderBookings() {
+      const tbody = document.getElementById('bookingsTable');
+      const adminTbody = document.getElementById('adminBookingsTable');
+      tbody.innerHTML = '';
+      adminTbody.innerHTML = '';
+
+      const today = new Date();
+
+      bookings.forEach(b => {
+        const arrivalDate = new Date(b.checkin);
+        const diffTime = arrivalDate - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        const canCancel = diffDays >= 3 && b.status === "Confirmed";
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${b.id}</strong></td>
+          <td>${b.room}</td>
+          <td>${b.checkin}</td>
+          <td>${b.checkout}</td>
+          <td>$${b.price}</td>
+          <td><span class="badge ${b.status === 'Confirmed' ? 'badge-success' : 'badge-danger'}">${b.status}</span></td>
+          <td>
+            ${canCancel ? 
+              `<button class="btn btn-sm btn-outline" onclick="modifyBooking('${b.id}')">Modify</button>
+               <button class="btn btn-sm btn-danger" onclick="cancelBooking('${b.id}')" style="margin-left:0.35rem;">Cancel</button>` : 
+              `<span style="font-size:0.8rem; color:var(--text-muted);">Locked (< 3 days to arrival)</span>`}
+          </td>
+        `;
+        tbody.appendChild(tr);
+
+        const trAdmin = document.createElement('tr');
+        trAdmin.innerHTML = `
+          <td>${b.id}</td>
+          <td>${b.guest}</td>
+          <td>${b.room}</td>
+          <td>${b.checkin}</td>
+          <td>
+            <button class="btn btn-sm btn-danger" onclick="cancelBooking('${b.id}')" ${b.status === 'Cancelled' ? 'disabled' : ''}>Admin Cancel</button>
+          </td>
+        `;
+        adminTbody.appendChild(trAdmin);
+      });
+    }
+
+    function renderAdminRooms() {
+      const list = document.getElementById('adminRoomsList');
+      list.innerHTML = '';
+      rooms.forEach(r => {
+        const item = document.createElement('div');
+        item.style.padding = '0.75rem';
+        item.style.border = '1px solid var(--border)';
+        item.style.borderRadius = 'var(--radius)';
+        item.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+            <strong>${r.name}</strong>
+            <span class="badge badge-primary">ID: ${r.id}</span>
+          </div>
+          <div class="grid grid-2">
+            <div>
+              <label class="form-label" style="font-size:0.8rem;">Price ($/night)</label>
+              <input type="number" id="admPrice_${r.id}" value="${r.price}" class="form-control" style="padding:0.35rem;">
+            </div>
+            <div>
+              <label class="form-label" style="font-size:0.8rem;">Available Quantity</label>
+              <input type="number" id="admQty_${r.id}" value="${r.available}" class="form-control" style="padding:0.35rem;">
+            </div>
+          </div>
+          <button class="btn btn-sm btn-primary" style="margin-top:0.5rem;" onclick="updateRoomAdmin(${r.id})">Save Changes</button>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function bookRoom(roomId) {
+      const r = rooms.find(item => item.id === roomId);
+      const checkin = document.getElementById('checkinInput').value;
+      const checkout = document.getElementById('checkoutInput').value;
+
+      if (!checkin || !checkout) {
+        showToast('Please select valid Check-in and Check-out dates!', 'danger');
+        return;
+      }
+      if (new Date(checkout) <= new Date(checkin)) {
+        showToast('Check-out date must be after Check-in date!', 'danger');
+        return;
+      }
+
+      const nights = Math.max(1, Math.ceil((new Date(checkout) - new Date(checkin)) / (1000 * 60 * 60 * 24)));
+      const totalPrice = nights * r.price;
+
+      const newId = 'HTL-' + Math.floor(100 + Math.random() * 900);
+      bookings.push({
+        id: newId,
+        guest: "Current User",
+        room: r.name,
+        checkin: checkin,
+        checkout: checkout,
+        price: totalPrice,
+        status: "Confirmed"
+      });
+      r.available--;
+      renderRooms();
+      renderBookings();
+      renderAdminRooms();
+      showToast(`Booking ${newId} confirmed for ${r.name}! Total: $${totalPrice}`, 'success');
+    }
+
+    function cancelBooking(id) {
+      const b = bookings.find(item => item.id === id);
+      if (b && b.status === 'Confirmed') {
+        b.status = 'Cancelled';
+        const r = rooms.find(item => item.name === b.room);
+        if (r) r.available++;
+        renderRooms();
+        renderBookings();
+        renderAdminRooms();
+        showToast(`Booking ${id} has been cancelled successfully.`, 'info');
+      }
+    }
+
+    function modifyBooking(id) {
+      const newDate = prompt("Enter new check-in date (YYYY-MM-DD) for booking " + id + ":");
+      if (newDate) {
+        const b = bookings.find(item => item.id === id);
+        b.checkin = newDate;
+        renderBookings();
+        showToast(`Booking ${id} arrival date modified to ${newDate}!`, 'success');
+      }
+    }
+
+    function updateRoomAdmin(id) {
+      const p = parseFloat(document.getElementById(`admPrice_${id}`).value);
+      const q = parseInt(document.getElementById(`admQty_${id}`).value);
+      const r = rooms.find(item => item.id === id);
+      r.price = p;
+      r.available = q;
+      renderRooms();
+      renderAdminRooms();
+      showToast(`Updated ${r.name}: $${p}/night, ${q} rooms available`, 'success');
+    }
+
+    function editCMS(elementId) {
+      const current = document.getElementById(elementId).innerText;
+      const updated = prompt("Update page content:", current);
+      if (updated) {
+        document.getElementById(elementId).innerText = updated;
+        showToast('Static page content updated successfully!', 'success');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const today = new Date();
+      const inDate = new Date(today.getTime() + 5*24*60*60*1000).toISOString().split('T')[0];
+      const outDate = new Date(today.getTime() + 8*24*60*60*1000).toISOString().split('T')[0];
+      document.getElementById('checkinInput').value = inDate;
+      document.getElementById('checkoutInput').value = outDate;
+      renderRooms();
+      renderBookings();
+      renderAdminRooms();
+    });
+  </script>
+</body>
+</html>

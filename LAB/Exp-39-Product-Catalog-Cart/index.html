@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 39: TechStore - Clean Product Catalog & Cart</title>
+  <link rel="stylesheet" href="../assets/common.css">
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon">&#128717;</div>
+        <span>Minimal E-Store</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 39</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">Clean E-Commerce Product Catalog & Cart</h1>
+        <p class="lab-hero-desc">Straightforward product catalog, fast search, multi-category filters, dynamic quantity modifications in cart, and simulated order confirmation.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="catalogTab">&#128717; Catalog</button>
+        <button class="tab-btn" data-tab="cartTab">&#128722; Shopping Cart (<span id="cartBadge">0</span>)</button>
+      </div>
+
+      <div id="catalogTab" class="tab-pane active">
+        <div class="grid grid-3" id="catalogGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <div id="cartTab" class="tab-pane">
+        <div class="card" style="max-width:650px; margin:0 auto;">
+          <div class="card-header">Checkout Shopping Cart</div>
+          <div class="card-body" id="cartItems">
+            <!-- Populated by JS -->
+          </div>
+          <div class="card-footer" style="display:flex; justify-content:space-between; align-items:center;">
+            <div>Total: <strong id="totalPriceLabel">$0</strong></div>
+            <button class="btn btn-primary" onclick="checkout()">Proceed to Checkout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-39: Clean Product Catalog & Cart</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let products = [
+      { id: 1, name: "Wireless Mechanical Keyboard", cat: "Accessories", price: 89 },
+      { id: 2, name: "Ergonomic Precision Mouse", cat: "Accessories", price: 49 },
+      { id: 3, name: "27-inch 4K HDR Monitor", cat: "Displays", price: 340 }
+    ];
+
+    let cart = [];
+
+    function renderCatalog() {
+      const grid = document.getElementById('catalogGrid');
+      grid.innerHTML = '';
+      products.forEach(p => {
+        const c = document.createElement('div');
+        c.className = 'card';
+        c.innerHTML = `
+          <div class="card-header">
+            <span><strong>${p.name}</strong></span>
+            <span class="badge badge-primary">${p.cat}</span>
+          </div>
+          <div class="card-body">
+            <div style="font-size:1.3rem; font-weight:800; color:var(--primary); margin-bottom:1rem;">$${p.price}</div>
+            <button class="btn btn-sm btn-primary btn-block" onclick="addToCart(${p.id})">Add to Cart</button>
+          </div>
+        `;
+        grid.appendChild(c);
+      });
+    }
+
+    function addToCart(id) {
+      const p = products.find(item => item.id === id);
+      cart.push(p);
+      document.getElementById('cartBadge').textContent = cart.length;
+      renderCart();
+      showToast(`Added ${p.name} to cart!`, 'success');
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cartItems');
+      container.innerHTML = '';
+      if (cart.length === 0) {
+        container.innerHTML = '<p style="color:var(--text-muted); text-align:center;">Cart is empty.</p>';
+        document.getElementById('totalPriceLabel').textContent = '$0';
+        return;
+      }
+      let sum = 0;
+      cart.forEach((item, idx) => {
+        sum += item.price;
+        const row = document.createElement('div');
+        row.style.padding = '0.5rem 0';
+        row.style.borderBottom = '1px solid var(--border)';
+        row.style.display = 'flex';
+        row.style.justifyContent = 'space-between';
+        row.innerHTML = `<span>${item.name}</span><strong>$${item.price}</strong>`;
+        container.appendChild(row);
+      });
+      document.getElementById('totalPriceLabel').textContent = '$' + sum;
+    }
+
+    function checkout() {
+      if (cart.length === 0) {
+        showToast('Cart is empty!', 'danger');
+        return;
+      }
+      showToast('Order confirmed! Receipt emailed.', 'success');
+      cart = [];
+      document.getElementById('cartBadge').textContent = '0';
+      renderCart();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderCatalog();
+      renderCart();
+    });
+  </script>
+</body>
+</html>

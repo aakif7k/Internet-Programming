@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 31: Ko-Matha Smart Dairy Farm Management</title>
+  <link rel="stylesheet" href="../assets/common.css">
+  <style>
+    .dairy-card { border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; background:#fff; display:flex; flex-direction:column; }
+    .dairy-img { height:150px; background:linear-gradient(135deg, #10b981, #059669); display:flex; align-items:center; justify-content:center; color:#fff; font-size:3rem; }
+  </style>
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon" style="background:#059669;">&#128004;</div>
+        <span>Ko-Matha Smart Dairy</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 31</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">Ko-Matha Smart Dairy Farm Management</h1>
+        <p class="lab-hero-desc">Pioneering Indian A1 cow milk products: Fresh milk, curd, cova-sweet, butter & ghee. Customer online order scheduling, daily/monthly stock entry reports, and milk vendor & cow health management.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="productsTab">&#129371; Dairy Products</button>
+        <button class="tab-btn" data-tab="stockTab">&#128202; Stock Entry & Reports</button>
+        <button class="tab-btn" data-tab="vendorsTab">&#128104;&#8205;&#127806; Milk Vendors & Cow Care</button>
+      </div>
+
+      <!-- Products Tab -->
+      <div id="productsTab" class="tab-pane active">
+        <div class="grid grid-3" id="dairyGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Stock Tab -->
+      <div id="stockTab" class="tab-pane">
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="card-header">Daily Milk Yield & Stock Entry</div>
+            <div class="card-body">
+              <form onsubmit="handleStockEntry(event)">
+                <div class="form-group">
+                  <label class="form-label">Date</label>
+                  <input type="date" id="stkDate" class="form-control" required>
+                </div>
+                <div class="grid grid-2">
+                  <div class="form-group">
+                    <label class="form-label">Morning Collection (Liters)</label>
+                    <input type="number" id="stkMorn" class="form-control" value="450" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Evening Collection (Liters)</label>
+                    <input type="number" id="stkEve" class="form-control" value="380" required>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Log Daily Production</button>
+              </form>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">Monthly Yield Performance Summary</div>
+            <div class="card-body">
+              <div class="stat-card" style="margin-bottom:1rem;">
+                <div class="stat-icon">&#129371;</div>
+                <div>
+                  <div class="stat-value">24,900 Liters</div>
+                  <div class="stat-label">Total Monthly Production</div>
+                </div>
+              </div>
+              <p style="font-size:0.85rem; color:var(--text-muted);">Fat content avg: 4.8% &bull; SNF avg: 8.9% (A1 Standard Certified)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vendors Tab -->
+      <div id="vendorsTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Milk Vendors & Cow Health Records</div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-responsive" style="border:none;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Vendor Name</th>
+                    <th>Cows Enlisted</th>
+                    <th>Breed</th>
+                    <th>Health Check Status</th>
+                    <th>Daily Supply</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Murugan Dairy Farms</td>
+                    <td>14 Cows</td>
+                    <td>Gir / Sahiwal A1</td>
+                    <td><span class="badge badge-success">Vaccinated & Healthy</span></td>
+                    <td>160 Liters</td>
+                  </tr>
+                  <tr>
+                    <td>Kannan Cattle Ranch</td>
+                    <td>22 Cows</td>
+                    <td>Tharparkar A1</td>
+                    <td><span class="badge badge-success">Vaccinated & Healthy</span></td>
+                    <td>240 Liters</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-31: Ko-Matha Smart Dairy Farm Management</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let dairyItems = [
+      { id: 1, name: "Pure Indian A1 Cow Milk", size: "1 Liter Bottle", price: 65, icon: "&#129371;" },
+      { id: 2, name: "Traditional Farm Curd / Dahi", size: "500g Container", price: 40, icon: "&#129371;" },
+      { id: 3, name: "Desi Churned White Butter", size: "250g Pack", price: 120, icon: "&#129479;" },
+      { id: 4, name: "Traditional Cova Sweet (Palkova)", size: "500g Box", price: 220, icon: "&#127852;" },
+      { id: 5, name: "Pure Bilona Vedic Cow Ghee", size: "1 Liter Jar", price: 850, icon: "&#127854;" }
+    ];
+
+    function renderDairy() {
+      const grid = document.getElementById('dairyGrid');
+      grid.innerHTML = '';
+      dairyItems.forEach(item => {
+        const c = document.createElement('div');
+        c.className = 'dairy-card';
+        c.innerHTML = `
+          <div class="dairy-img">${item.icon}</div>
+          <div style="padding:1.25rem;">
+            <h4 style="margin:0 0 0.25rem 0;">${item.name}</h4>
+            <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.75rem;">${item.size}</div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:1.3rem; font-weight:800; color:var(--primary);">Rs. ${item.price}</span>
+              <button class="btn btn-sm btn-primary" onclick="orderDairy('${item.name}', ${item.price})">Order Online</button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(c);
+      });
+    }
+
+    function orderDairy(name, price) {
+      showToast(`Order confirmed for "${name}" (Rs. ${price})! Scheduled for morning delivery.`, 'success');
+    }
+
+    function handleStockEntry(e) {
+      e.preventDefault();
+      const morn = parseInt(document.getElementById('stkMorn').value);
+      const eve = parseInt(document.getElementById('stkEve').value);
+      showToast(`Daily yield recorded: ${morn + eve} Liters!`, 'success');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('stkDate').value = new Date().toISOString().split('T')[0];
+      renderDairy();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 28: ArtistryHub - Emily Harris Artist Portfolio</title>
+  <link rel="stylesheet" href="../assets/common.css">
+  <style>
+    .art-card { border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; background:#fff; display:flex; flex-direction:column; }
+    .art-img { height:200px; background:linear-gradient(135deg, #a855f7, #6366f1); display:flex; align-items:center; justify-content:center; color:#fff; font-size:4rem; }
+  </style>
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon" style="background:#a855f7;">&#127912;</div>
+        <span>ArtistryHub &bull; Emily Harris</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 28</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">ArtistryHub - Portfolio of Emily Harris</h1>
+        <p class="lab-hero-desc">Bespoke portfolio celebrating renowned visual artist Emily Harris: high-res artwork gallery, career biography timeline, publications bibliography, media interviews, and exhibition events.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="galleryTab">&#127912; Art Gallery</button>
+        <button class="tab-btn" data-tab="bioTab">&#128100; Artist Biography</button>
+        <button class="tab-btn" data-tab="biblioTab">&#128218; Bibliography</button>
+        <button class="tab-btn" data-tab="eventsTab">&#128197; Exhibitions & Press</button>
+      </div>
+
+      <!-- Gallery Tab -->
+      <div id="galleryTab" class="tab-pane active">
+        <div class="grid grid-3">
+          <div class="art-card">
+            <div class="art-img">&#127749;</div>
+            <div style="padding:1.25rem;">
+              <h4 style="margin:0 0 0.35rem 0;">Whispers of Dawn (2024)</h4>
+              <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.75rem;">Oil on Belgian Linen &bull; 48 x 60 in</p>
+              <button class="btn btn-sm btn-primary" onclick="showToast('Viewing high-resolution canvas detail...', 'info')">View Artwork</button>
+            </div>
+          </div>
+          <div class="art-card">
+            <div class="art-img" style="background:linear-gradient(135deg, #0ea5e9, #38bdf8);">&#127754;</div>
+            <div style="padding:1.25rem;">
+              <h4 style="margin:0 0 0.35rem 0;">Echoes of Solitude (2025)</h4>
+              <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.75rem;">Mixed Media Acrylic & 24K Gold Leaf</p>
+              <button class="btn btn-sm btn-primary" onclick="showToast('Viewing high-resolution canvas detail...', 'info')">View Artwork</button>
+            </div>
+          </div>
+          <div class="art-card">
+            <div class="art-img" style="background:linear-gradient(135deg, #f59e0b, #ef4444);">&#127774;</div>
+            <div style="padding:1.25rem;">
+              <h4 style="margin:0 0 0.35rem 0;">Autumnal Reverie (2026)</h4>
+              <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.75rem;">Textured Impasto on Wood</p>
+              <button class="btn btn-sm btn-primary" onclick="showToast('Viewing high-resolution canvas detail...', 'info')">View Artwork</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bio Tab -->
+      <div id="bioTab" class="tab-pane">
+        <div class="card" style="max-width:800px; margin:0 auto;">
+          <div class="card-header">About the Artist: Emily Harris</div>
+          <div class="card-body">
+            <p style="font-size:0.95rem; line-height:1.7; color:var(--text-main); margin-bottom:1rem;">Emily Harris is a contemporary visual painter recognized for her atmospheric landscapes and expressive impasto textures. Educated at the Royal Academy of Arts, her work has been showcased in major retrospectives in London, Paris, and Tokyo.</p>
+            <p style="font-size:0.95rem; line-height:1.7; color:var(--text-muted);">Her creative philosophy explores the fragile harmony between untouched natural landscapes and transient human emotions.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bibliography Tab -->
+      <div id="biblioTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Monographs & Exhibition Catalogs</div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-responsive" style="border:none;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Title of Publication</th>
+                    <th>Publisher</th>
+                    <th>Year</th>
+                    <th>ISBN</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><em>Emily Harris: Light and Form</em></td>
+                    <td>Thames & Hudson</td>
+                    <td>2023</td>
+                    <td>978-0500294819</td>
+                  </tr>
+                  <tr>
+                    <td><em>The Texture of Memory</em></td>
+                    <td>Phaidon Press</td>
+                    <td>2025</td>
+                    <td>978-1838661205</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Events Tab -->
+      <div id="eventsTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Upcoming Solo Exhibitions</div>
+          <div class="card-body">
+            <p><strong>Spring Retrospective:</strong> Tate Modern, London &bull; April 12 &ndash; May 20, 2027</p>
+            <p><strong>Art Basel Guest Showcase:</strong> Basel, Switzerland &bull; September 2027</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-28: ArtistryHub Emily Harris Portfolio</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+</body>
+</html>

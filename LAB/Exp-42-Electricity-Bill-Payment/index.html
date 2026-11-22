@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 42: Online Electricity Bill Payment System</title>
+  <link rel="stylesheet" href="../assets/common.css">
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon" style="background:#eab308; color:#000;">&#9889;</div>
+        <span>PowerGrid EB Billing Portal</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 42</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">Online Electricity Bill Payment System</h1>
+        <p class="lab-hero-desc">Exact tariff calculation formulas for Domestic & Commercial connections, bi-monthly billing duration, overdue fine computation (Rs. 10/day), and payment receipt generator.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="consumerTab">&#9889; Consumer Bill & Payment</button>
+        <button class="tab-btn" data-tab="adminTab">&#9881; Electricity Board Admin Formula</button>
+      </div>
+
+      <!-- Consumer Tab -->
+      <div id="consumerTab" class="tab-pane active">
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="card-header">Calculate & Pay Electricity Bill</div>
+            <div class="card-body">
+              <form onsubmit="handleCalculateEB(event)">
+                <div class="form-group">
+                  <label class="form-label">Consumer Number</label>
+                  <input type="text" id="ebConsumer" class="form-control" value="04-201-9842" required>
+                </div>
+                <div class="grid grid-2">
+                  <div class="form-group">
+                    <label class="form-label">Connection Type</label>
+                    <select id="ebConnType" class="form-select" onchange="calcEB()">
+                      <option value="domestic">Domestic Connection</option>
+                      <option value="commercial">Commercial Connection</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Consumed Units (kWh)</label>
+                    <input type="number" id="ebUnits" class="form-control" value="320" required oninput="calcEB()">
+                  </div>
+                </div>
+                <div class="grid grid-2">
+                  <div class="form-group">
+                    <label class="form-label">Bill Due Date</label>
+                    <input type="date" id="ebDueDate" class="form-control" onchange="calcEB()">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Payment Date</label>
+                    <input type="date" id="ebPayDate" class="form-control" onchange="calcEB()">
+                  </div>
+                </div>
+                <button type="button" class="btn btn-primary btn-block" onclick="payEB()">Pay Electricity Bill Online</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Bill Summary Display -->
+          <div class="card">
+            <div class="card-header">Tariff Slab Breakdown & Net Payable</div>
+            <div class="card-body">
+              <div id="ebBreakdown" style="font-size:0.9rem; line-height:1.7;">
+                <!-- Populated by JS -->
+              </div>
+              <div style="margin-top:1.5rem; padding:1rem; background:var(--surface-2); border-radius:var(--radius); display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-size:1.1rem; font-weight:bold;">Net Payable:</span>
+                <span style="font-size:1.6rem; font-weight:800; color:var(--primary);" id="ebNetPayable">Rs. 0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab -->
+      <div id="adminTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Statutory Tariff Slab Norms (Board Approved)</div>
+          <div class="card-body">
+            <div class="grid grid-2">
+              <div style="padding:1rem; border:1px solid var(--border); border-radius:var(--radius);">
+                <h4 style="color:var(--primary); margin-bottom:0.5rem;">Domestic Connection Slabs</h4>
+                <p style="font-size:0.85rem; line-height:1.6;">
+                  &bull; 1 to 100 Units: <strong>Rs. 1.00 / unit</strong><br>
+                  &bull; 101 to 200 Units: <strong>Rs. 2.50 / unit</strong><br>
+                  &bull; 201 to 500 Units: <strong>Rs. 4.00 / unit</strong><br>
+                  &bull; 501+ Units: <strong>Rs. 6.00 / unit</strong>
+                </p>
+              </div>
+              <div style="padding:1rem; border:1px solid var(--border); border-radius:var(--radius);">
+                <h4 style="color:var(--secondary); margin-bottom:0.5rem;">Commercial Connection Slabs</h4>
+                <p style="font-size:0.85rem; line-height:1.6;">
+                  &bull; 1 to 100 Units: <strong>Rs. 2.00 / unit</strong><br>
+                  &bull; 101 to 200 Units: <strong>Rs. 4.50 / unit</strong><br>
+                  &bull; 201 to 500 Units: <strong>Rs. 6.00 / unit</strong><br>
+                  &bull; 501+ Units: <strong>Rs. 7.00 / unit</strong>
+                </p>
+              </div>
+            </div>
+            <div style="margin-top:1rem; font-size:0.85rem; color:var(--text-muted);">
+              &bull; <strong>Late Fine:</strong> Rs. 10.00 added as fine for each day after the last payment due date.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-42: Online Electricity Bill Payment System</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    function calcEB() {
+      const type = document.getElementById('ebConnType').value;
+      const units = parseFloat(document.getElementById('ebUnits').value) || 0;
+      const dueDate = new Date(document.getElementById('ebDueDate').value);
+      const payDate = new Date(document.getElementById('ebPayDate').value);
+
+      let energyCharge = 0;
+      let slabHtml = '';
+
+      if (type === 'domestic') {
+        if (units <= 100) {
+          energyCharge = units * 1.0;
+          slabHtml += `<div>Slab 1 (0-100 u @ Rs. 1.00): Rs. ${energyCharge.toFixed(2)}</div>`;
+        } else if (units <= 200) {
+          energyCharge = (100 * 1.0) + ((units - 100) * 2.5);
+          slabHtml += `<div>Slab 1 (100 u @ Rs. 1.00): Rs. 100.00</div>`;
+          slabHtml += `<div>Slab 2 (${units - 100} u @ Rs. 2.50): Rs. ${((units - 100) * 2.5).toFixed(2)}</div>`;
+        } else if (units <= 500) {
+          energyCharge = (100 * 1.0) + (100 * 2.5) + ((units - 200) * 4.0);
+          slabHtml += `<div>Slab 1 (100 u @ Rs. 1.00): Rs. 100.00</div>`;
+          slabHtml += `<div>Slab 2 (100 u @ Rs. 2.50): Rs. 250.00</div>`;
+          slabHtml += `<div>Slab 3 (${units - 200} u @ Rs. 4.00): Rs. ${((units - 200) * 4.0).toFixed(2)}</div>`;
+        } else {
+          energyCharge = (100 * 1.0) + (100 * 2.5) + (300 * 4.0) + ((units - 500) * 6.0);
+          slabHtml += `<div>Slab 1 (100 u @ Rs. 1.00): Rs. 100.00</div>`;
+          slabHtml += `<div>Slab 2 (100 u @ Rs. 2.50): Rs. 250.00</div>`;
+          slabHtml += `<div>Slab 3 (300 u @ Rs. 4.00): Rs. 1200.00</div>`;
+          slabHtml += `<div>Slab 4 (${units - 500} u @ Rs. 6.00): Rs. ${((units - 500) * 6.0).toFixed(2)}</div>`;
+        }
+      } else {
+        // Commercial
+        if (units <= 100) {
+          energyCharge = units * 2.0;
+          slabHtml += `<div>Slab 1 (0-100 u @ Rs. 2.00): Rs. ${energyCharge.toFixed(2)}</div>`;
+        } else if (units <= 200) {
+          energyCharge = (100 * 2.0) + ((units - 100) * 4.5);
+          slabHtml += `<div>Slab 1 (100 u @ Rs. 2.00): Rs. 200.00</div>`;
+          slabHtml += `<div>Slab 2 (${units - 100} u @ Rs. 4.50): Rs. ${((units - 100) * 4.5).toFixed(2)}</div>`;
+        } else if (units <= 500) {
+          energyCharge = (100 * 2.0) + (100 * 4.5) + ((units - 200) * 6.0);
+          slabHtml += `<div>Slab 1 (100 u @ Rs. 2.00): Rs. 200.00</div>`;
+          slabHtml += `<div>Slab 2 (100 u @ Rs. 4.50): Rs. 450.00</div>`;
+          slabHtml += `<div>Slab 3 (${units - 200} u @ Rs. 6.00): Rs. ${((units - 200) * 4.0).toFixed(2)}</div>`;
+        } else {
+          energyCharge = (100 * 2.0) + (100 * 4.5) + (300 * 6.0) + ((units - 500) * 7.0);
+          slabHtml += `<div>Slab 1 (100 u @ Rs. 2.00): Rs. 200.00</div>`;
+          slabHtml += `<div>Slab 2 (100 u @ Rs. 4.50): Rs. 450.00</div>`;
+          slabHtml += `<div>Slab 3 (300 u @ Rs. 6.00): Rs. 1800.00</div>`;
+          slabHtml += `<div>Slab 4 (${units - 500} u @ Rs. 7.00): Rs. ${((units - 500) * 7.0).toFixed(2)}</div>`;
+        }
+      }
+
+      // Late fine calculation: Rs. 10/day after last date
+      let fine = 0;
+      let diffDays = 0;
+      if (payDate > dueDate) {
+        diffDays = Math.ceil((payDate - dueDate) / (1000 * 60 * 60 * 24));
+        fine = diffDays * 10;
+        slabHtml += `<div style="color:var(--danger); font-weight:bold; margin-top:0.5rem;">Overdue Fine (${diffDays} days @ Rs. 10/day): Rs. ${fine}.00</div>`;
+      } else {
+        slabHtml += `<div style="color:var(--success); margin-top:0.5rem;">Payment within due date &bull; Late Fine: Rs. 0</div>`;
+      }
+
+      const net = energyCharge + fine;
+      document.getElementById('ebBreakdown').innerHTML = slabHtml;
+      document.getElementById('ebNetPayable').textContent = 'Rs. ' + net.toFixed(2);
+    }
+
+    function payEB() {
+      const net = document.getElementById('ebNetPayable').textContent;
+      showToast(`Payment of ${net} successful! Official receipt generated.`, 'success');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const today = new Date();
+      const due = new Date(today.getTime() - 2*24*60*60*1000); // 2 days past due to test fine
+      document.getElementById('ebDueDate').value = due.toISOString().split('T')[0];
+      document.getElementById('ebPayDate').value = today.toISOString().split('T')[0];
+      calcEB();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 11: Home Finder - Real Estate Platform</title>
+  <link rel="stylesheet" href="../assets/common.css">
+  <style>
+    .prop-card { border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; background:#fff; display:flex; flex-direction:column; }
+    .prop-img { height:160px; background:linear-gradient(135deg, #059669, #10b981); display:flex; align-items:center; justify-content:center; color:#fff; font-size:3rem; }
+  </style>
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon">&#127969;</div>
+        <span>Home Finder Real Estate</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 11</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">Home Finder - Real Estate Platform</h1>
+        <p class="lab-hero-desc">Discover residential & commercial properties with saved search criteria, interactive neighborhood map view, built-in mortgage EMI calculator, and viewing scheduler.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="searchTab">&#128269; Property Search</button>
+        <button class="tab-btn" data-tab="emiTab">&#128200; Mortgage EMI Calculator</button>
+        <button class="tab-btn" data-tab="scheduleTab">&#128197; Schedule Viewing</button>
+        <button class="tab-btn" data-tab="agentTab">&#128188; Agent & Admin Portal</button>
+      </div>
+
+      <!-- Search Tab -->
+      <div id="searchTab" class="tab-pane active">
+        <div class="card" style="margin-bottom:1.5rem;">
+          <div class="card-body">
+            <div class="grid grid-4">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Location / City</label>
+                <input type="text" id="propLoc" class="form-control" value="Chennai">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Property Type</label>
+                <select id="propType" class="form-select" onchange="renderProps()">
+                  <option value="All">All Types</option>
+                  <option value="Apartment">Apartment / Flat</option>
+                  <option value="Villa">Luxury Villa</option>
+                  <option value="Commercial">Commercial Office</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Bedrooms (BHK)</label>
+                <select id="propBhk" class="form-select" onchange="renderProps()">
+                  <option value="All">Any BHK</option>
+                  <option value="2 BHK">2 BHK</option>
+                  <option value="3 BHK">3 BHK</option>
+                  <option value="4 BHK">4 BHK</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Max Price ($)</label>
+                <input type="number" id="propMaxPrice" class="form-control" value="600000" oninput="renderProps()">
+              </div>
+            </div>
+            <div style="margin-top:1rem; display:flex; justify-content:space-between; align-items:center;">
+              <button class="btn btn-sm btn-outline" onclick="saveSearchCriteria()">&#128190; Save Search Criteria</button>
+              <span id="savedCritLabel" style="font-size:0.85rem; color:var(--text-muted);">No criteria saved yet.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-3" id="propGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- EMI Calculator Tab -->
+      <div id="emiTab" class="tab-pane">
+        <div class="card" style="max-width:650px; margin:0 auto;">
+          <div class="card-header">Mortgage & Home Loan EMI Calculator</div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">Home Loan Amount ($)</label>
+              <input type="number" id="emiLoan" class="form-control" value="300000" oninput="calculateEMI()">
+            </div>
+            <div class="grid grid-2">
+              <div class="form-group">
+                <label class="form-label">Annual Interest Rate (%)</label>
+                <input type="number" id="emiRate" class="form-control" value="8.5" step="0.1" oninput="calculateEMI()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Tenure (Years)</label>
+                <input type="number" id="emiTenure" class="form-control" value="20" oninput="calculateEMI()">
+              </div>
+            </div>
+            <div style="padding:1.5rem; background:var(--surface-2); border-radius:var(--radius); text-align:center;">
+              <div style="font-size:0.9rem; color:var(--text-muted);">Monthly Mortgage Payment (EMI):</div>
+              <div style="font-size:2.2rem; font-weight:800; color:var(--primary);" id="emiResult">$2,603 / mo</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Schedule Viewing Tab -->
+      <div id="scheduleTab" class="tab-pane">
+        <div class="card" style="max-width:650px; margin:0 auto;">
+          <div class="card-header">Schedule an In-Person Property Tour</div>
+          <div class="card-body">
+            <form onsubmit="handleSchedule(event)">
+              <div class="form-group">
+                <label class="form-label">Select Property</label>
+                <select id="schProp" class="form-select">
+                  <option>Emerald Heights 3 BHK - $280,000</option>
+                  <option>Palazio Lakefront Villa 4 BHK - $540,000</option>
+                  <option>CyberTech Business Park Office - $450,000</option>
+                </select>
+              </div>
+              <div class="grid grid-2">
+                <div class="form-group">
+                  <label class="form-label">Preferred Date</label>
+                  <input type="date" id="schDate" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Preferred Time Slot</label>
+                  <select id="schTime" class="form-select">
+                    <option>10:00 AM - 11:30 AM</option>
+                    <option>02:00 PM - 03:30 PM</option>
+                    <option>05:00 PM - 06:30 PM</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Your Contact Phone / Email</label>
+                <input type="text" id="schContact" class="form-control" value="+91 9876543210" required>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Confirm Appointment</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agent Tab -->
+      <div id="agentTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Real Estate Agent Directory & Listing Admin</div>
+          <div class="card-body">
+            <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:1rem;">Verified real estate brokers and listings database.</p>
+            <div class="table-responsive" style="border:none;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Agent Name</th>
+                    <th>Agency</th>
+                    <th>Verified Phone</th>
+                    <th>Active Listings</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Rajesh Kumar</td>
+                    <td>Prime Properties</td>
+                    <td>+91 98401 23456</td>
+                    <td><span class="badge badge-success">14 Active</span></td>
+                  </tr>
+                  <tr>
+                    <td>Pooja Sundaram</td>
+                    <td>Metro Real Estate</td>
+                    <td>+91 97910 87654</td>
+                    <td><span class="badge badge-success">8 Active</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-11: Home Finder Real Estate Platform</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let properties = [
+      { id: 1, title: "Emerald Heights Apartment", type: "Apartment", bhk: "3 BHK", loc: "OMR, Chennai", price: 280000, size: "1,650 sq.ft", icon: "&#127970;" },
+      { id: 2, title: "Palazio Lakefront Villa", type: "Villa", bhk: "4 BHK", loc: "ECR, Chennai", price: 540000, size: "3,200 sq.ft", icon: "&#127969;" },
+      { id: 3, title: "Greenfield Cozy Flat", type: "Apartment", bhk: "2 BHK", loc: "Velachery, Chennai", price: 160000, size: "1,050 sq.ft", icon: "&#127970;" },
+      { id: 4, title: "CyberTech Business Hub", type: "Commercial", bhk: "Any BHK", loc: "Guindy, Chennai", price: 450000, size: "2,800 sq.ft", icon: "&#127970;" }
+    ];
+
+    function renderProps() {
+      const grid = document.getElementById('propGrid');
+      const t = document.getElementById('propType').value;
+      const b = document.getElementById('propBhk').value;
+      const maxP = parseFloat(document.getElementById('propMaxPrice').value) || 9999999;
+      grid.innerHTML = '';
+
+      const filtered = properties.filter(p => {
+        return (t === 'All' || p.type === t) &&
+               (b === 'All' || p.bhk === b) &&
+               p.price <= maxP;
+      });
+
+      filtered.forEach(p => {
+        const c = document.createElement('div');
+        c.className = 'prop-card';
+        c.innerHTML = `
+          <div class="prop-img">${p.icon}</div>
+          <div style="padding:1.25rem; flex:1; display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <h4 style="margin:0;">${p.title}</h4>
+                <span class="badge badge-primary">${p.bhk}</span>
+              </div>
+              <div style="font-size:0.85rem; color:var(--text-muted); margin:0.35rem 0;">&#128205; ${p.loc} &bull; ${p.size}</div>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:1rem;">
+              <span style="font-size:1.3rem; font-weight:800; color:var(--primary);">$${p.price.toLocaleString()}</span>
+              <button class="btn btn-sm btn-primary" onclick="alertSchedule('${p.title}')">Tour Property</button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(c);
+      });
+    }
+
+    function calculateEMI() {
+      const P = parseFloat(document.getElementById('emiLoan').value);
+      const r = (parseFloat(document.getElementById('emiRate').value) / 12) / 100;
+      const n = parseFloat(document.getElementById('emiTenure').value) * 12;
+      const emi = (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+      document.getElementById('emiResult').textContent = '$' + Math.round(emi).toLocaleString() + ' / mo';
+    }
+
+    function saveSearchCriteria() {
+      const t = document.getElementById('propType').value;
+      const b = document.getElementById('propBhk').value;
+      const p = document.getElementById('propMaxPrice').value;
+      document.getElementById('savedCritLabel').innerHTML = `<strong>Saved:</strong> ${t}, ${b}, < $${p}`;
+      showToast('Search criteria saved for future visits!', 'success');
+    }
+
+    function alertSchedule(name) {
+      showToast(`Selected "${name}" for viewing! Head to Schedule tab.`, 'info');
+    }
+
+    function handleSchedule(e) {
+      e.preventDefault();
+      showToast('Viewing appointment scheduled successfully with prime agent!', 'success');
+      e.target.reset();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('schDate').value = new Date(Date.now() + 3*24*60*60*1000).toISOString().split('T')[0];
+      renderProps();
+      calculateEMI();
+    });
+  </script>
+</body>
+</html>

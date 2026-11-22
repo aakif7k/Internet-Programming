@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 41: CulinaryDelight - Digital Recipe Book</title>
+  <link rel="stylesheet" href="../assets/common.css">
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon" style="background:#ea580c;">&#127859;</div>
+        <span>CulinaryDelight Recipes</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 41</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">CulinaryDelight - Digital Recipe Book</h1>
+        <p class="lab-hero-desc">Interactive culinary guide: dynamic serving size scaler, step-by-step cooking mode, ingredient measurement auto-adjustment, ratings, and meal planner.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="recipeTab">&#127859; Featured Recipe</button>
+        <button class="tab-btn" data-tab="plannerTab">&#128197; Weekly Meal Planner</button>
+      </div>
+
+      <div id="recipeTab" class="tab-pane active">
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="card-header">
+              <span>Classic Creamy Tuscan Garlic Chicken</span>
+              <span class="badge badge-primary">Italian &bull; 30 Mins</span>
+            </div>
+            <div class="card-body">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; padding:0.75rem; background:var(--surface-2); border-radius:var(--radius);">
+                <strong>Adjust Serving Count:</strong>
+                <div style="display:flex; gap:0.5rem; align-items:center;">
+                  <button class="btn btn-sm btn-outline" onclick="scaleServings(-1)">-</button>
+                  <span id="servingCountLabel" style="font-weight:800; font-size:1.1rem;">2</span>
+                  <button class="btn btn-sm btn-outline" onclick="scaleServings(1)">+</button>
+                </div>
+              </div>
+
+              <h4 style="margin-bottom:0.5rem;">Ingredients List (Scaled):</h4>
+              <ul id="ingredientsList" style="padding-left:1.25rem; font-size:0.9rem; line-height:1.7;">
+                <!-- Populated by JS -->
+              </ul>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">Step-by-Step Cooking Instructions</div>
+            <div class="card-body">
+              <ol style="padding-left:1.25rem; font-size:0.9rem; line-height:1.8;">
+                <li>Season chicken breasts with sea salt, pepper, and dried oregano.</li>
+                <li>In a large skillet over medium-high heat, heat olive oil and sear chicken 5 mins per side until golden.</li>
+                <li>Remove chicken; add minced garlic, sundried tomatoes, and fresh spinach to skillet.</li>
+                <li>Pour heavy cream and simmer for 3 minutes until sauce thickens.</li>
+                <li>Return chicken to pan, spoon sauce over, and garnish with fresh basil.</li>
+              </ol>
+              <button class="btn btn-primary btn-block" style="margin-top:1.5rem;" onclick="showToast('Shopping list added to device clipboard!', 'success')">&#128203; Export Ingredients to Shopping List</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="plannerTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Weekly Meal Plan Schedule</div>
+          <div class="card-body">
+            <p><strong>Monday Dinner:</strong> Tuscan Garlic Chicken</p>
+            <p><strong>Tuesday Dinner:</strong> Mediterranean Grilled Vegetable Salad</p>
+            <p><strong>Wednesday Dinner:</strong> Slow-Cooked Basil Pesto Salmon</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-41: CulinaryDelight Digital Recipe Book</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let baseIngredients = [
+      { name: "Boneless Chicken Breast", qty: 250, unit: "g" },
+      { name: "Heavy Whipping Cream", qty: 100, unit: "ml" },
+      { name: "Fresh Baby Spinach", qty: 50, unit: "g" },
+      { name: "Sundried Tomatoes", qty: 40, unit: "g" },
+      { name: "Garlic Cloves (Minced)", qty: 3, unit: "cloves" }
+    ];
+
+    let currentServings = 2;
+
+    function renderIngredients() {
+      const ul = document.getElementById('ingredientsList');
+      ul.innerHTML = '';
+      const mult = currentServings / 2;
+      baseIngredients.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `${Math.round(item.qty * mult)} ${item.unit} ${item.name}`;
+        ul.appendChild(li);
+      });
+      document.getElementById('servingCountLabel').textContent = currentServings;
+    }
+
+    function scaleServings(delta) {
+      if (currentServings + delta >= 1 && currentServings + delta <= 12) {
+        currentServings += delta;
+        renderIngredients();
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderIngredients();
+    });
+  </script>
+</body>
+</html>

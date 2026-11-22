@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 6: Online Cake Ordering System</title>
+  <link rel="stylesheet" href="../assets/common.css">
+  <style>
+    .cake-card { border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; background:#fff; display:flex; flex-direction:column; }
+    .cake-img { height:150px; background:linear-gradient(135deg, #f43f5e, #fb7185); display:flex; align-items:center; justify-content:center; color:#fff; font-size:3rem; }
+  </style>
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon">&#127856;</div>
+        <span>SweetDelight Cake Store</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 06</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">Online Cake Ordering System</h1>
+        <p class="lab-hero-desc">Customized artisan cakes for birthdays, weddings & anniversaries. Customize size (0.5kg to 3kg), personalized message, eggless toggle, shipping tracking, and bakery admin management.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="catalog">&#127856; Cake Catalog</button>
+        <button class="tab-btn" data-tab="cart">&#128722; Cart & Checkout (<span id="cartCountBadge">0</span>)</button>
+        <button class="tab-btn" data-tab="myOrders">&#128230; My Orders & Tracking</button>
+        <button class="tab-btn" data-tab="admin">&#128188; Bakery Admin</button>
+      </div>
+
+      <!-- Catalog Tab -->
+      <div id="catalog" class="tab-pane active">
+        <div class="card" style="margin-bottom:1.5rem;">
+          <div class="card-body">
+            <div class="grid grid-3">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Filter by Occasion</label>
+                <select id="occFilter" class="form-select" onchange="renderCakes()">
+                  <option value="All">All Occasions</option>
+                  <option value="Birthday">Birthday</option>
+                  <option value="Wedding">Wedding</option>
+                  <option value="Anniversary">Anniversary</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Filter by Flavor</label>
+                <select id="flavorFilter" class="form-select" onchange="renderCakes()">
+                  <option value="All">All Flavors</option>
+                  <option value="Chocolate Truffle">Chocolate Truffle</option>
+                  <option value="Red Velvet">Red Velvet</option>
+                  <option value="Black Forest">Black Forest</option>
+                  <option value="Pineapple">Pineapple</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Max Price (Rs.)</label>
+                <input type="number" id="maxPriceInput" class="form-control" value="2000" oninput="renderCakes()">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-3" id="cakeGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Cart & Checkout Tab -->
+      <div id="cart" class="tab-pane">
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="card-header">Shopping Cart</div>
+            <div class="card-body" id="cartItemsList">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">Shipping Address & Payment</div>
+            <div class="card-body">
+              <form onsubmit="placeOrder(event)">
+                <div class="form-group">
+                  <label class="form-label">Delivery Street Address</label>
+                  <input type="text" id="shipAddr" class="form-control" required value="Plot 42, Sunrise Enclave, Chennai">
+                </div>
+                <div class="grid grid-2">
+                  <div class="form-group">
+                    <label class="form-label">Delivery Date</label>
+                    <input type="date" id="delDate" class="form-control" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Delivery Time Slot</label>
+                    <select id="delSlot" class="form-select">
+                      <option>Morning (09:00 - 12:00)</option>
+                      <option selected>Evening (16:00 - 19:00)</option>
+                      <option>Midnight Surprise (23:30)</option>
+                    </select>
+                  </div>
+                </div>
+                <div style="margin:1rem 0; padding:1rem; background:var(--surface-2); border-radius:var(--radius);">
+                  <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+                    <span>Cart Subtotal:</span>
+                    <strong id="cartSubtotal">Rs. 0</strong>
+                  </div>
+                  <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+                    <span>Delivery Charge:</span>
+                    <strong style="color:var(--success);">FREE</strong>
+                  </div>
+                  <div style="display:flex; justify-content:space-between; font-size:1.2rem; border-top:1px solid var(--border); padding-top:0.5rem;">
+                    <span>Total Payable:</span>
+                    <strong style="color:var(--primary);" id="cartTotal">Rs. 0</strong>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Place Cake Order</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- My Orders Tab -->
+      <div id="myOrders" class="tab-pane">
+        <div class="card">
+          <div class="card-header">My Orders & Live Shipping Status</div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-responsive" style="border:none;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Cake Details</th>
+                    <th>Custom Message</th>
+                    <th>Delivery Date</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="ordersTable">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab -->
+      <div id="admin" class="tab-pane">
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="card-header">Add New Cake to Store</div>
+            <div class="card-body">
+              <form onsubmit="handleAdminAddCake(event)">
+                <div class="form-group">
+                  <label class="form-label">Cake Name</label>
+                  <input type="text" id="admCakeName" class="form-control" required placeholder="e.g. Belgian Dark Chocolate">
+                </div>
+                <div class="grid grid-2">
+                  <div class="form-group">
+                    <label class="form-label">Occasion</label>
+                    <select id="admCakeOcc" class="form-select">
+                      <option>Birthday</option>
+                      <option>Wedding</option>
+                      <option>Anniversary</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Flavor</label>
+                    <select id="admCakeFlavor" class="form-select">
+                      <option>Chocolate Truffle</option>
+                      <option>Red Velvet</option>
+                      <option>Black Forest</option>
+                      <option>Pineapple</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Base Price (0.5kg)</label>
+                  <input type="number" id="admCakePrice" class="form-control" value="650" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Publish Cake</button>
+              </form>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">Orders Management</div>
+            <div class="card-body" id="adminOrdersList">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-06: Online Cake Ordering System</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let cakes = [
+      { id: 1, name: "Belgian Chocolate Truffle", occasion: "Birthday", flavor: "Chocolate Truffle", basePrice: 650, icon: "&#127856;" },
+      { id: 2, name: "Romantic Red Velvet Heart", occasion: "Anniversary", flavor: "Red Velvet", basePrice: 750, icon: "&#128150;" },
+      { id: 3, name: "German Black Forest Cherry", occasion: "Birthday", flavor: "Black Forest", basePrice: 550, icon: "&#127856;" },
+      { id: 4, name: "Royal Tier Wedding Fondant", occasion: "Wedding", flavor: "Red Velvet", basePrice: 1600, icon: "&#128141;" },
+      { id: 5, name: "Tropical Fresh Pineapple", occasion: "Birthday", flavor: "Pineapple", basePrice: 500, icon: "&#127821;" }
+    ];
+
+    let cart = [];
+    let orders = [
+      { id: "CK-501", item: "Belgian Chocolate Truffle (1kg, Eggless)", msg: "Happy Birthday Aakif!", delDate: "2026-11-26", total: 1200, status: "Baking" }
+    ];
+
+    function renderCakes() {
+      const container = document.getElementById('cakeGrid');
+      const occ = document.getElementById('occFilter').value;
+      const flavor = document.getElementById('flavorFilter').value;
+      const maxP = parseFloat(document.getElementById('maxPriceInput').value) || 99999;
+      container.innerHTML = '';
+
+      const filtered = cakes.filter(c => {
+        return (occ === 'All' || c.occasion === occ) &&
+               (flavor === 'All' || c.flavor === flavor) &&
+               c.basePrice <= maxP;
+      });
+
+      filtered.forEach(c => {
+        const card = document.createElement('div');
+        card.className = 'cake-card';
+        card.innerHTML = `
+          <div class="cake-img">${c.icon}</div>
+          <div style="padding:1.25rem; flex:1; display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <h4 style="margin:0 0 0.25rem 0;">${c.name}</h4>
+                <span class="badge badge-primary">${c.occasion}</span>
+              </div>
+              <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.75rem;">Flavor: ${c.flavor}</p>
+              
+              <div class="grid grid-2" style="margin-bottom:0.5rem;">
+                <div>
+                  <label class="form-label" style="font-size:0.75rem;">Size</label>
+                  <select id="size_${c.id}" class="form-select" style="padding:0.35rem; font-size:0.85rem;">
+                    <option value="1">0.5 kg</option>
+                    <option value="1.8">1 kg</option>
+                    <option value="3.4">2 kg</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="form-label" style="font-size:0.75rem;">Type</label>
+                  <select id="egg_${c.id}" class="form-select" style="padding:0.35rem; font-size:0.85rem;">
+                    <option value="Eggless">Eggless</option>
+                    <option value="With Egg">With Egg</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group" style="margin-bottom:0.5rem;">
+                <input type="text" id="msg_${c.id}" class="form-control" placeholder="Message on Cake (e.g. Happy B'day)" style="font-size:0.8rem; padding:0.35rem;">
+              </div>
+            </div>
+            
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.75rem;">
+              <span style="font-size:1.25rem; font-weight:800; color:var(--primary);">Rs. ${c.basePrice}</span>
+              <button class="btn btn-sm btn-primary" onclick="addToCart(${c.id})">Add to Cart</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function addToCart(cakeId) {
+      const c = cakes.find(item => item.id === cakeId);
+      const sizeMultiplier = parseFloat(document.getElementById(`size_${cakeId}`).value);
+      const eggType = document.getElementById(`egg_${cakeId}`).value;
+      const msg = document.getElementById(`msg_${cakeId}`).value || "Best Wishes";
+      const sizeLabel = sizeMultiplier === 1 ? "0.5 kg" : (sizeMultiplier === 1.8 ? "1 kg" : "2 kg");
+      const price = Math.round(c.basePrice * sizeMultiplier);
+
+      cart.push({
+        id: Date.now(),
+        name: c.name,
+        size: sizeLabel,
+        egg: eggType,
+        msg: msg,
+        price: price
+      });
+
+      renderCart();
+      showToast(`"${c.name}" added to cart!`, 'success');
+    }
+
+    function renderCart() {
+      const list = document.getElementById('cartItemsList');
+      document.getElementById('cartCountBadge').textContent = cart.length;
+      list.innerHTML = '';
+      if (cart.length === 0) {
+        list.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:1.5rem;">Your cart is empty.</p>';
+        document.getElementById('cartSubtotal').textContent = 'Rs. 0';
+        document.getElementById('cartTotal').textContent = 'Rs. 0';
+        return;
+      }
+
+      let subtotal = 0;
+      cart.forEach((item, idx) => {
+        subtotal += item.price;
+        const div = document.createElement('div');
+        div.style.padding = '0.75rem';
+        div.style.borderBottom = '1px solid var(--border)';
+        div.style.display = 'flex';
+        div.style.justifyContent = 'space-between';
+        div.style.alignItems = 'center';
+        div.innerHTML = `
+          <div>
+            <strong>${item.name}</strong> (${item.size}, ${item.egg})
+            <div style="font-size:0.8rem; color:var(--text-muted);">Inscription: "${item.msg}"</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:0.75rem;">
+            <strong style="color:var(--primary);">Rs. ${item.price}</strong>
+            <button class="btn btn-sm btn-danger" onclick="removeFromCart(${idx})">&times;</button>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+
+      document.getElementById('cartSubtotal').textContent = 'Rs. ' + subtotal;
+      document.getElementById('cartTotal').textContent = 'Rs. ' + subtotal;
+    }
+
+    function removeFromCart(idx) {
+      cart.splice(idx, 1);
+      renderCart();
+    }
+
+    function placeOrder(e) {
+      e.preventDefault();
+      if (cart.length === 0) {
+        showToast('Please add at least one cake to cart!', 'danger');
+        return;
+      }
+      const orderId = 'CK-' + Math.floor(100 + Math.random() * 900);
+      const delDate = document.getElementById('delDate').value || "2026-11-29";
+      const total = cart.reduce((a, c) => a + c.price, 0);
+
+      orders.push({
+        id: orderId,
+        item: cart.map(c => `${c.name} (${c.size})`).join(', '),
+        msg: cart.map(c => c.msg).join(' | '),
+        delDate: delDate,
+        total: total,
+        status: "Confirmed"
+      });
+
+      cart = [];
+      renderCart();
+      renderOrders();
+      showToast(`Order ${orderId} placed successfully! Total: Rs. ${total}`, 'success');
+    }
+
+    function renderOrders() {
+      const tbody = document.getElementById('ordersTable');
+      const admList = document.getElementById('adminOrdersList');
+      tbody.innerHTML = '';
+      admList.innerHTML = '';
+
+      orders.forEach(o => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${o.id}</strong></td>
+          <td>${o.item}</td>
+          <td><em>${o.msg}</em></td>
+          <td>${o.delDate}</td>
+          <td>Rs. ${o.total}</td>
+          <td><span class="badge badge-success">${o.status}</span></td>
+        `;
+        tbody.appendChild(tr);
+
+        const admCard = document.createElement('div');
+        admCard.style.padding = '0.75rem';
+        admCard.style.border = '1px solid var(--border)';
+        admCard.style.borderRadius = 'var(--radius)';
+        admCard.style.marginBottom = '0.75rem';
+        admCard.innerHTML = `
+          <div style="display:flex; justify-content:space-between;">
+            <strong>Order: ${o.id}</strong>
+            <span class="badge badge-primary">Status: ${o.status}</span>
+          </div>
+          <div style="font-size:0.85rem; margin:0.35rem 0;">${o.item}</div>
+          <button class="btn btn-sm btn-outline" onclick="updateOrderStatus('${o.id}')">Update Status to Dispatched</button>
+        `;
+        admList.appendChild(admCard);
+      });
+    }
+
+    function updateOrderStatus(id) {
+      const o = orders.find(item => item.id === id);
+      if (o) {
+        o.status = "Out for Delivery";
+        renderOrders();
+        showToast(`Order ${id} marked as Out for Delivery!`, 'info');
+      }
+    }
+
+    function handleAdminAddCake(e) {
+      e.preventDefault();
+      const name = document.getElementById('admCakeName').value;
+      const occ = document.getElementById('admCakeOcc').value;
+      const flavor = document.getElementById('admCakeFlavor').value;
+      const price = parseInt(document.getElementById('admCakePrice').value);
+      cakes.push({ id: Date.now(), name, occasion: occ, flavor, basePrice: price, icon: "&#127856;" });
+      renderCakes();
+      e.target.reset();
+      showToast('Cake published to store catalog!', 'success');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('delDate').value = new Date(Date.now() + 2*24*60*60*1000).toISOString().split('T')[0];
+      renderCakes();
+      renderCart();
+      renderOrders();
+    });
+  </script>
+</body>
+</html>

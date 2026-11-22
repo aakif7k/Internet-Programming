@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 16: ComplainEase - Grievance Redressal System</title>
+  <link rel="stylesheet" href="../assets/common.css">
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon">&#128221;</div>
+        <span>ComplainEase Portal</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 16</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">ComplainEase - Grievance Redressal System</h1>
+        <p class="lab-hero-desc">Submit citizen grievances with interactive location marking, real-time resolution timeline tracking, officer proof-of-work status updates, and administrative governance.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="postTab">&#128221; Post Grievance</button>
+        <button class="tab-btn" data-tab="statusTab">&#128203; Track My Complaints</button>
+        <button class="tab-btn" data-tab="officerTab">&#128110; Officer Action & Proof</button>
+        <button class="tab-btn" data-tab="adminTab">&#9881; System Admin</button>
+      </div>
+
+      <!-- Post Tab -->
+      <div id="postTab" class="tab-pane active">
+        <div class="card" style="max-width:750px; margin:0 auto;">
+          <div class="card-header">Register Public Grievance / Complaint</div>
+          <div class="card-body">
+            <form onsubmit="handlePostComplaint(event)">
+              <div class="grid grid-2">
+                <div class="form-group">
+                  <label class="form-label">Category</label>
+                  <select id="cmpCat" class="form-select">
+                    <option>Roads & Potholes</option>
+                    <option>Sanitation & Garbage Overflow</option>
+                    <option>Street Lighting & Electrical</option>
+                    <option>Water Supply & Drainage</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Ward / Zone</label>
+                  <input type="text" id="cmpWard" class="form-control" value="Ward 14 - Adyar Zone" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Complaint Title / Summary</label>
+                <input type="text" id="cmpTitle" class="form-control" placeholder="e.g. Deep pothole causing traffic obstruction on Main Street" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Detailed Description</label>
+                <textarea id="cmpDesc" class="form-control" rows="3" placeholder="Provide exact landmark, severity details..." required></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Location Pin Coordinates (Simulated Map Marker)</label>
+                <div style="display:flex; gap:0.5rem;">
+                  <input type="text" id="cmpCoords" class="form-control" value="13.0012° N, 80.2565° E (Marked on Map)" readonly>
+                  <button type="button" class="btn btn-outline" onclick="pinMap()">Update Map Pin</button>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Submit Grievance to Municipal Board</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Track Tab -->
+      <div id="statusTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Grievance Tracking & Status Timeline</div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-responsive" style="border:none;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Complaint ID</th>
+                    <th>Category</th>
+                    <th>Title</th>
+                    <th>Date Filed</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="complaintsTbody">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Officer Tab -->
+      <div id="officerTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Field Officer Proof-of-Work Verification</div>
+          <div class="card-body" id="officerWorkList">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab -->
+      <div id="adminTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">System Administration & Officer Accounts</div>
+          <div class="card-body">
+            <p style="font-size:0.9rem; color:var(--text-muted);">Manage municipal officer IDs, reassign pending complaints across departments, and view audit metrics.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-16: ComplainEase Grievance Redressal</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let complaints = [
+      { id: "CMP-8012", cat: "Roads & Potholes", title: "Pothole near Adyar Signal", date: "2026-11-20", status: "In Progress", proof: "Site inspected by Engineer" }
+    ];
+
+    function handlePostComplaint(e) {
+      e.preventDefault();
+      const cat = document.getElementById('cmpCat').value;
+      const title = document.getElementById('cmpTitle').value;
+      const cmpId = 'CMP-' + Math.floor(1000 + Math.random() * 9000);
+
+      complaints.push({
+        id: cmpId,
+        cat: cat,
+        title: title,
+        date: new Date().toISOString().split('T')[0],
+        status: "Submitted",
+        proof: "Pending inspection"
+      });
+
+      renderComplaints();
+      showToast(`Complaint registered successfully! Token: ${cmpId}`, 'success');
+      e.target.reset();
+    }
+
+    function renderComplaints() {
+      const tbody = document.getElementById('complaintsTbody');
+      const offList = document.getElementById('officerWorkList');
+      tbody.innerHTML = '';
+      offList.innerHTML = '';
+
+      complaints.forEach(c => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${c.id}</strong></td>
+          <td>${c.cat}</td>
+          <td>${c.title}</td>
+          <td>${c.date}</td>
+          <td><span class="badge ${c.status === 'Resolved' ? 'badge-success' : 'badge-warning'}">${c.status}</span></td>
+          <td><button class="btn btn-sm btn-outline" onclick="showFeedback('${c.id}')">Feedback</button></td>
+        `;
+        tbody.appendChild(tr);
+
+        const card = document.createElement('div');
+        card.style.padding = '0.75rem';
+        card.style.border = '1px solid var(--border)';
+        card.style.borderRadius = 'var(--radius)';
+        card.style.marginBottom = '0.75rem';
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between;">
+            <strong>${c.id}: ${c.title}</strong>
+            <span class="badge badge-primary">${c.status}</span>
+          </div>
+          <div style="font-size:0.85rem; color:var(--text-muted); margin:0.35rem 0;">Proof of Work: ${c.proof}</div>
+          <button class="btn btn-sm btn-success" onclick="resolveComplaint('${c.id}')" ${c.status === 'Resolved' ? 'disabled' : ''}>Upload Proof & Mark Resolved</button>
+        `;
+        offList.appendChild(card);
+      });
+    }
+
+    function resolveComplaint(id) {
+      const c = complaints.find(item => item.id === id);
+      if (c) {
+        c.status = "Resolved";
+        c.proof = "Pothole filled with bitumen asphalt (Photo Verified)";
+        renderComplaints();
+        showToast(`Complaint ${id} marked as Resolved with proof of work!`, 'success');
+      }
+    }
+
+    function pinMap() {
+      showToast('GPS Pin updated to current live device location!', 'info');
+    }
+
+    function showFeedback(id) {
+      prompt("Submit feedback for resolution of " + id + ":", "Quick response, great job!");
+      showToast('Feedback submitted to commissioner desk!', 'success');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderComplaints();
+    });
+  </script>
+</body>
+</html>

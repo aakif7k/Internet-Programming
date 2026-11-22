@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 5: Online Flight Reservation System</title>
+  <link rel="stylesheet" href="../assets/common.css">
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon">&#9992;</div>
+        <span>SkyWings Airlines Portal</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 05</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">Online Flight Reservation System</h1>
+        <p class="lab-hero-desc">Consolidated flight search, real-time seat inventory, payment simulation, e-ticket & boarding pass generation, cancellation with refund, customer feedback, and admin route reports.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="flightSearch">&#9992; Search Flights</button>
+        <button class="tab-btn" data-tab="myTickets">&#127915; My Tickets & Boarding Pass</button>
+        <button class="tab-btn" data-tab="feedback">&#128172; Customer Feedback</button>
+        <button class="tab-btn" data-tab="admin">&#128188; Airline Admin Reports</button>
+      </div>
+
+      <!-- Search Flights Tab -->
+      <div id="flightSearch" class="tab-pane active">
+        <div class="card" style="margin-bottom:1.5rem;">
+          <div class="card-body">
+            <div class="grid grid-4">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Departure Airport</label>
+                <input type="text" id="flightFrom" class="form-control" value="DEL - Delhi Indira Gandhi">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Arrival Airport</label>
+                <input type="text" id="flightTo" class="form-control" value="BOM - Mumbai Chhatrapati Shivaji">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Departure Date</label>
+                <input type="date" id="flightDate" class="form-control">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Class</label>
+                <select id="flightClass" class="form-select">
+                  <option>Economy Class</option>
+                  <option>Business Class</option>
+                  <option>First Class</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-3" id="flightCards">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- My Tickets Tab -->
+      <div id="myTickets" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Issued E-Tickets & Boarding Passes</div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-responsive" style="border:none;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>PNR</th>
+                    <th>Flight</th>
+                    <th>Route</th>
+                    <th>Date & Time</th>
+                    <th>Seat</th>
+                    <th>Fare</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="ticketsTbody">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feedback Tab -->
+      <div id="feedback" class="tab-pane">
+        <div class="card" style="max-width:650px; margin:0 auto;">
+          <div class="card-header">Customer Experience Feedback</div>
+          <div class="card-body">
+            <form onsubmit="handleFeedback(event)">
+              <div class="form-group">
+                <label class="form-label">Passenger Name</label>
+                <input type="text" id="fbName" class="form-control" value="Aakif" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Flight PNR</label>
+                <input type="text" id="fbPnr" class="form-control" placeholder="e.g. SKY-908" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Rating (1 to 5 Stars)</label>
+                <select id="fbRating" class="form-select">
+                  <option>&#9733;&#9733;&#9733;&#9733;&#9733; (5/5) Excellent</option>
+                  <option>&#9733;&#9733;&#9733;&#9733;&#9734; (4/5) Very Good</option>
+                  <option>&#9733;&#9733;&#9733;&#9734;&#9734; (3/5) Average</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Comments & Suggestions</label>
+                <textarea id="fbComments" class="form-control" rows="3" placeholder="Share your experience..."></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Submit Feedback</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab -->
+      <div id="admin" class="tab-pane">
+        <div class="grid grid-3" style="margin-bottom:1.5rem;">
+          <div class="stat-card">
+            <div class="stat-icon">&#9992;</div>
+            <div>
+              <div class="stat-value">6</div>
+              <div class="stat-label">Daily Scheduled Flights</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">&#128101;</div>
+            <div>
+              <div class="stat-value">142</div>
+              <div class="stat-label">Passengers Booked Today</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">&#128176;</div>
+            <div>
+              <div class="stat-value" id="admRevenue">$12,450</div>
+              <div class="stat-label">Total Booking Revenue</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">Flight Schedule Management</div>
+          <div class="card-body">
+            <p style="font-size:0.9rem; color:var(--text-muted);">Real-time global distribution data stream synchronizing flight routes, seat availability, and dynamic pricing across all partner channels.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-05: Online Flight Reservation System</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let flights = [
+      { id: "SW-101", airline: "SkyWings Express", dep: "06:15", arr: "08:30", price: 110, seats: 14, flightTime: "2h 15m" },
+      { id: "SW-204", airline: "SkyWings Prime", dep: "11:45", arr: "14:00", price: 145, seats: 8, flightTime: "2h 15m" },
+      { id: "SW-309", airline: "SkyWings Luxury", dep: "18:20", arr: "20:35", price: 160, seats: 22, flightTime: "2h 15m" }
+    ];
+
+    let userFlights = [
+      { pnr: "SKY-802", flight: "SW-101 SkyWings Express", route: "DEL &rarr; BOM", date: "2026-11-28 06:15", seat: "12A (Window)", fare: 110, status: "Confirmed" }
+    ];
+
+    function renderFlights() {
+      const container = document.getElementById('flightCards');
+      container.innerHTML = '';
+      flights.forEach(f => {
+        const c = document.createElement('div');
+        c.className = 'card';
+        c.innerHTML = `
+          <div class="card-header">
+            <span><strong>${f.id}</strong> - ${f.airline}</span>
+            <span class="badge badge-success">${f.seats} Seats Left</span>
+          </div>
+          <div class="card-body">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+              <div>
+                <div style="font-size:1.3rem; font-weight:800;">${f.dep}</div>
+                <div style="font-size:0.8rem; color:var(--text-muted);">Departure (DEL)</div>
+              </div>
+              <div style="text-align:center; font-size:0.8rem; color:var(--text-muted);">
+                <div>${f.flightTime}</div>
+                <div>&horbar;&#9992;&horbar;</div>
+                <div style="color:var(--success);">Non-stop</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:1.3rem; font-weight:800;">${f.arr}</div>
+                <div style="font-size:0.8rem; color:var(--text-muted);">Arrival (BOM)</div>
+              </div>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:1.4rem; font-weight:800; color:var(--primary);">$${f.price}</span>
+              <button class="btn btn-sm btn-primary" onclick="bookFlight('${f.id}', '${f.airline}', ${f.price})">Book Flight</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(c);
+      });
+    }
+
+    function renderTickets() {
+      const tbody = document.getElementById('ticketsTbody');
+      tbody.innerHTML = '';
+      userFlights.forEach(t => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${t.pnr}</strong></td>
+          <td>${t.flight}</td>
+          <td>${t.route}</td>
+          <td>${t.date}</td>
+          <td>${t.seat}</td>
+          <td>$${t.fare}</td>
+          <td><span class="badge ${t.status === 'Confirmed' ? 'badge-success' : 'badge-danger'}">${t.status}</span></td>
+          <td>
+            <button class="btn btn-sm btn-outline" onclick="printBoardingPass('${t.pnr}')">&#128424; Print</button>
+            <button class="btn btn-sm btn-danger" onclick="cancelFlightTicket('${t.pnr}')" ${t.status === 'Cancelled' ? 'disabled' : ''}>Cancel</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function bookFlight(id, name, price) {
+      const pnr = 'SKY-' + Math.floor(100 + Math.random() * 900);
+      const row = Math.floor(1 + Math.random() * 25);
+      const seatLetter = ['A', 'B', 'C', 'D', 'E', 'F'][Math.floor(Math.random() * 6)];
+      userFlights.push({
+        pnr: pnr,
+        flight: `${id} ${name}`,
+        route: "DEL &rarr; BOM",
+        date: (document.getElementById('flightDate').value || "2026-12-02") + " 06:15",
+        seat: `${row}${seatLetter}`,
+        fare: price,
+        status: "Confirmed"
+      });
+      renderTickets();
+      showToast(`Flight booking confirmed! PNR: ${pnr}, Seat: ${row}${seatLetter}`, 'success');
+    }
+
+    function printBoardingPass(pnr) {
+      const t = userFlights.find(item => item.pnr === pnr);
+      if (t) {
+        alert(`========== SKY WINGS BOARDING PASS ==========\nPNR: ${t.pnr}\nPASSENGER: Aakif (Adult)\nFLIGHT: ${t.flight}\nSEAT: ${t.seat}\nSTATUS: ${t.status}\nGATE: B12 | BOARDING TIME: 45m before dep\n==============================================`);
+      }
+    }
+
+    function cancelFlightTicket(pnr) {
+      const t = userFlights.find(item => item.pnr === pnr);
+      if (t && t.status === 'Confirmed') {
+        t.status = 'Cancelled';
+        const refund = Math.round(t.fare * 0.8);
+        renderTickets();
+        showToast(`Flight ticket ${pnr} cancelled. Refund of $${refund} credited.`, 'info');
+      }
+    }
+
+    function handleFeedback(e) {
+      e.preventDefault();
+      showToast('Thank you! Your feedback has been recorded.', 'success');
+      e.target.reset();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('flightDate').value = new Date(Date.now() + 4*24*60*60*1000).toISOString().split('T')[0];
+      renderFlights();
+      renderTickets();
+    });
+  </script>
+</body>
+</html>

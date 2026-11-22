@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 27: Bus Pass Management System with QR Code</title>
+  <link rel="stylesheet" href="../assets/common.css">
+  <style>
+    .pass-card { border:2px solid var(--primary); border-radius:var(--radius); padding:1.5rem; background:#fff; max-width:480px; margin:0 auto; box-shadow:var(--shadow); position:relative; }
+    .pass-qr { width:120px; height:120px; border:2px dashed var(--primary); display:flex; align-items:center; justify-content:center; font-size:2rem; margin:1rem auto; }
+  </style>
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon">&#128652;</div>
+        <span>MetroBus Pass Portal</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 27</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">Bus Pass Management System with QR Code</h1>
+        <p class="lab-hero-desc">Digital bus pass issuing system: Student concession passes (free for govt schools), Route commuter passes, monthly wallet deduction renewal, QR pass generation, and bus conductor verification scanner.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="applyTab">&#128221; Apply for Bus Pass</button>
+        <button class="tab-btn" data-tab="viewPassTab">&#127915; My Digital QR Pass</button>
+        <button class="tab-btn" data-tab="conductorTab">&#128247; Conductor QR Scanner</button>
+      </div>
+
+      <!-- Apply Tab -->
+      <div id="applyTab" class="tab-pane active">
+        <div class="card" style="max-width:700px; margin:0 auto;">
+          <div class="card-header">Application for Digital Bus Concession Pass</div>
+          <div class="card-body">
+            <form onsubmit="handleApplyPass(event)">
+              <div class="form-group">
+                <label class="form-label">Full Name of Candidate</label>
+                <input type="text" id="pName" class="form-control" value="Aakif" required>
+              </div>
+              <div class="grid grid-2">
+                <div class="form-group">
+                  <label class="form-label">Pass Category</label>
+                  <select id="pCategory" class="form-select" onchange="updateFeePreview()">
+                    <option value="free">Government School Student (100% Free)</option>
+                    <option value="student">College Student Concession (Rs. 250 / mo)</option>
+                    <option value="route">Route Employee Pass (Rs. 600 / mo)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Institution / Employer Name</label>
+                  <input type="text" id="pInst" class="form-control" value="Anna University" required>
+                </div>
+              </div>
+              <div class="grid grid-2">
+                <div class="form-group">
+                  <label class="form-label">Starting Bus Stop</label>
+                  <input type="text" id="pFrom" class="form-control" value="Guindy" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Destination Stop</label>
+                  <input type="text" id="pTo" class="form-control" value="Tambaram" required>
+                </div>
+              </div>
+              <div id="passFeeNote" style="margin-bottom:1rem; font-weight:bold; color:var(--primary);">
+                Payable Fee: Rs. 0 (Free for Govt School Students)
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Submit Bus Pass Application</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- View Pass Tab -->
+      <div id="viewPassTab" class="tab-pane">
+        <div class="pass-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:0.5rem;">
+            <strong>METROPOLITAN TRANSPORT BUS PASS</strong>
+            <span class="badge badge-success">ACTIVE</span>
+          </div>
+          <div class="pass-qr">
+            &#9638;&#9638;&#9638;
+          </div>
+          <div style="font-size:0.9rem; line-height:1.6;">
+            <div><strong>Pass Holder:</strong> Aakif</div>
+            <div><strong>Category:</strong> College Student Concession</div>
+            <div><strong>Route:</strong> Guindy &harr; Tambaram (Route 52B)</div>
+            <div><strong>Valid Period:</strong> Till 2026-12-31</div>
+          </div>
+          <button class="btn btn-sm btn-outline btn-block" style="margin-top:1rem;" onclick="showToast('Monthly renewal processed via e-Wallet!', 'success')">Renew Pass for Next Month</button>
+        </div>
+      </div>
+
+      <!-- Conductor Tab -->
+      <div id="conductorTab" class="tab-pane">
+        <div class="card" style="max-width:650px; margin:0 auto;">
+          <div class="card-header">Bus Conductor QR Validation Terminal</div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">Scan Pass ID / QR Data</label>
+              <div style="display:flex; gap:0.5rem;">
+                <input type="text" id="condScan" class="form-control" value="PASS-STU-2026-401">
+                <button class="btn btn-primary" onclick="verifyConductor()">Verify Pass</button>
+              </div>
+            </div>
+            <div id="condResult" style="display:none; padding:1.25rem; background:var(--surface-2); border-radius:var(--radius); margin-top:1.5rem;">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-27: Bus Pass Management System</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    function updateFeePreview() {
+      const cat = document.getElementById('pCategory').value;
+      const note = document.getElementById('passFeeNote');
+      if (cat === 'free') note.textContent = "Payable Fee: Rs. 0 (Free for Govt School Students)";
+      else if (cat === 'student') note.textContent = "Payable Fee: Rs. 250 / Month";
+      else note.textContent = "Payable Fee: Rs. 600 / Month";
+    }
+
+    function handleApplyPass(e) {
+      e.preventDefault();
+      showToast('Bus pass issued with dynamic QR Code! Access in "My Digital QR Pass".', 'success');
+    }
+
+    function verifyConductor() {
+      const q = document.getElementById('condScan').value;
+      const res = document.getElementById('condResult');
+      res.style.display = 'block';
+      res.innerHTML = `
+        <div style="color:var(--success); font-weight:800; font-size:1.1rem; margin-bottom:0.5rem;">&#9989; PASS AUTHENTICATED & VALID</div>
+        <div style="font-size:0.9rem;">
+          <strong>Pass ID:</strong> ${q}<br>
+          <strong>Route:</strong> Guindy to Tambaram &bull; Student Concession Pass<br>
+          <strong>Validity:</strong> Active (Expires 31-Dec-2026)
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>

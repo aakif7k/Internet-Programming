@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 15: EasyToll - Online Toll Payment System</title>
+  <link rel="stylesheet" href="../assets/common.css">
+  <style>
+    .qr-box { width:160px; height:160px; border:2px dashed var(--primary); border-radius:var(--radius); display:flex; flex-direction:column; align-items:center; justify-content:center; margin:0 auto; background:#fff; font-size:3rem; }
+  </style>
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon">&#128663;</div>
+        <span>EasyToll FastPass</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 15</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">EasyToll - Online Toll Payment System</h1>
+        <p class="lab-hero-desc">Skip toll booth queues: recharge your e-Wallet, buy advance toll e-Tickets, apply for QR-enabled monthly passes, and verify passes via Toll Gate Scanner interface.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="driverTab">&#128663; Driver e-Wallet & Passes</button>
+        <button class="tab-btn" data-tab="boothTab">&#128247; Toll Gate Scanner</button>
+        <button class="tab-btn" data-tab="adminTab">&#9881; Toll Administrator</button>
+      </div>
+
+      <!-- Driver Tab -->
+      <div id="driverTab" class="tab-pane active">
+        <div class="grid grid-3" style="margin-bottom:1.5rem;">
+          <div class="stat-card">
+            <div class="stat-icon">&#128179;</div>
+            <div>
+              <div class="stat-value" id="walletBalance">Rs. 850</div>
+              <div class="stat-label">e-Wallet Balance</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">&#127915;</div>
+            <div>
+              <div class="stat-value">1 Active</div>
+              <div class="stat-label">Monthly FastPass</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">&#9989;</div>
+            <div>
+              <div class="stat-value">TN-09-CB-4210</div>
+              <div class="stat-label">Registered Vehicle Plate</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-2">
+          <!-- Buy eTicket / Top up -->
+          <div class="card">
+            <div class="card-header">Buy Advance Toll e-Ticket / Top Up Wallet</div>
+            <div class="card-body">
+              <form onsubmit="handleBuyTicket(event)">
+                <div class="form-group">
+                  <label class="form-label">Select Toll Plaza</label>
+                  <select id="tollPlaza" class="form-select">
+                    <option value="85">Paranur Toll Plaza (Chengalpattu) - Rs. 85</option>
+                    <option value="60">Athur Toll Plaza (Tindivanam) - Rs. 60</option>
+                    <option value="110">Nemili Toll Plaza (Sriperumbudur) - Rs. 110</option>
+                  </select>
+                </div>
+                <div class="grid grid-2">
+                  <div class="form-group">
+                    <label class="form-label">Journey Type</label>
+                    <select id="tripType" class="form-select">
+                      <option value="1">Single Journey</option>
+                      <option value="1.5">Return (Within 24 Hours)</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Add Money to Wallet (Rs.)</label>
+                    <input type="number" id="topupVal" class="form-control" value="500">
+                  </div>
+                </div>
+                <div style="display:flex; gap:0.75rem;">
+                  <button type="submit" class="btn btn-primary btn-block">Buy Advance e-Ticket</button>
+                  <button type="button" class="btn btn-secondary" onclick="addMoney()">Add Funds</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Dynamic QR Pass -->
+          <div class="card">
+            <div class="card-header">Your Active Toll Pass QR Code</div>
+            <div class="card-body" style="text-align:center;">
+              <div class="qr-box">
+                &#9638;&#9638;&#9638;
+                <span style="font-size:0.8rem; font-weight:bold; color:var(--primary); margin-top:0.35rem;">SCAN PASS</span>
+              </div>
+              <div style="margin-top:1rem;">
+                <h4>Pass ID: TOLL-TN-4210</h4>
+                <div style="font-size:0.85rem; color:var(--text-muted);">Vehicle: Car / Jeep &bull; Valid till: 2026-12-31</div>
+                <button class="btn btn-sm btn-outline" style="margin-top:0.75rem;" onclick="showToast('Pass renewed for 30 more days via wallet!', 'success')">Renew Monthly Pass (Rs. 1,200)</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Booth Scanner Tab -->
+      <div id="boothTab" class="tab-pane">
+        <div class="card" style="max-width:650px; margin:0 auto;">
+          <div class="card-header">Toll Gate Operator Scanner & Barrier Control</div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">Scan / Enter Toll Pass ID or Ticket Number</label>
+              <div style="display:flex; gap:0.5rem;">
+                <input type="text" id="scanInput" class="form-control" value="TOLL-TN-4210">
+                <button class="btn btn-primary" onclick="verifyTollScan()">Verify</button>
+              </div>
+            </div>
+            <div id="scanResult" style="margin-top:1.5rem; display:none; padding:1.25rem; background:var(--surface-2); border-radius:var(--radius);">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab -->
+      <div id="adminTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Toll Authority Management</div>
+          <div class="card-body">
+            <p style="font-size:0.9rem; color:var(--text-muted);">Configure toll rate slabs, inspect plaza daily collections, and monitor automated fast-tag lane clearances.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-15: EasyToll Online Toll Payment System</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let balance = 850;
+
+    function handleBuyTicket(e) {
+      e.preventDefault();
+      const base = parseFloat(document.getElementById('tollPlaza').value);
+      const mult = parseFloat(document.getElementById('tripType').value);
+      const cost = Math.round(base * mult);
+
+      if (balance < cost) {
+        showToast('Insufficient wallet balance! Please add funds.', 'danger');
+        return;
+      }
+      balance -= cost;
+      document.getElementById('walletBalance').textContent = 'Rs. ' + balance;
+      const tNo = 'TKT-' + Math.floor(1000 + Math.random() * 9000);
+      showToast(`e-Ticket ${tNo} purchased! Paid Rs. ${cost} from e-Wallet.`, 'success');
+    }
+
+    function addMoney() {
+      const amt = parseFloat(document.getElementById('topupVal').value) || 0;
+      if (amt <= 0) return;
+      balance += amt;
+      document.getElementById('walletBalance').textContent = 'Rs. ' + balance;
+      showToast(`Rs. ${amt} added to e-Wallet successfully!`, 'success');
+    }
+
+    function verifyTollScan() {
+      const q = document.getElementById('scanInput').value.trim();
+      const res = document.getElementById('scanResult');
+      res.style.display = 'block';
+      if (q === "TOLL-TN-4210") {
+        res.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+            <h4 style="margin:0; color:var(--success);">&#9989; VALID PASS VERIFIED</h4>
+            <span class="badge badge-success">GATE OPEN</span>
+          </div>
+          <div style="font-size:0.9rem;">
+            <strong>Vehicle Number:</strong> TN-09-CB-4210<br>
+            <strong>Category:</strong> Non-Commercial Light Motor Vehicle (LMV)<br>
+            <strong>Plaza Clearance:</strong> Green Lane Auto-Cleared
+          </div>
+        `;
+      } else {
+        res.innerHTML = `
+          <div style="color:var(--danger); font-weight:bold;">&#9888; UNREGISTERED / EXPIRED TOLL ID</div>
+          <p style="font-size:0.85rem; margin-top:0.35rem;">Collect manual toll fee at booth.</p>
+        `;
+      }
+    }
+  </script>
+</body>
+</html>

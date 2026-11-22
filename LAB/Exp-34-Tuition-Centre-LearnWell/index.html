@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 34: LearnWell Tuition Centre Management System</title>
+  <link rel="stylesheet" href="../assets/common.css">
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon">&#128218;</div>
+        <span>LearnWell Tuition Centre</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 34</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">LearnWell Tuition Centre Management System</h1>
+        <p class="lab-hero-desc">Course offerings with fees, duration & online/offline availability, student enrollment and fee payment tracking, teacher allocations, progress reports, and maintenance request desk.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="coursesTab">&#128214; Course Offerings</button>
+        <button class="tab-btn" data-tab="studentTab">&#128104;&#8205;&#127891; Student Enrollment & Fees</button>
+        <button class="tab-btn" data-tab="teacherTab">&#128104;&#8205;&#127979; Teacher Allocations</button>
+      </div>
+
+      <!-- Courses Tab -->
+      <div id="coursesTab" class="tab-pane active">
+        <div class="grid grid-3" id="coursesGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Student Tab -->
+      <div id="studentTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Enrolled Students & Fee Payment Ledger</div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-responsive" style="border:none;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Student Name</th>
+                    <th>Enrolled Subject</th>
+                    <th>Mode</th>
+                    <th>Monthly Fee</th>
+                    <th>Fee Payment Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Aakif (Grade 12)</td>
+                    <td>Advanced Physics & Calculus</td>
+                    <td>Offline Classroom</td>
+                    <td>Rs. 2,000</td>
+                    <td><span class="badge badge-success">Paid (November)</span></td>
+                  </tr>
+                  <tr>
+                    <td>Kavya S. (Grade 10)</td>
+                    <td>Mathematics & Science</td>
+                    <td>Online Interactive</td>
+                    <td>Rs. 1,500</td>
+                    <td><span class="badge badge-success">Paid (November)</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Teacher Tab -->
+      <div id="teacherTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Faculty Subject Allocations & Schedule</div>
+          <div class="card-body">
+            <p style="font-size:0.9rem; color:var(--text-muted);">Prof. Srinivasan &bull; Advanced Calculus &bull; Mon/Wed/Fri (17:30 - 19:00)</p>
+            <p style="font-size:0.9rem; color:var(--text-muted);">Dr. Meera &bull; Quantum Physics &bull; Tue/Thu/Sat (17:30 - 19:00)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-34: LearnWell Tuition Centre System</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let subjects = [
+      { id: 1, name: "Mathematics & Calculus", duration: "6 Months", fee: 1800, mode: "Online & Offline Available" },
+      { id: 2, name: "Physics: Mechanics & Waves", duration: "6 Months", fee: 1600, mode: "Online & Offline Available" },
+      { id: 3, name: "Computer Science & Python", duration: "4 Months", fee: 2000, mode: "Online Interactive" }
+    ];
+
+    function renderCourses() {
+      const grid = document.getElementById('coursesGrid');
+      grid.innerHTML = '';
+      subjects.forEach(s => {
+        const c = document.createElement('div');
+        c.className = 'card';
+        c.innerHTML = `
+          <div class="card-header">
+            <span><strong>${s.name}</strong></span>
+            <span class="badge badge-primary">${s.duration}</span>
+          </div>
+          <div class="card-body">
+            <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">Mode: ${s.mode}</div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:1.3rem; font-weight:800; color:var(--primary);">Rs. ${s.fee} <small style="font-size:0.8rem; color:var(--text-muted);">/ mo</small></span>
+              <button class="btn btn-sm btn-primary" onclick="showToast('Enrolled in ${s.name}!', 'success')">Enroll Now</button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(c);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderCourses();
+    });
+  </script>
+</body>
+</html>

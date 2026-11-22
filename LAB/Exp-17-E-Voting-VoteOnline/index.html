@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 17: VoteOnline - Secure E-Voting Platform</title>
+  <link rel="stylesheet" href="../assets/common.css">
+  <style>
+    .candidate-card { border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem; background:#fff; display:flex; justify-content:space-between; align-items:center; }
+  </style>
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon">&#128077;</div>
+        <span>VoteOnline E-Ballot</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 17</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">VoteOnline - Secure E-Voting Platform</h1>
+        <p class="lab-hero-desc">Voter ID authentication, simulated 2-factor OTP verification, candidate manifestos, secure single-ballot casting, and real-time live election results for election administrators.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="voteTab">&#128077; Cast Ballot</button>
+        <button class="tab-btn" data-tab="resultsTab">&#128202; Live Election Results</button>
+        <button class="tab-btn" data-tab="adminTab">&#9881; Election Commission Admin</button>
+      </div>
+
+      <!-- Vote Tab -->
+      <div id="voteTab" class="tab-pane active">
+        <div class="card" style="max-width:700px; margin:0 auto 1.5rem auto;">
+          <div class="card-header">Step 1: Voter Authentication & 2-Factor OTP</div>
+          <div class="card-body">
+            <div class="grid grid-2">
+              <div class="form-group">
+                <label class="form-label">Voter ID Card Number (EPIC)</label>
+                <input type="text" id="voterEpic" class="form-control" value="TN/04/092/104921">
+              </div>
+              <div class="form-group">
+                <label class="form-label">2-Factor OTP Code</label>
+                <div style="display:flex; gap:0.5rem;">
+                  <input type="text" id="voterOtp" class="form-control" placeholder="Enter 6-digit OTP" value="582910">
+                  <button class="btn btn-secondary" onclick="showToast('OTP sent to registered phone: 582910', 'info')">Get OTP</button>
+                </div>
+              </div>
+            </div>
+            <button class="btn btn-primary btn-block" onclick="verifyVoter()">Verify & Unlock Ballot</button>
+          </div>
+        </div>
+
+        <div id="ballotSection" style="display:none;">
+          <h3 style="margin-bottom:1rem;">Official Ballot - Constituency Ward 12</h3>
+          <div style="display:flex; flex-direction:column; gap:1rem;" id="candidatesList">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Tab -->
+      <div id="resultsTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Real-Time Certified Election Tally</div>
+          <div class="card-body" id="resultsBoard">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab -->
+      <div id="adminTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Admin Voter Roll & Candidate Allocation</div>
+          <div class="card-body">
+            <p style="font-size:0.9rem; color:var(--text-muted);">Manage registered electors roll, verify ballot integrity, and declare election outcomes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-17: VoteOnline Secure E-Voting Platform</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let candidates = [
+      { id: 1, name: "Arun Prakash", party: "Progressive Citizens Party", symbol: "&#127775;", votes: 342 },
+      { id: 2, name: "Meenakshi Sundaram", party: "Democratic People Alliance", symbol: "&#127807;", votes: 418 },
+      { id: 3, name: "Dr. Ronald George", party: "Clean Governance Forum", symbol: "&#9878;", votes: 295 }
+    ];
+
+    let hasVoted = false;
+
+    function verifyVoter() {
+      const otp = document.getElementById('voterOtp').value;
+      if (otp.length < 4) {
+        showToast('Please enter valid OTP!', 'danger');
+        return;
+      }
+      document.getElementById('ballotSection').style.display = 'block';
+      renderCandidates();
+      showToast('Voter identity verified! Electronic ballot unlocked.', 'success');
+    }
+
+    function renderCandidates() {
+      const container = document.getElementById('candidatesList');
+      container.innerHTML = '';
+      candidates.forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'candidate-card';
+        div.innerHTML = `
+          <div style="display:flex; align-items:center; gap:1rem;">
+            <div style="font-size:2.5rem;">${c.symbol}</div>
+            <div>
+              <h4 style="margin:0;">${c.name}</h4>
+              <div style="font-size:0.85rem; color:var(--text-muted);">${c.party}</div>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="castVote(${c.id})" ${hasVoted ? 'disabled' : ''}>Vote For Candidate</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function castVote(id) {
+      if (hasVoted) {
+        showToast('You have already cast your ballot!', 'danger');
+        return;
+      }
+      const c = candidates.find(item => item.id === id);
+      c.votes++;
+      hasVoted = true;
+      renderCandidates();
+      renderResults();
+      showToast(`Vote cast successfully for ${c.name}! Encrypted token issued.`, 'success');
+    }
+
+    function renderResults() {
+      const board = document.getElementById('resultsBoard');
+      board.innerHTML = '';
+      const totalVotes = candidates.reduce((a, c) => a + c.votes, 0);
+
+      candidates.forEach(c => {
+        const pct = Math.round((c.votes / totalVotes) * 100);
+        const row = document.createElement('div');
+        row.style.marginBottom = '1rem';
+        row.innerHTML = `
+          <div style="display:flex; justify-content:space-between; margin-bottom:0.25rem;">
+            <strong>${c.symbol} ${c.name} (${c.party})</strong>
+            <span>${c.votes} Votes (${pct}%)</span>
+          </div>
+          <div style="width:100%; height:12px; background:var(--surface-2); border-radius:6px; overflow:hidden;">
+            <div style="width:${pct}%; height:100%; background:var(--primary); transition:width 0.5s ease;"></div>
+          </div>
+        `;
+        board.appendChild(row);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderResults();
+    });
+  </script>
+</body>
+</html>

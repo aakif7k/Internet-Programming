@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 21: JobPortal - Vacancy & Recruitment Platform</title>
+  <link rel="stylesheet" href="../assets/common.css">
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon">&#128188;</div>
+        <span>CareerLink Job Portal</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 21</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">JobPortal - Vacancy & Recruitment Platform</h1>
+        <p class="lab-hero-desc">Connecting employers and talent: Company Directors post vacancies and review applied candidate resumes; Job Seekers filter jobs by category & location and apply online.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="jobsTab">&#128188; Browse Vacancies</button>
+        <button class="tab-btn" data-tab="directorTab">&#127970; Company Director (Post Jobs)</button>
+        <button class="tab-btn" data-tab="applicantTab">&#128203; Review Applicants</button>
+      </div>
+
+      <!-- Jobs Tab -->
+      <div id="jobsTab" class="tab-pane active">
+        <div class="card" style="margin-bottom:1.5rem;">
+          <div class="card-body">
+            <div class="grid grid-3">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Category</label>
+                <select id="jCat" class="form-select" onchange="renderJobs()">
+                  <option value="All">All Categories</option>
+                  <option value="Software Engineering">Software Engineering</option>
+                  <option value="Data Science">Data Science</option>
+                  <option value="UI/UX Design">UI/UX Design</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Location</label>
+                <select id="jLoc" class="form-select" onchange="renderJobs()">
+                  <option value="All">All Locations</option>
+                  <option value="Chennai">Chennai</option>
+                  <option value="Bangalore">Bangalore</option>
+                  <option value="Remote">Remote</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Search Keywords</label>
+                <input type="text" id="jSearch" class="form-control" placeholder="e.g. React, Python..." onkeyup="renderJobs()">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-2" id="jobsGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Director Tab -->
+      <div id="directorTab" class="tab-pane">
+        <div class="card" style="max-width:700px; margin:0 auto;">
+          <div class="card-header">Post New Job Vacancy</div>
+          <div class="card-body">
+            <form onsubmit="handlePostJob(event)">
+              <div class="form-group">
+                <label class="form-label">Job Title</label>
+                <input type="text" id="postJobTitle" class="form-control" required placeholder="e.g. Full Stack Web Developer">
+              </div>
+              <div class="grid grid-3">
+                <div class="form-group">
+                  <label class="form-label">Category</label>
+                  <select id="postJobCat" class="form-select">
+                    <option>Software Engineering</option>
+                    <option>Data Science</option>
+                    <option>UI/UX Design</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Location</label>
+                  <input type="text" id="postJobLoc" class="form-control" value="Chennai" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Salary Range</label>
+                  <input type="text" id="postJobSalary" class="form-control" value="12-16 LPA" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Key Requirements & Description</label>
+                <textarea id="postJobDesc" class="form-control" rows="3" required placeholder="HTML5, CSS3, JavaScript, Node.js, SQL..."></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Publish Vacancy</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Applicants Tab -->
+      <div id="applicantTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Applied Candidate Resumes</div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-responsive" style="border:none;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Candidate</th>
+                    <th>Job Role</th>
+                    <th>Experience</th>
+                    <th>Application Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="applicantsTbody">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-21: JobPortal Vacancy & Recruitment Platform</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let jobListings = [
+      { id: 1, title: "Frontend Web Architect", cat: "Software Engineering", loc: "Chennai", salary: "14-18 LPA", company: "Infosys Labs", desc: "Expertise in React, TypeScript, and modern responsive layouts." },
+      { id: 2, title: "Lead AI/ML Research Engineer", cat: "Data Science", loc: "Bangalore", salary: "22-28 LPA", company: "DeepMind Tech", desc: "Python, PyTorch, LLM fine-tuning, and scalable inference." },
+      { id: 3, title: "Senior Product Designer", cat: "UI/UX Design", loc: "Remote", salary: "12-15 LPA", company: "Zomato Digital", desc: "Figma design systems, user journey mapping, and usability testing." }
+    ];
+
+    let applicants = [
+      { id: 101, name: "Aakif (Student)", job: "Frontend Web Architect", exp: "Fresher (B.E. CSE)", status: "Shortlisted" }
+    ];
+
+    function renderJobs() {
+      const grid = document.getElementById('jobsGrid');
+      const cat = document.getElementById('jCat').value;
+      const loc = document.getElementById('jLoc').value;
+      const q = document.getElementById('jSearch').value.toLowerCase();
+      grid.innerHTML = '';
+
+      const filtered = jobListings.filter(j => {
+        return (cat === 'All' || j.cat === cat) &&
+               (loc === 'All' || j.loc === loc) &&
+               (j.title.toLowerCase().includes(q) || j.desc.toLowerCase().includes(q));
+      });
+
+      filtered.forEach(j => {
+        const c = document.createElement('div');
+        c.className = 'card';
+        c.innerHTML = `
+          <div class="card-header">
+            <span><strong>${j.title}</strong></span>
+            <span class="badge badge-primary">${j.loc}</span>
+          </div>
+          <div class="card-body">
+            <div style="font-size:0.85rem; color:var(--primary); font-weight:bold; margin-bottom:0.35rem;">${j.company} &bull; ${j.salary}</div>
+            <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:1rem;">${j.desc}</p>
+            <button class="btn btn-sm btn-primary" onclick="applyJob('${j.title}')">Submit Application</button>
+          </div>
+        `;
+        grid.appendChild(c);
+      });
+    }
+
+    function applyJob(title) {
+      applicants.push({
+        id: Date.now(),
+        name: "Aakif (Self)",
+        job: title,
+        exp: "B.E. Computer Science",
+        status: "Submitted"
+      });
+      renderApplicants();
+      showToast(`Application submitted for "${title}"!`, 'success');
+    }
+
+    function renderApplicants() {
+      const tbody = document.getElementById('applicantsTbody');
+      tbody.innerHTML = '';
+      applicants.forEach(a => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${a.name}</strong></td>
+          <td>${a.job}</td>
+          <td>${a.exp}</td>
+          <td><span class="badge badge-success">${a.status}</span></td>
+          <td><button class="btn btn-sm btn-outline" onclick="showToast('Candidate shortlisted for tech interview!', 'success')">Shortlist</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function handlePostJob(e) {
+      e.preventDefault();
+      const title = document.getElementById('postJobTitle').value;
+      const cat = document.getElementById('postJobCat').value;
+      const loc = document.getElementById('postJobLoc').value;
+      const salary = document.getElementById('postJobSalary').value;
+      const desc = document.getElementById('postJobDesc').value;
+
+      jobListings.push({ id: Date.now(), title, cat, loc, salary, company: "Direct Tech Corp", desc });
+      renderJobs();
+      e.target.reset();
+      showToast('New vacancy posted successfully!', 'success');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderJobs();
+      renderApplicants();
+    });
+  </script>
+</body>
+</html>

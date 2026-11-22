@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 44: Painting Rating and Review Web Application</title>
+  <link rel="stylesheet" href="../assets/common.css">
+  <style>
+    .star-btn { font-size:1.8rem; cursor:pointer; color:#cbd5e1; transition:color 0.2s; }
+    .star-btn.active { color:#f59e0b; }
+  </style>
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon" style="background:#8b5cf6;">&#127912;</div>
+        <span>ArtCritique Gallery</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 44</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">Painting Rating and Review Web Application</h1>
+        <p class="lab-hero-desc">Art evaluation portal: Admin uploads paintings under scheduled exhibition packages; Owners monitor reviews; Customers submit 1 to 5 star ratings with positive and negative sentiment critique.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="rateTab">&#127912; Current Exhibition & Review</button>
+        <button class="tab-btn" data-tab="ownerTab">&#128100; Painting Owner Dashboard</button>
+        <button class="tab-btn" data-tab="adminTab">&#9881; Admin Package Manager</button>
+      </div>
+
+      <!-- Rate Tab -->
+      <div id="rateTab" class="tab-pane active">
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="card-header">Exhibited Artwork: "Elysian Solitude"</div>
+            <div class="card-body">
+              <div style="height:220px; background:linear-gradient(135deg, #4f46e5, #ec4899); border-radius:var(--radius); display:flex; align-items:center; justify-content:center; color:#fff; font-size:4rem; margin-bottom:1rem;">
+                &#127756;
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                  <strong>Artist:</strong> Aanya Sengupta<br>
+                  <span style="font-size:0.85rem; color:var(--text-muted);">Medium: Oil and Gold Leaf on Wood</span>
+                </div>
+                <div style="text-align:right;">
+                  <div style="font-size:1.6rem; font-weight:800; color:var(--warning);" id="avgRatingBadge">4.8 &#9733;</div>
+                  <span style="font-size:0.75rem; color:var(--text-muted);">Based on 14 Reviews</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rating Form -->
+          <div class="card">
+            <div class="card-header">Submit Your Critical Review</div>
+            <div class="card-body">
+              <form onsubmit="handleReview(event)">
+                <div class="form-group" style="text-align:center;">
+                  <label class="form-label">Select Star Rating (1 to 5 Stars)</label>
+                  <div style="display:flex; justify-content:center; gap:0.5rem;" id="starsContainer">
+                    <span class="star-btn active" onclick="setStars(1)">&#9733;</span>
+                    <span class="star-btn active" onclick="setStars(2)">&#9733;</span>
+                    <span class="star-btn active" onclick="setStars(3)">&#9733;</span>
+                    <span class="star-btn active" onclick="setStars(4)">&#9733;</span>
+                    <span class="star-btn active" onclick="setStars(5)">&#9733;</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Positive Aspects / Highlights</label>
+                  <input type="text" id="revPos" class="form-control" placeholder="e.g. Masterful use of lighting and emotional depth" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Constructive Critique / Negative Notes</label>
+                  <input type="text" id="revNeg" class="form-control" placeholder="e.g. Background brushwork feels slightly hurried">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Publish Art Review</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Owner Tab -->
+      <div id="ownerTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Painting Owner Feedback Analytics</div>
+          <div class="card-body" id="reviewsFeed">
+            <div style="padding:0.75rem; border-bottom:1px solid var(--border);">
+              <strong>5/5 Stars:</strong> "The atmospheric color palette conveys profound serenity."<br>
+              <span style="color:var(--text-muted); font-size:0.85rem;">Constructive critique: None</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab -->
+      <div id="adminTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Admin Exhibition Packages</div>
+          <div class="card-body">
+            <p style="font-size:0.9rem; color:var(--text-muted);">Package 1: 7-Day Display ($50) &bull; Package 2: 30-Day Curated Exhibition ($150).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-44: Painting Rating and Review Web Application</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let selectedRating = 5;
+
+    function setStars(n) {
+      selectedRating = n;
+      const stars = document.querySelectorAll('.star-btn');
+      stars.forEach((s, idx) => {
+        if (idx < n) s.classList.add('active');
+        else s.classList.remove('active');
+      });
+    }
+
+    function handleReview(e) {
+      e.preventDefault();
+      const pos = document.getElementById('revPos').value;
+      const neg = document.getElementById('revNeg').value || "None";
+      const feed = document.getElementById('reviewsFeed');
+      const div = document.createElement('div');
+      div.style.padding = '0.75rem';
+      div.style.borderBottom = '1px solid var(--border)';
+      div.innerHTML = `<strong>${selectedRating}/5 Stars:</strong> "${pos}"<br><span style="color:var(--text-muted); font-size:0.85rem;">Constructive critique: ${neg}</span>`;
+      feed.prepend(div);
+      showToast('Thank you! Your critique has been submitted to the artist.', 'success');
+      e.target.reset();
+      setStars(5);
+    }
+  </script>
+</body>
+</html>

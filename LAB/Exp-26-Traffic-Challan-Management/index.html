@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 26: Traffic Squad - E-Challan & Penalty Management</title>
+  <link rel="stylesheet" href="../assets/common.css">
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon" style="background:var(--primary);">&#128659;</div>
+        <span>Traffic Squad E-Challan</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 26</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">Traffic Squad - E-Challan & Penalty System</h1>
+        <p class="lab-hero-desc">Digital enforcement of traffic rules: Police officers file violation cases with photo proof, citizens search & pay e-Challan penalties online, with live traffic advisory updates.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="citizenTab">&#128663; Citizen Challan Lookup & Pay</button>
+        <button class="tab-btn" data-tab="policeTab">&#128110; Police Officer (Create FIR)</button>
+        <button class="tab-btn" data-tab="trafficTab">&#128657; Live Traffic Updates</button>
+      </div>
+
+      <!-- Citizen Tab -->
+      <div id="citizenTab" class="tab-pane active">
+        <div class="card" style="max-width:650px; margin:0 auto 1.5rem auto;">
+          <div class="card-header">Search Pending Traffic Violations</div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">Vehicle Registration Number</label>
+              <div style="display:flex; gap:0.5rem;">
+                <input type="text" id="vehSearch" class="form-control" value="TN-01-AX-4820">
+                <button class="btn btn-primary" onclick="searchChallan()">Search Challans</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="challanResult" style="display:none;" class="card">
+          <div class="card-header">Pending Violation Challan Record</div>
+          <div class="card-body" id="challanDetails">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Police Tab -->
+      <div id="policeTab" class="tab-pane">
+        <div class="card" style="max-width:700px; margin:0 auto;">
+          <div class="card-header">File Traffic Violation FIR & Photo Proof</div>
+          <div class="card-body">
+            <form onsubmit="handleFileCase(event)">
+              <div class="grid grid-2">
+                <div class="form-group">
+                  <label class="form-label">Vehicle Number</label>
+                  <input type="text" id="polVeh" class="form-control" placeholder="e.g. TN-07-BL-9912" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Violation Rule</label>
+                  <select id="polRule" class="form-select" onchange="updateFineAmt()">
+                    <option value="1000">Signal Jumping / Red Light (Rs. 1,000)</option>
+                    <option value="1000">Riding Without Helmet (Rs. 1,000)</option>
+                    <option value="2000">Overspeeding Beyond Limit (Rs. 2,000)</option>
+                    <option value="5000">Dangerous Driving / Drunk Drive (Rs. 5,000)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Upload Photo Proof (Simulated Link)</label>
+                <input type="text" class="form-control" value="https://trafficpolice.gov.in/proofs/cam_junction_42.jpg" readonly>
+              </div>
+              <button type="submit" class="btn btn-danger btn-block">Issue Certified E-Challan</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Traffic Tab -->
+      <div id="trafficTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Live Road Traffic Advisory & Congestion Map</div>
+          <div class="card-body">
+            <div class="alert" style="background:#fffbeb; border:1px solid #fde68a; padding:1rem; border-radius:var(--radius); margin-bottom:1rem;">
+              <strong>&#9888; Traffic Alert:</strong> Heavy congestion reported on Anna Salai due to metro construction work. Commuters advised to use bypass route.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-26: Traffic Squad E-Challan Management</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let challans = [
+      { id: "CHN-89210", veh: "TN-01-AX-4820", rule: "Signal Jumping / Red Light", fine: 1000, date: "2026-11-18", status: "Unpaid" }
+    ];
+
+    function searchChallan() {
+      const q = document.getElementById('vehSearch').value.trim();
+      const item = challans.find(c => c.veh === q);
+      const res = document.getElementById('challanResult');
+      const det = document.getElementById('challanDetails');
+      res.style.display = 'block';
+
+      if (item) {
+        det.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+            <div>
+              <h4 style="margin:0;">Challan No: ${item.id}</h4>
+              <div style="font-size:0.85rem; color:var(--text-muted);">Vehicle: ${item.veh} &bull; Date: ${item.date}</div>
+            </div>
+            <span class="badge ${item.status === 'Paid' ? 'badge-success' : 'badge-danger'}">${item.status}</span>
+          </div>
+          <p><strong>Violation:</strong> ${item.rule}</p>
+          <div style="font-size:1.4rem; font-weight:800; color:var(--primary); margin-bottom:1rem;">Penalty: Rs. ${item.fine}</div>
+          <button class="btn btn-success" onclick="payChallan('${item.id}')" ${item.status === 'Paid' ? 'disabled' : ''}>Pay Fine Online</button>
+        `;
+      } else {
+        det.innerHTML = `<span style="color:var(--success);">&#9989; No pending traffic challans found for vehicle ${q}.</span>`;
+      }
+    }
+
+    function payChallan(id) {
+      const item = challans.find(c => c.id === id);
+      if (item) {
+        item.status = "Paid";
+        searchChallan();
+        showToast(`Penalty for Challan ${id} paid successfully! Clearance receipt issued.`, 'success');
+      }
+    }
+
+    function handleFileCase(e) {
+      e.preventDefault();
+      const veh = document.getElementById('polVeh').value;
+      const ruleElem = document.getElementById('polRule');
+      const fine = parseInt(ruleElem.value);
+      const ruleText = ruleElem.options[ruleElem.selectedIndex].text.split('(')[0].trim();
+      const cId = 'CHN-' + Math.floor(10000 + Math.random() * 90000);
+
+      challans.push({
+        id: cId,
+        veh: veh,
+        rule: ruleText,
+        fine: fine,
+        date: new Date().toISOString().split('T')[0],
+        status: "Unpaid"
+      });
+
+      e.target.reset();
+      showToast(`E-Challan ${cId} issued against ${veh}!`, 'success');
+    }
+  </script>
+</body>
+</html>

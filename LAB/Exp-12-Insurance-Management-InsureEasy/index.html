@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 12: InsureEasy - Insurance Management Platform</title>
+  <link rel="stylesheet" href="../assets/common.css">
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon">&#128737;</div>
+        <span>InsureEasy Portal</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 12</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">InsureEasy - Online Insurance Platform</h1>
+        <p class="lab-hero-desc">Compare Health, Auto, and Home policies. Buy online, calculate premiums, file claims, manage customer accounts, and dispatch automated SMS renewal alerts via agents.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="compareTab">&#128269; Compare Policies</button>
+        <button class="tab-btn" data-tab="claimsTab">&#128221; File a Claim</button>
+        <button class="tab-btn" data-tab="agentTab">&#128188; Agent Dashboard & SMS Alert</button>
+        <button class="tab-btn" data-tab="adminTab">&#9881; System Admin</button>
+      </div>
+
+      <!-- Compare Tab -->
+      <div id="compareTab" class="tab-pane active">
+        <div class="grid grid-3" id="policyCards">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Claims Tab -->
+      <div id="claimsTab" class="tab-pane">
+        <div class="card" style="max-width:650px; margin:0 auto;">
+          <div class="card-header">Online Insurance Claim Submission</div>
+          <div class="card-body">
+            <form onsubmit="handleClaim(event)">
+              <div class="form-group">
+                <label class="form-label">Policy Number</label>
+                <input type="text" id="clmPolicy" class="form-control" value="POL-HLTH-891" required>
+              </div>
+              <div class="grid grid-2">
+                <div class="form-group">
+                  <label class="form-label">Incident Date</label>
+                  <input type="date" id="clmDate" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Claim Amount ($)</label>
+                  <input type="number" id="clmAmount" class="form-control" value="3500" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Incident Description & Proof Documents</label>
+                <textarea class="form-control" rows="3" required placeholder="Describe accident/medical diagnosis details..."></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Submit Insurance Claim</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agent Tab -->
+      <div id="agentTab" class="tab-pane">
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="card-header">Manage Policyholders & Commissions</div>
+            <div class="card-body" style="padding:0;">
+              <div class="table-responsive" style="border:none;">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Customer</th>
+                      <th>Policy</th>
+                      <th>Due Date</th>
+                      <th>Commission</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Aakif (Self)</td>
+                      <td>Comprehensive Health Shield</td>
+                      <td>2026-12-10</td>
+                      <td>$45.00</td>
+                    </tr>
+                    <tr>
+                      <td>Vikram R.</td>
+                      <td>Zero-Dep Auto Protection</td>
+                      <td>2026-11-28</td>
+                      <td>$32.50</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">Send Renewal SMS Alert to Customers</div>
+            <div class="card-body">
+              <div class="form-group">
+                <label class="form-label">Customer Mobile Number</label>
+                <input type="text" id="smsPhone" class="form-control" value="+91 9876543210">
+              </div>
+              <div class="form-group">
+                <label class="form-label">SMS Alert Message</label>
+                <textarea id="smsText" class="form-control" rows="3">Dear customer, your health policy POL-HLTH-891 premium of $350 is due on 2026-12-10. Pay before due date to avoid policy lapse.</textarea>
+              </div>
+              <button class="btn btn-secondary btn-block" onclick="sendSmsAlert()">Dispatch Automated SMS Alert</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab -->
+      <div id="adminTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Administrator: Agent Approvals & Performance</div>
+          <div class="card-body">
+            <div class="table-responsive" style="border:none;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Agent Name</th>
+                    <th>Agency License</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Karthik Srinivasan</td>
+                    <td>IRDA-AG-4902</td>
+                    <td><span class="badge badge-success">Approved</span></td>
+                    <td><button class="btn btn-sm btn-outline">Review Details</button></td>
+                  </tr>
+                  <tr>
+                    <td>Deepa Narayanan</td>
+                    <td>IRDA-AG-5104</td>
+                    <td><span class="badge badge-warning">Pending Approval</span></td>
+                    <td><button class="btn btn-sm btn-success" onclick="approveAgent(this)">Approve Agent</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-12: InsureEasy Insurance Platform</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let policies = [
+      { id: 1, name: "Comprehensive Health Shield", type: "Health", coverage: "$500,000", premium: 350, icon: "&#127973;" },
+      { id: 2, name: "Zero-Dep Auto Protection", type: "Auto", coverage: "$40,000", premium: 240, icon: "&#128663;" },
+      { id: 3, name: "Home Structure & Content Guard", type: "Home", coverage: "$300,000", premium: 180, icon: "&#127969;" }
+    ];
+
+    function renderPolicies() {
+      const container = document.getElementById('policyCards');
+      container.innerHTML = '';
+      policies.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="card-header">
+            <span>${p.name}</span>
+            <span class="badge badge-primary">${p.type}</span>
+          </div>
+          <div class="card-body">
+            <div style="font-size:2.5rem; text-align:center; margin-bottom:0.75rem;">${p.icon}</div>
+            <div style="font-size:0.9rem; color:var(--text-muted); text-align:center; margin-bottom:0.75rem;">Total Sum Insured: <strong>${p.coverage}</strong></div>
+            <div style="text-align:center; margin-bottom:1rem;">
+              <span style="font-size:1.5rem; font-weight:800; color:var(--primary);">$${p.premium}</span>
+              <span style="font-size:0.8rem; color:var(--text-muted);">/ year</span>
+            </div>
+            <button class="btn btn-sm btn-primary btn-block" onclick="buyPolicy('${p.name}', ${p.premium})">Buy Policy Online</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function buyPolicy(name, premium) {
+      const polId = 'POL-' + Math.floor(1000 + Math.random() * 9000);
+      showToast(`Policy ${polId} purchased for "${name}"! Premium: $${premium}/yr`, 'success');
+    }
+
+    function handleClaim(e) {
+      e.preventDefault();
+      showToast('Claim ticket logged! Case officer assigned for inspection.', 'success');
+      e.target.reset();
+    }
+
+    function sendSmsAlert() {
+      const phone = document.getElementById('smsPhone').value;
+      showToast(`SMS alert successfully dispatched to ${phone}!`, 'success');
+    }
+
+    function approveAgent(btn) {
+      btn.parentElement.previousElementSibling.innerHTML = '<span class="badge badge-success">Approved</span>';
+      btn.remove();
+      showToast('Agent approved successfully!', 'success');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('clmDate').value = new Date().toISOString().split('T')[0];
+      renderPolicies();
+    });
+  </script>
+</body>
+</html>

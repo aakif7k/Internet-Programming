@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 10: StyleHub - Online Fashion Retailer</title>
+  <link rel="stylesheet" href="../assets/common.css">
+  <style>
+    .fashion-card { border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; background:#fff; display:flex; flex-direction:column; }
+    .fashion-img { height:180px; background:linear-gradient(135deg, #ec4899, #f43f5e); display:flex; align-items:center; justify-content:center; color:#fff; font-size:3.5rem; }
+  </style>
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon">&#128087;</div>
+        <span>StyleHub Fashion</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 10</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">StyleHub - Online Fashion Retailer</h1>
+        <p class="lab-hero-desc">Trendy collections for Men, Women, and Kids. Interactive size guide (S, M, L, XL, XXL), customer reviews, wishlist, cart, returns and exchanges, and admin product management.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="collectionTab">&#128087; Fashion Catalog</button>
+        <button class="tab-btn" data-tab="sizeGuideTab">&#128207; Interactive Size Guide</button>
+        <button class="tab-btn" data-tab="cartTab">&#128092; Cart & Returns</button>
+        <button class="tab-btn" data-tab="adminTab">&#9881; Fashion Admin</button>
+      </div>
+
+      <!-- Catalog Tab -->
+      <div id="collectionTab" class="tab-pane active">
+        <div class="card" style="margin-bottom:1.5rem;">
+          <div class="card-body">
+            <div class="grid grid-3">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Department</label>
+                <select id="deptFilter" class="form-select" onchange="renderFashion()">
+                  <option value="All">All Departments</option>
+                  <option value="Men">Men's Apparel</option>
+                  <option value="Women">Women's Collection</option>
+                  <option value="Kids">Kids & Toddlers</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Collection</label>
+                <select id="seasonFilter" class="form-select" onchange="renderFashion()">
+                  <option value="All">All Collections</option>
+                  <option value="Casual">Casual Streetwear</option>
+                  <option value="Formal">Formal & Evening</option>
+                  <option value="Winter">Winter Jackets</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Quick Search</label>
+                <input type="text" id="fSearch" class="form-control" placeholder="Search by dress, jacket..." onkeyup="renderFashion()">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-3" id="fashionGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Size Guide Tab -->
+      <div id="sizeGuideTab" class="tab-pane">
+        <div class="card" style="max-width:750px; margin:0 auto;">
+          <div class="card-header">Interactive Apparel Size Guide (Inches & CM)</div>
+          <div class="card-body">
+            <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:1.25rem;">Select your body measurements to calculate your recommended fit size:</p>
+            <div class="grid grid-2" style="margin-bottom:1rem;">
+              <div class="form-group">
+                <label class="form-label">Chest / Bust (Inches)</label>
+                <input type="number" id="sgChest" class="form-control" value="38" oninput="calcSize()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Waist (Inches)</label>
+                <input type="number" id="sgWaist" class="form-control" value="32" oninput="calcSize()">
+              </div>
+            </div>
+            <div style="padding:1.25rem; background:var(--surface-2); border-radius:var(--radius); text-align:center;">
+              <div style="font-size:0.9rem; color:var(--text-muted);">Recommended Fit:</div>
+              <div style="font-size:2rem; font-weight:800; color:var(--primary);" id="recommendedSizeBadge">M (Medium)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cart & Returns Tab -->
+      <div id="cartTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Fashion Cart & Easy Return / Exchange Request</div>
+          <div class="card-body">
+            <div class="alert" style="background:#fef2f2; border:1px solid #fecaca; padding:1rem; border-radius:var(--radius); margin-bottom:1.5rem;">
+              <strong style="color:#991b1b;">&#9888; Easy 30-Day Free Returns:</strong> If you are not completely satisfied with your fit or style, initiate an instant return/exchange from your dashboard.
+            </div>
+            <div id="fashionCartItems">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab -->
+      <div id="adminTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Admin Fashion Inventory Management</div>
+          <div class="card-body">
+            <p style="font-size:0.9rem; color:var(--text-muted);">Add new seasonal attire, modify prices, and monitor stock availability across Men, Women, and Kids categories.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-10: StyleHub Online Fashion Retailer</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let fashionItems = [
+      { id: 1, name: "Italian Linen Slim Shirt", dept: "Men", col: "Casual", price: 49, icon: "&#128084;" },
+      { id: 2, name: "Silk Floral Midi Dress", dept: "Women", col: "Formal", price: 79, icon: "&#128087;" },
+      { id: 3, name: "Quilted Winter Parka", dept: "Men", col: "Winter", price: 120, icon: "&#129509;" },
+      { id: 4, name: "Kids Denim Dungarees", dept: "Kids", col: "Casual", price: 35, icon: "&#128086;" }
+    ];
+
+    function renderFashion() {
+      const grid = document.getElementById('fashionGrid');
+      const dept = document.getElementById('deptFilter').value;
+      const col = document.getElementById('seasonFilter').value;
+      const q = document.getElementById('fSearch').value.toLowerCase();
+      grid.innerHTML = '';
+
+      const filtered = fashionItems.filter(f => {
+        return (dept === 'All' || f.dept === dept) &&
+               (col === 'All' || f.col === col) &&
+               f.name.toLowerCase().includes(q);
+      });
+
+      filtered.forEach(f => {
+        const card = document.createElement('div');
+        card.className = 'fashion-card';
+        card.innerHTML = `
+          <div class="fashion-img">${f.icon}</div>
+          <div style="padding:1.25rem;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:0.35rem;">
+              <h4 style="margin:0;">${f.name}</h4>
+              <span class="badge badge-primary">${f.dept}</span>
+            </div>
+            <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.75rem;">Collection: ${f.col}</div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:1.3rem; font-weight:800; color:var(--primary);">$${f.price}</span>
+              <button class="btn btn-sm btn-primary" onclick="addFashionToCart('${f.name}', ${f.price})">Buy Now</button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function addFashionToCart(name, price) {
+      showToast(`Added ${name} ($${price}) to your cart!`, 'success');
+    }
+
+    function calcSize() {
+      const chest = parseFloat(document.getElementById('sgChest').value) || 38;
+      let size = "M (Medium)";
+      if (chest < 36) size = "S (Small)";
+      else if (chest <= 39) size = "M (Medium)";
+      else if (chest <= 42) size = "L (Large)";
+      else if (chest <= 45) size = "XL (Extra Large)";
+      else size = "XXL (Double Extra Large)";
+      document.getElementById('recommendedSizeBadge').textContent = size;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderFashion();
+      calcSize();
+    });
+  </script>
+</body>
+</html>

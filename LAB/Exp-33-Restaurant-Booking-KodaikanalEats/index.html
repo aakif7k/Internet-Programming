@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 33: KodaikanalEats - Restaurant & Resort Booking</title>
+  <link rel="stylesheet" href="../assets/common.css">
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon">&#127860;</div>
+        <span>KodaikanalEats Hospitality</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 33</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">KodaikanalEats - Dining & Resort Booking</h1>
+        <p class="lab-hero-desc">Hill station dining table reservations and resort room bookings (Single, Double, Deluxe rooms) with seasonal vs non-seasonal pricing and room boy availability status.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="roomsTab">&#128716; Resort Rooms Booking</button>
+        <button class="tab-btn" data-tab="tableTab">&#127860; Restaurant Table Reservation</button>
+        <button class="tab-btn" data-tab="boysTab">&#128104;&#8205;&#128188; Room Boy Service Availability</button>
+      </div>
+
+      <!-- Rooms Tab -->
+      <div id="roomsTab" class="tab-pane active">
+        <div class="card" style="margin-bottom:1.5rem;">
+          <div class="card-body">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <strong>Season Pricing Mode:</strong> Select active tourist season tier
+              </div>
+              <div style="display:flex; gap:1rem;">
+                <label><input type="radio" name="season" value="normal" checked onchange="updateRoomRates()"> Non-Seasonal (Standard)</label>
+                <label><input type="radio" name="season" value="peak" onchange="updateRoomRates()"> Peak Hill Station Season (+30%)</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-3" id="roomsList">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Table Tab -->
+      <div id="tableTab" class="tab-pane">
+        <div class="card" style="max-width:650px; margin:0 auto;">
+          <div class="card-header">Reserve Dining Table with Valley View</div>
+          <div class="card-body">
+            <form onsubmit="handleReserveTable(event)">
+              <div class="grid grid-2">
+                <div class="form-group">
+                  <label class="form-label">Guests Count</label>
+                  <select class="form-select">
+                    <option>Table for 2 Guests</option>
+                    <option>Table for 4 Guests</option>
+                    <option>Family Table (6-8 Guests)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Dining Slot</label>
+                  <select class="form-select">
+                    <option>Lunch (01:00 PM)</option>
+                    <option>Sunset High Tea (05:00 PM)</option>
+                    <option>Candlelight Dinner (08:00 PM)</option>
+                  </select>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Confirm Table Reservation</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Room Boys Tab -->
+      <div id="boysTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Room Boy & Housekeeping Staff Availability Status</div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-responsive" style="border:none;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Staff Name</th>
+                    <th>Duty Shift</th>
+                    <th>Assigned Wing</th>
+                    <th>Current Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Muthu K.</td>
+                    <td>Morning (08:00 - 16:00)</td>
+                    <td>Pine Valley Wing</td>
+                    <td><span class="badge badge-success">Available for Service</span></td>
+                  </tr>
+                  <tr>
+                    <td>Selvam R.</td>
+                    <td>Evening (16:00 - 00:00)</td>
+                    <td>Lake View Deluxe Suites</td>
+                    <td><span class="badge badge-primary">On Active Room Call</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-33: KodaikanalEats Hospitality Platform</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let roomTypes = [
+      { id: 1, name: "Single Cozy Room", baseRate: 1800, desc: "Queen bed, mountain view, hot water geyser" },
+      { id: 2, name: "Double Valley View Room", baseRate: 2800, desc: "King bed, private balcony overlooking Kodai lake" },
+      { id: 3, name: "Grand Deluxe Suite", baseRate: 4500, desc: "Fireplace, living room, panoramic mist views" }
+    ];
+
+    function updateRoomRates() {
+      const isPeak = document.querySelector('input[name="season"]:checked').value === 'peak';
+      const grid = document.getElementById('roomsList');
+      grid.innerHTML = '';
+
+      roomTypes.forEach(r => {
+        const rate = isPeak ? Math.round(r.baseRate * 1.3) : r.baseRate;
+        const c = document.createElement('div');
+        c.className = 'card';
+        c.innerHTML = `
+          <div class="card-header">
+            <span><strong>${r.name}</strong></span>
+            <span class="badge badge-primary">Available</span>
+          </div>
+          <div class="card-body">
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">${r.desc}</p>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:1.3rem; font-weight:800; color:var(--primary);">Rs. ${rate} <small style="font-size:0.8rem; color:var(--text-muted);">/ night</small></span>
+              <button class="btn btn-sm btn-primary" onclick="showToast('Room booked at Rs. ${rate}/night!', 'success')">Book Room</button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(c);
+      });
+    }
+
+    function handleReserveTable(e) {
+      e.preventDefault();
+      showToast('Valley view dining table reserved!', 'success');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      updateRoomRates();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 35: EduConnect - Interactive Online Teaching Platform</title>
+  <link rel="stylesheet" href="../assets/common.css">
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon" style="background:#4f46e5;">&#127891;</div>
+        <span>EduConnect Learning</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 35</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">EduConnect - Interactive Teaching Platform</h1>
+        <p class="lab-hero-desc">Interactive virtual classroom: Course catalog, student & instructor registration, subject allocation, video lecture streaming, and knowledge check quizzes.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="catalogTab">&#128214; Course Catalog</button>
+        <button class="tab-btn" data-tab="classTab">&#128250; Virtual Classroom & Lecture</button>
+        <button class="tab-btn" data-tab="quizTab">&#9997; Practice Quiz</button>
+      </div>
+
+      <!-- Catalog Tab -->
+      <div id="catalogTab" class="tab-pane active">
+        <div class="grid grid-3" id="eduCoursesGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Classroom Tab -->
+      <div id="classTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Lecture: Modern Internet Programming & Web Architecture</div>
+          <div class="card-body">
+            <div style="height:260px; background:#1e293b; border-radius:var(--radius); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.5rem; margin-bottom:1rem;">
+              &#9658; Click to Play Live Stream / Recorded Session
+            </div>
+            <button class="btn btn-outline" onclick="showToast('Downloading Lecture_Notes_Module1.pdf...', 'info')">&#128229; Download Lecture Slides</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz Tab -->
+      <div id="quizTab" class="tab-pane">
+        <div class="card" style="max-width:650px; margin:0 auto;">
+          <div class="card-header">Quiz: HTTP Protocols & DOM Manipulation</div>
+          <div class="card-body">
+            <p><strong>Q1. Which HTTP method is idempotent and used to retrieve resources without state change?</strong></p>
+            <div style="display:flex; flex-direction:column; gap:0.5rem; margin:1rem 0;">
+              <label><input type="radio" name="q1" value="A"> POST</label>
+              <label><input type="radio" name="q1" value="B" id="correctOpt"> GET</label>
+              <label><input type="radio" name="q1" value="C"> PATCH</label>
+            </div>
+            <button class="btn btn-primary" onclick="submitQuiz()">Submit Answers</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-35: EduConnect Online Teaching Platform</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let eduCourses = [
+      { id: 1, title: "Internet Programming & Web Apps", instructor: "Prof. Arvind K.", lessons: 24, progress: "65%" },
+      { id: 2, title: "Full-Stack Python & Django", instructor: "Dr. Rachel Green", lessons: 32, progress: "10%" },
+      { id: 3, title: "Database Systems & SQL Optimization", instructor: "Prof. Narayanan", lessons: 18, progress: "80%" }
+    ];
+
+    function renderEduCourses() {
+      const grid = document.getElementById('eduCoursesGrid');
+      grid.innerHTML = '';
+      eduCourses.forEach(c => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="card-header">
+            <span><strong>${c.title}</strong></span>
+          </div>
+          <div class="card-body">
+            <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.75rem;">Instructor: ${c.instructor} &bull; ${c.lessons} Lessons</div>
+            <div style="margin-bottom:0.5rem; font-size:0.85rem;">Progress: <strong>${c.progress}</strong></div>
+            <button class="btn btn-sm btn-primary btn-block" onclick="showToast('Resuming course: ${c.title}...', 'info')">Resume Learning</button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function submitQuiz() {
+      if (document.getElementById('correctOpt').checked) {
+        showToast('Correct! GET is an idempotent HTTP retrieval method.', 'success');
+      } else {
+        showToast('Incorrect option selected. Review HTTP methods.', 'danger');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderEduCourses();
+    });
+  </script>
+</body>
+</html>

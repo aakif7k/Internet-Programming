@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 29: Event Landing & Registration Page</title>
+  <link rel="stylesheet" href="../assets/common.css">
+  <style>
+    .speaker-card { border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem; background:#fff; text-align:center; }
+    .speaker-img { width:80px; height:80px; border-radius:50%; background:var(--primary-light); color:var(--primary); font-size:2.2rem; display:flex; align-items:center; justify-content:center; margin:0 auto 0.75rem auto; }
+  </style>
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon">&#127919;</div>
+        <span>TechCon Global 2026</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 29</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">TechCon 2026: Future of Internet Engineering</h1>
+        <p class="lab-hero-desc">Featured keynote speakers, chunked schedule sessions, venue coordinates, target audience definition, and participant registration.</p>
+      </div>
+
+      <!-- Speakers Chunk -->
+      <h3 style="margin-bottom:1rem;">Distinguished Keynote Speakers</h3>
+      <div class="grid grid-3" style="margin-bottom:2rem;">
+        <div class="speaker-card">
+          <div class="speaker-img">&#128104;&#8205;&#128187;</div>
+          <h4 style="margin:0;">Dr. Alex Rivera</h4>
+          <div style="font-size:0.85rem; color:var(--primary);">Chief Web Architect, Google Cloud</div>
+          <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0.35rem;">Topic: "Hyper-Scalable Web Systems & HTTP/3"</p>
+        </div>
+        <div class="speaker-card">
+          <div class="speaker-img">&#128105;&#8205;&#128187;</div>
+          <h4 style="margin:0;">Elena Rostova</h4>
+          <div style="font-size:0.85rem; color:var(--primary);">Head of AI Infrastructure, DeepMind</div>
+          <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0.35rem;">Topic: "Autonomous Agentic Web Workflows"</p>
+        </div>
+        <div class="speaker-card">
+          <div class="speaker-img">&#128104;&#8205;&#9877;</div>
+          <h4 style="margin:0;">Marcus Vance</h4>
+          <div style="font-size:0.85rem; color:var(--primary);">Principal Security Officer, Cloudflare</div>
+          <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0.35rem;">Topic: "Next-Gen Cryptography & Zero-Trust"</p>
+        </div>
+      </div>
+
+      <!-- Schedule Chunk -->
+      <div class="card" style="margin-bottom:2rem;">
+        <div class="card-header">Conference Schedule & Chunked Timeline</div>
+        <div class="card-body">
+          <div class="grid grid-2">
+            <div>
+              <h4 style="color:var(--primary);">Morning Sessions (09:00 - 13:00)</h4>
+              <p style="font-size:0.9rem; margin-top:0.5rem;">
+                &bull; 09:00 AM: Welcome & Inaugural Address<br>
+                &bull; 10:00 AM: Keynote by Dr. Alex Rivera<br>
+                &bull; 11:30 AM: Panel Discussion: Future of Full-Stack Architecture
+              </p>
+            </div>
+            <div>
+              <h4 style="color:var(--secondary);">Afternoon Sessions (14:00 - 18:00)</h4>
+              <p style="font-size:0.9rem; margin-top:0.5rem;">
+                &bull; 02:00 PM: Agentic AI Hands-on Workshop<br>
+                &bull; 04:00 PM: Research Paper Presentations<br>
+                &bull; 05:30 PM: Networking Gala & Valedictory
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Registration Form Chunk -->
+      <div class="card" style="max-width:650px; margin:0 auto;">
+        <div class="card-header">Register for Conference Pass</div>
+        <div class="card-body">
+          <form onsubmit="handleEventReg(event)">
+            <div class="form-group">
+              <label class="form-label">Attendee Full Name</label>
+              <input type="text" id="regName" class="form-control" value="Aakif" required>
+            </div>
+            <div class="grid grid-2">
+              <div class="form-group">
+                <label class="form-label">Email ID</label>
+                <input type="email" id="regEmail" class="form-control" value="aakif@college.edu" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Pass Tier</label>
+                <select id="regTier" class="form-select">
+                  <option>Student Delegate (Free)</option>
+                  <option>Professional Pass ($150)</option>
+                  <option>VIP All-Access ($300)</option>
+                </select>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Confirm Registration</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-29: Event Landing & Registration Page</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    function handleEventReg(e) {
+      e.preventDefault();
+      const name = document.getElementById('regName').value;
+      const tier = document.getElementById('regTier').value;
+      showToast(`Conference badge issued for ${name} (${tier})!`, 'success');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 18: AgriMart - Farmer & Agriculture Supplies</title>
+  <link rel="stylesheet" href="../assets/common.css">
+  <style>
+    .agri-card { border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; background:#fff; display:flex; flex-direction:column; }
+    .agri-img { height:150px; background:linear-gradient(135deg, #15803d, #22c55e); display:flex; align-items:center; justify-content:center; color:#fff; font-size:3rem; }
+  </style>
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon">&#127806;</div>
+        <span>AgriMart Agro Supplies</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 18</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">AgriMart - Farmer Supplies Marketplace</h1>
+        <p class="lab-hero-desc">Connecting farmers and buyers: Farmer portal for listing seeds, fertilizers & farm tools and tracking sales earnings, and Public buyer portal with wallet balance and order tracking.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="buyerTab">&#128722; Public Buyer Portal</button>
+        <button class="tab-btn" data-tab="farmerTab">&#129312; Farmer / Seller Dashboard</button>
+      </div>
+
+      <!-- Buyer Tab -->
+      <div id="buyerTab" class="tab-pane active">
+        <div class="grid grid-3" style="margin-bottom:1.5rem;">
+          <div class="stat-card">
+            <div class="stat-icon">&#128179;</div>
+            <div>
+              <div class="stat-value">Rs. 4,500</div>
+              <div class="stat-label">Agri-Wallet Balance</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">&#127806;</div>
+            <div>
+              <div class="stat-value">100% Organic</div>
+              <div class="stat-label">Certified Seeds & Bio-Fertilizers</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-3" id="agriGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Farmer Tab -->
+      <div id="farmerTab" class="tab-pane">
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="card-header">Post Agricultural Product for Sale</div>
+            <div class="card-body">
+              <form onsubmit="handleFarmerPost(event)">
+                <div class="form-group">
+                  <label class="form-label">Product Name</label>
+                  <input type="text" id="agName" class="form-control" placeholder="e.g. High-Yield Hybrid Paddy Seeds (10kg)" required>
+                </div>
+                <div class="grid grid-2">
+                  <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select id="agCat" class="form-select">
+                      <option>Certified Seeds</option>
+                      <option>Bio-Fertilizers</option>
+                      <option>Pest Management</option>
+                      <option>Farming Tools</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Price (Rs.)</label>
+                    <input type="number" id="agPrice" class="form-control" value="850" required>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">List Product on AgriMart</button>
+              </form>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">My Sales & Dispatch Status</div>
+            <div class="card-body">
+              <div class="stat-card" style="margin-bottom:1rem;">
+                <div class="stat-icon">&#128176;</div>
+                <div>
+                  <div class="stat-value">Rs. 18,400</div>
+                  <div class="stat-label">Total Farmer Revenue Earned</div>
+                </div>
+              </div>
+              <p style="font-size:0.85rem; color:var(--text-muted);">Direct farm gate delivery network with subsidized shipping.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-18: AgriMart Farmer Supplies Marketplace</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let agroItems = [
+      { id: 1, name: "Hybrid Basmati Rice Seeds (5kg)", cat: "Certified Seeds", price: 650, icon: "&#127806;" },
+      { id: 2, name: "Organic Vermicompost Enricher (25kg)", cat: "Bio-Fertilizers", price: 450, icon: "&#127793;" },
+      { id: 3, name: "Manual Knapsack Crop Sprayer 16L", cat: "Farming Tools", price: 1400, icon: "&#9881;" }
+    ];
+
+    function renderAgro() {
+      const grid = document.getElementById('agriGrid');
+      grid.innerHTML = '';
+      agroItems.forEach(item => {
+        const c = document.createElement('div');
+        c.className = 'agri-card';
+        c.innerHTML = `
+          <div class="agri-img">${item.icon}</div>
+          <div style="padding:1.25rem;">
+            <div style="display:flex; justify-content:space-between;">
+              <h4 style="margin:0;">${item.name}</h4>
+              <span class="badge badge-success">${item.cat}</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:1rem;">
+              <span style="font-size:1.3rem; font-weight:800; color:var(--primary);">Rs. ${item.price}</span>
+              <button class="btn btn-sm btn-primary" onclick="buyAgroItem('${item.name}', ${item.price})">Order Product</button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(c);
+      });
+    }
+
+    function buyAgroItem(name, price) {
+      showToast(`Order confirmed for "${name}" (Rs. ${price})!`, 'success');
+    }
+
+    function handleFarmerPost(e) {
+      e.preventDefault();
+      const name = document.getElementById('agName').value;
+      const cat = document.getElementById('agCat').value;
+      const price = parseInt(document.getElementById('agPrice').value);
+      agroItems.push({ id: Date.now(), name, cat, price, icon: "&#127806;" });
+      renderAgro();
+      e.target.reset();
+      showToast('New agro product listed successfully!', 'success');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderAgro();
+    });
+  </script>
+</body>
+</html>

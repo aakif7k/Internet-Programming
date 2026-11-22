@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 40: Travel Explorer - Interactive Travel Blog</title>
+  <link rel="stylesheet" href="../assets/common.css">
+  <style>
+    .map-box { height:220px; background:linear-gradient(135deg, #0284c7, #0369a1); border-radius:var(--radius); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.5rem; margin-bottom:1.5rem; }
+  </style>
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon">&#127758;</div>
+        <span>Travel Explorer Journal</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 40</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="map-box">
+        &#127757; Interactive Visited Destinations: 14 Countries Marked Across 4 Continents
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="storiesTab">&#128214; Travel Stories</button>
+        <button class="tab-btn" data-tab="aboutTab">&#128100; About the Traveler</button>
+      </div>
+
+      <!-- Stories Tab -->
+      <div id="storiesTab" class="tab-pane active">
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="card-header">Solo Trekking Across the Norwegian Fjords</div>
+            <div class="card-body">
+              <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:1rem;">Navigating the steep cliffs of Preikestolen under the midnight sun with lightweight bivouac gear.</p>
+              <div style="border-top:1px solid var(--border); padding-top:0.75rem;">
+                <strong>Reader Comments:</strong>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.25rem;">"Incredible photography! Did you encounter heavy winds near the summit?" &mdash; Maya</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">Kyoto's Hidden Bamboo Forests & Teahouses</div>
+            <div class="card-body">
+              <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:1rem;">An intimate morning walk through Arashiyama and savoring traditional matcha ceremonies in Uji.</p>
+              <div style="border-top:1px solid var(--border); padding-top:0.75rem;">
+                <strong>Reader Comments:</strong>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.25rem;">"Saved this for my spring travel list. Beautiful advice!" &mdash; David</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- About Tab -->
+      <div id="aboutTab" class="tab-pane">
+        <div class="card" style="max-width:650px; margin:0 auto;">
+          <div class="card-header">About the Traveler</div>
+          <div class="card-body">
+            <p style="line-height:1.7;">Documenting slow travel, mountain expeditions, and authentic culinary encounters worldwide.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-40: Travel Explorer Interactive Blog</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+</body>
+</html>

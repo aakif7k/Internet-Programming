@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 4: Online Train Reservation System</title>
+  <link rel="stylesheet" href="../assets/common.css">
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon">&#128646;</div>
+        <span>RailConnect IRCTC Portal</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 04</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">Online Train Reservation System</h1>
+        <p class="lab-hero-desc">Search trains by route, date, and travel class (1A, 2A, 3A, SL, CC). Book tickets with unique 10-digit PNR generation, check live PNR status, apply cancellation refund rules, and access the railway admin master.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="searchTab">&#128645; Search & Book Trains</button>
+        <button class="tab-btn" data-tab="pnrTab">&#128269; PNR Status Inquiry</button>
+        <button class="tab-btn" data-tab="cancelTab">&#127915; Cancel & Refund Rules</button>
+        <button class="tab-btn" data-tab="adminTab">&#9881; Railway Admin</button>
+      </div>
+
+      <!-- Search & Book Tab -->
+      <div id="searchTab" class="tab-pane active">
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <div class="card-body">
+            <div class="grid grid-4">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Origin Station</label>
+                <input type="text" id="trainOrigin" class="form-control" value="New Delhi (NDLS)">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Destination Station</label>
+                <input type="text" id="trainDest" class="form-control" value="Mumbai Central (MMCT)">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Date of Journey</label>
+                <input type="date" id="trainDate" class="form-control">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Class</label>
+                <select id="trainClass" class="form-select">
+                  <option value="3A">AC 3 Tier (3A)</option>
+                  <option value="2A">AC 2 Tier (2A)</option>
+                  <option value="1A">AC First Class (1A)</option>
+                  <option value="SL">Sleeper (SL)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-2" id="trainsList">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- PNR Status Tab -->
+      <div id="pnrTab" class="tab-pane">
+        <div class="card" style="max-width: 650px; margin: 0 auto;">
+          <div class="card-header">Check Passenger PNR Status</div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">Enter 10-Digit PNR Number</label>
+              <div style="display:flex; gap:0.5rem;">
+                <input type="text" id="pnrQuery" class="form-control" placeholder="e.g. 4829104812" value="4829104812">
+                <button class="btn btn-primary" onclick="checkPNR()">Check Status</button>
+              </div>
+            </div>
+            <div id="pnrResult" style="margin-top:1.5rem; display:none; padding:1.25rem; background:var(--surface-2); border-radius:var(--radius); border:1px solid var(--border);">
+              <!-- Filled by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cancel & Refund Tab -->
+      <div id="cancelTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">My Railway Tickets & Refund Policy Rules</div>
+          <div class="card-body">
+            <div class="alert" style="background:#f0fdf4; border:1px solid #bbf7d0; padding:1rem; border-radius:var(--radius); margin-bottom:1.5rem;">
+              <h4 style="color:#166534; margin-bottom:0.35rem;">&#9432; Railway Cancellation & Refund Schedule</h4>
+              <p style="font-size:0.85rem; color:#15803d;">
+                &bull; Cancellation > 48 hrs before departure: <strong>Flat deduction Rs. 120 (85% Refund)</strong><br>
+                &bull; Cancellation between 12 to 48 hrs: <strong>25% deduction (75% Refund)</strong><br>
+                &bull; Cancellation < 12 hrs before departure: <strong>50% deduction (50% Refund)</strong>
+              </p>
+            </div>
+            <div class="table-responsive" style="border:none;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>PNR Number</th>
+                    <th>Train Details</th>
+                    <th>Class</th>
+                    <th>Travel Date</th>
+                    <th>Fare Paid</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="railwayTicketsTable">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab -->
+      <div id="adminTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Admin Railway Control & Train Schedule Master</div>
+          <div class="card-body">
+            <form id="addTrainForm" onsubmit="handleAddTrain(event)" style="margin-bottom:1.5rem;">
+              <div class="grid grid-3">
+                <div class="form-group">
+                  <label class="form-label">Train Number & Name</label>
+                  <input type="text" id="newTrainName" class="form-control" placeholder="12952 Mumbai Rajdhani" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Route Via-Details</label>
+                  <input type="text" id="newTrainRoute" class="form-control" placeholder="NDLS - Kota - Vadodara - MMCT" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Base Fare 3A (Rs.)</label>
+                  <input type="number" id="newTrainFare" class="form-control" value="1850" required>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">Add Train to Central Schedule</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-04: Online Train Reservation System</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let trains = [
+      { no: "12952", name: "Mumbai Rajdhani Express", via: "NDLS - Kota - Vadodara - MMCT", dep: "16:55", arr: "08:35", fare3A: 2150, avail3A: 18, avail2A: 6 },
+      { no: "12954", name: "August Kranti Rajdhani", via: "NZM - Mathura - Surat - MMCT", dep: "17:15", arr: "10:05", fare3A: 1980, avail3A: 24, avail2A: 12 },
+      { no: "12910", name: "Hazrat Nizamuddin Garib Rath", via: "NZM - Kota - Ratlam - BDTS", dep: "15:35", arr: "07:35", fare3A: 1050, avail3A: 42, avail2A: 0 }
+    ];
+
+    let pnrDatabase = [
+      { pnr: "4829104812", train: "12952 Mumbai Rajdhani", date: "2026-12-01", travelClass: "3A", passenger: "Aakif (21CS042)", seat: "B4-23 (CNF)", fare: 2150, status: "Confirmed" }
+    ];
+
+    function renderTrains() {
+      const container = document.getElementById('trainsList');
+      container.innerHTML = '';
+      trains.forEach(t => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="card-header">
+            <span><strong>${t.no}</strong> - ${t.name}</span>
+            <span class="badge badge-primary">Superfast</span>
+          </div>
+          <div class="card-body">
+            <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.75rem;">
+              <strong>Route Via:</strong> ${t.via}
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:1rem;">
+              <div>
+                <div style="font-size:1.1rem; font-weight:700;">${t.dep} &rarr; ${t.arr}</div>
+                <div style="font-size:0.8rem; color:var(--text-muted);">Duration: 15h 40m</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:1.3rem; font-weight:800; color:var(--primary);">Rs. ${t.fare3A}</div>
+                <div style="font-size:0.8rem; color:var(--success); font-weight:bold;">AVL: ${t.avail3A} Seats (3A)</div>
+              </div>
+            </div>
+            <button class="btn btn-sm btn-primary btn-block" onclick="bookTrain('${t.no}', '${t.name}', ${t.fare3A})">Book Ticket (Generate PNR)</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function bookTrain(no, name, fare) {
+      const pnr = Math.floor(1000000000 + Math.random() * 9000000000).toString();
+      const date = document.getElementById('trainDate').value || "2026-12-05";
+      const travelClass = document.getElementById('trainClass').value;
+      const seatNo = `B${Math.floor(1 + Math.random()*5)}-${Math.floor(1 + Math.random()*60)} (CNF)`;
+      
+      const entry = {
+        pnr: pnr,
+        train: `${no} ${name}`,
+        date: date,
+        travelClass: travelClass,
+        passenger: "Aakif (Self)",
+        seat: seatNo,
+        fare: fare,
+        status: "Confirmed"
+      };
+      pnrDatabase.push(entry);
+      renderTickets();
+      showToast(`Booking Successful! PNR: ${pnr} generated. Seat: ${seatNo}`, 'success');
+      document.getElementById('pnrQuery').value = pnr;
+      checkPNR();
+    }
+
+    function checkPNR() {
+      const q = document.getElementById('pnrQuery').value.trim();
+      const res = document.getElementById('pnrResult');
+      const item = pnrDatabase.find(p => p.pnr === q);
+      res.style.display = 'block';
+      if (item) {
+        res.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+            <h4 style="margin:0;">PNR: ${item.pnr}</h4>
+            <span class="badge ${item.status === 'Confirmed' ? 'badge-success' : 'badge-danger'}">${item.status}</span>
+          </div>
+          <div class="grid grid-2" style="font-size:0.9rem;">
+            <div><strong>Train:</strong> ${item.train}</div>
+            <div><strong>Date of Journey:</strong> ${item.date}</div>
+            <div><strong>Passenger:</strong> ${item.passenger}</div>
+            <div><strong>Seat & Berths:</strong> ${item.seat}</div>
+            <div><strong>Class:</strong> ${item.travelClass}</div>
+            <div><strong>Fare Paid:</strong> Rs. ${item.fare}</div>
+          </div>
+        `;
+      } else {
+        res.innerHTML = `<span style="color:var(--danger);">&#9888; PNR ${q} not found in the reservation system.</span>`;
+      }
+    }
+
+    function renderTickets() {
+      const tbody = document.getElementById('railwayTicketsTable');
+      tbody.innerHTML = '';
+      pnrDatabase.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${item.pnr}</strong></td>
+          <td>${item.train}</td>
+          <td>${item.travelClass}</td>
+          <td>${item.date}</td>
+          <td>Rs. ${item.fare}</td>
+          <td><span class="badge ${item.status === 'Confirmed' ? 'badge-success' : 'badge-danger'}">${item.status}</span></td>
+          <td>
+            <button class="btn btn-sm btn-danger" onclick="cancelTrainTicket('${item.pnr}')" ${item.status === 'Cancelled' ? 'disabled' : ''}>Cancel Ticket</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function cancelTrainTicket(pnr) {
+      const item = pnrDatabase.find(p => p.pnr === pnr);
+      if (item && item.status === 'Confirmed') {
+        item.status = 'Cancelled';
+        const refund = Math.round(item.fare * 0.85);
+        renderTickets();
+        checkPNR();
+        showToast(`Ticket cancelled! Refund of Rs. ${refund} credited to passenger account (deduction: Rs. ${item.fare - refund}).`, 'info');
+      }
+    }
+
+    function handleAddTrain(e) {
+      e.preventDefault();
+      const name = document.getElementById('newTrainName').value;
+      const via = document.getElementById('newTrainRoute').value;
+      const fare = parseInt(document.getElementById('newTrainFare').value);
+      trains.push({ no: "12001", name, via, dep: "06:00", arr: "14:00", fare3A: fare, avail3A: 50, avail2A: 20 });
+      renderTrains();
+      document.getElementById('addTrainForm').reset();
+      showToast('Train added to central schedule!', 'success');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('trainDate').value = new Date(Date.now() + 5*24*60*60*1000).toISOString().split('T')[0];
+      renderTrains();
+      renderTickets();
+    });
+  </script>
+</body>
+</html>

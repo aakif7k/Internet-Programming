@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 3: Online Bus Ticket Booking System</title>
+  <link rel="stylesheet" href="../assets/common.css">
+  <style>
+    .bus-seat-grid { display: grid; grid-template-columns: repeat(4, 45px); gap: 10px; justify-content: center; padding: 1.5rem; background: var(--surface-2); border-radius: var(--radius); }
+    .seat { width: 45px; height: 45px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; cursor: pointer; border: 1px solid var(--border); transition: var(--transition); }
+    .seat.available { background: #fff; color: var(--text-main); }
+    .seat.available:hover { background: var(--primary-light); border-color: var(--primary); }
+    .seat.selected { background: var(--primary); color: #fff; border-color: var(--primary-hover); }
+    .seat.booked { background: #cbd5e1; color: #64748b; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon">&#128652;</div>
+        <span>SwiftBus Reservations</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 03</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">Online Bus Ticket Booking System</h1>
+        <p class="lab-hero-desc">Search bus routes, choose from Volvo, AC Sleeper, and Semi-Sleeper categories, select seats interactively, leave comments, and manage schedules & reports via Admin.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="bookTab">&#128652; Search & Book Bus</button>
+        <button class="tab-btn" data-tab="myTicketsTab">&#127915; My Tickets & Cancel</button>
+        <button class="tab-btn" data-tab="adminTab">&#128188; Admin Management & Reports</button>
+      </div>
+
+      <!-- Book Tab -->
+      <div id="bookTab" class="tab-pane active">
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <div class="card-body">
+            <div class="grid grid-4">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">From Station</label>
+                <input type="text" id="fromStation" class="form-control" value="Chennai">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">To Station</label>
+                <input type="text" id="toStation" class="form-control" value="Bangalore">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Date of Journey</label>
+                <input type="date" id="busDate" class="form-control">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Bus Category</label>
+                <select id="busCatFilter" class="form-select" onchange="renderBuses()">
+                  <option value="All">All Categories</option>
+                  <option value="Volvo Multi-Axle">Volvo Multi-Axle</option>
+                  <option value="AC Sleeper">AC Sleeper</option>
+                  <option value="Semi-Sleeper">Semi-Sleeper</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-3" id="busList">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- My Tickets Tab -->
+      <div id="myTicketsTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Booked Bus Tickets</div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-responsive" style="border:none;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Ticket ID</th>
+                    <th>Bus Service</th>
+                    <th>Route</th>
+                    <th>Journey Date</th>
+                    <th>Seat(s)</th>
+                    <th>Total Fare</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="ticketHistoryTable">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab -->
+      <div id="adminTab" class="tab-pane">
+        <div class="grid grid-2">
+          <!-- Add Bus -->
+          <div class="card">
+            <div class="card-header">Add / Update Bus Route</div>
+            <div class="card-body">
+              <form id="addBusForm" onsubmit="handleAddBus(event)">
+                <div class="form-group">
+                  <label class="form-label">Bus Operator / Service Name</label>
+                  <input type="text" id="busName" class="form-control" required placeholder="e.g. KPN Volvo B11R">
+                </div>
+                <div class="grid grid-2">
+                  <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select id="newBusCat" class="form-select">
+                      <option>Volvo Multi-Axle</option>
+                      <option>AC Sleeper</option>
+                      <option>Semi-Sleeper</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Ticket Fare (Rs.)</label>
+                    <input type="number" id="newBusFare" class="form-control" value="850" required>
+                  </div>
+                </div>
+                <div class="grid grid-2">
+                  <div class="form-group">
+                    <label class="form-label">Departure Time</label>
+                    <input type="time" id="newBusTime" class="form-control" value="21:30" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Total Seats</label>
+                    <input type="number" id="newBusSeats" class="form-control" value="32" required>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Publish Bus Schedule</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Reports & News -->
+          <div class="card">
+            <div class="card-header">System Analytics & News Broadcast</div>
+            <div class="card-body">
+              <div class="grid grid-2" style="margin-bottom:1rem;">
+                <div class="stat-card">
+                  <div class="stat-icon">&#128652;</div>
+                  <div>
+                    <div class="stat-value" id="statTotalBuses">3</div>
+                    <div class="stat-label">Active Buses</div>
+                  </div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-icon">&#128176;</div>
+                  <div>
+                    <div class="stat-value" id="statRevenue">Rs. 3,400</div>
+                    <div class="stat-label">Total Bookings Revenue</div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Post Travel Alert / News</label>
+                <input type="text" id="newsInput" class="form-control" placeholder="e.g. Extra holiday special buses added on Chennai-Bangalore route!">
+              </div>
+              <button class="btn btn-secondary btn-block" onclick="broadcastNews()">Broadcast News Alert</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Seat Selection Modal -->
+  <div class="modal-backdrop" id="seatModal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title" id="seatModalTitle">Select Bus Seats</h3>
+        <button class="modal-close" onclick="closeModal('seatModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="text-align:center; margin-bottom:1rem; font-size:0.85rem; color:var(--text-muted);">
+          <span style="display:inline-block; width:12px; height:12px; background:#fff; border:1px solid #ccc; margin-right:4px;"></span> Available &nbsp;&nbsp;
+          <span style="display:inline-block; width:12px; height:12px; background:var(--primary); margin-right:4px;"></span> Selected &nbsp;&nbsp;
+          <span style="display:inline-block; width:12px; height:12px; background:#cbd5e1; margin-right:4px;"></span> Booked
+        </div>
+        <div class="bus-seat-grid" id="seatGrid">
+          <!-- Populated by JS -->
+        </div>
+        <div style="margin-top:1.5rem; padding-top:1rem; border-top:1px solid var(--border);">
+          <div class="form-group">
+            <label class="form-label">Passenger Name</label>
+            <input type="text" id="passengerName" class="form-control" value="Aakif">
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="font-size:0.85rem; color:var(--text-muted);">Selected Seats: <strong id="selectedSeatsLabel">None</strong></div>
+              <div style="font-size:1.15rem; font-weight:800; color:var(--primary);" id="totalFareLabel">Rs. 0</div>
+            </div>
+            <button class="btn btn-primary" onclick="confirmBusBooking()">Confirm & Pay</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-03: Online Bus Ticket Booking System</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let buses = [
+      { id: 1, name: "IntrCity SmartBus", category: "Volvo Multi-Axle", time: "21:00", fare: 950, seats: 32, bookedSeats: [3, 4, 11, 12] },
+      { id: 2, name: "SRS Travels AC Sleeper", category: "AC Sleeper", time: "22:30", fare: 1100, seats: 30, bookedSeats: [1, 2, 8] },
+      { id: 3, name: "KPN Semi-Sleeper", category: "Semi-Sleeper", time: "20:15", fare: 650, seats: 36, bookedSeats: [5, 6, 7] }
+    ];
+
+    let userTickets = [
+      { id: "BUS-881", bus: "IntrCity SmartBus", route: "Chennai - Bangalore", date: "2026-11-28", seats: ["S-07", "S-08"], fare: 1900, status: "Confirmed" }
+    ];
+
+    let selectedBus = null;
+    let selectedSeats = [];
+
+    function renderBuses() {
+      const container = document.getElementById('busList');
+      const cat = document.getElementById('busCatFilter').value;
+      container.innerHTML = '';
+      
+      const filtered = cat === "All" ? buses : buses.filter(b => b.category === cat);
+
+      filtered.forEach(b => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="card-header">
+            <span>${b.name}</span>
+            <span class="badge badge-primary">${b.category}</span>
+          </div>
+          <div class="card-body">
+            <div style="display:flex; justify-content:space-between; margin-bottom:0.75rem;">
+              <div>
+                <div style="font-size:1.2rem; font-weight:700;">${b.time}</div>
+                <div style="font-size:0.8rem; color:var(--text-muted);">Departure</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:1.3rem; font-weight:800; color:var(--primary);">Rs. ${b.fare}</div>
+                <div style="font-size:0.8rem; color:var(--text-muted);">${b.seats - b.bookedSeats.length} Seats Available</div>
+              </div>
+            </div>
+            <button class="btn btn-sm btn-primary btn-block" onclick="openSeatModal(${b.id})">Select Seats</button>
+            <div style="margin-top:1rem; border-top:1px solid var(--border); padding-top:0.75rem;">
+              <small style="color:var(--text-muted);">&#128172; <strong>User Comments:</strong> "Very punctual, smooth ride!"</small>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+      document.getElementById('statTotalBuses').textContent = buses.length;
+    }
+
+    function openSeatModal(busId) {
+      selectedBus = buses.find(b => b.id === busId);
+      selectedSeats = [];
+      document.getElementById('seatModalTitle').textContent = `Select Seats - ${selectedBus.name}`;
+      document.getElementById('selectedSeatsLabel').textContent = 'None';
+      document.getElementById('totalFareLabel').textContent = 'Rs. 0';
+
+      const grid = document.getElementById('seatGrid');
+      grid.innerHTML = '';
+      for (let i = 1; i <= selectedBus.seats; i++) {
+        const seat = document.createElement('div');
+        const isBooked = selectedBus.bookedSeats.includes(i);
+        seat.className = `seat ${isBooked ? 'booked' : 'available'}`;
+        seat.textContent = `S-${i < 10 ? '0' + i : i}`;
+        if (!isBooked) {
+          seat.onclick = () => toggleSeat(seat, i);
+        }
+        grid.appendChild(seat);
+      }
+      openModal('seatModal');
+    }
+
+    function toggleSeat(elem, seatNum) {
+      const idx = selectedSeats.indexOf(seatNum);
+      if (idx === -1) {
+        selectedSeats.push(seatNum);
+        elem.classList.remove('available');
+        elem.classList.add('selected');
+      } else {
+        selectedSeats.splice(idx, 1);
+        elem.classList.remove('selected');
+        elem.classList.add('available');
+      }
+      document.getElementById('selectedSeatsLabel').textContent = selectedSeats.map(s => 'S-' + (s<10?'0'+s:s)).join(', ') || 'None';
+      document.getElementById('totalFareLabel').textContent = 'Rs. ' + (selectedSeats.length * selectedBus.fare);
+    }
+
+    function confirmBusBooking() {
+      if (selectedSeats.length === 0) {
+        showToast('Please select at least one seat!', 'danger');
+        return;
+      }
+      const ticketId = 'BUS-' + Math.floor(100 + Math.random() * 900);
+      const fare = selectedSeats.length * selectedBus.fare;
+      selectedSeats.forEach(s => selectedBus.bookedSeats.push(s));
+      userTickets.push({
+        id: ticketId,
+        bus: selectedBus.name,
+        route: "Chennai - Bangalore",
+        date: document.getElementById('busDate').value || "2026-11-30",
+        seats: selectedSeats.map(s => 'S-' + (s<10?'0'+s:s)),
+        fare: fare,
+        status: "Confirmed"
+      });
+      closeModal('seatModal');
+      renderBuses();
+      renderTickets();
+      showToast(`Ticket ${ticketId} booked successfully! Paid Rs. ${fare}`, 'success');
+    }
+
+    function renderTickets() {
+      const tbody = document.getElementById('ticketHistoryTable');
+      tbody.innerHTML = '';
+      let rev = 0;
+      userTickets.forEach(t => {
+        if (t.status === 'Confirmed') rev += t.fare;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${t.id}</strong></td>
+          <td>${t.bus}</td>
+          <td>${t.route}</td>
+          <td>${t.date}</td>
+          <td>${t.seats.join(', ')}</td>
+          <td>Rs. ${t.fare}</td>
+          <td><span class="badge ${t.status === 'Confirmed' ? 'badge-success' : 'badge-danger'}">${t.status}</span></td>
+          <td>
+            <button class="btn btn-sm btn-danger" onclick="cancelBusTicket('${t.id}')" ${t.status === 'Cancelled' ? 'disabled' : ''}>Cancel Ticket</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+      document.getElementById('statRevenue').textContent = 'Rs. ' + rev;
+    }
+
+    function cancelBusTicket(id) {
+      const t = userTickets.find(item => item.id === id);
+      if (t && t.status === 'Confirmed') {
+        t.status = 'Cancelled';
+        renderTickets();
+        showToast(`Ticket ${id} cancelled. Refund of Rs. ${t.fare * 0.8} initiated (20% cancellation fee).`, 'info');
+      }
+    }
+
+    function handleAddBus(e) {
+      e.preventDefault();
+      const name = document.getElementById('busName').value;
+      const cat = document.getElementById('newBusCat').value;
+      const fare = parseInt(document.getElementById('newBusFare').value);
+      const time = document.getElementById('newBusTime').value;
+      const seats = parseInt(document.getElementById('newBusSeats').value);
+      buses.push({ id: Date.now(), name, category: cat, fare, time, seats, bookedSeats: [] });
+      renderBuses();
+      document.getElementById('addBusForm').reset();
+      showToast('New bus schedule added!', 'success');
+    }
+
+    function broadcastNews() {
+      const text = document.getElementById('newsInput').value;
+      if (text) {
+        showToast(`News Broadcasted: "${text}"`, 'info');
+        document.getElementById('newsInput').value = '';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('busDate').value = new Date(Date.now() + 2*24*60*60*1000).toISOString().split('T')[0];
+      renderBuses();
+      renderTickets();
+    });
+  </script>
+</body>
+</html>

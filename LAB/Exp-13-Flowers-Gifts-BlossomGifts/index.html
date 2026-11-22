@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 13: BlossomGifts - Flowers & Gifts Ordering</title>
+  <link rel="stylesheet" href="../assets/common.css">
+  <style>
+    .flower-card { border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; background:#fff; display:flex; flex-direction:column; }
+    .flower-img { height:150px; background:linear-gradient(135deg, #f43f5e, #fb7185); display:flex; align-items:center; justify-content:center; color:#fff; font-size:3rem; }
+  </style>
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon">&#127801;</div>
+        <span>BlossomGifts Online Florist</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 13</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">BlossomGifts - Flowers & Gifts Ordering</h1>
+        <p class="lab-hero-desc">Curated floral arrangements, gift hampers, and custom greeting messages. Multi-occasion catalog, delivery scheduling, cart, and florist admin inventory control.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="catalogTab">&#127801; Gifts Catalog</button>
+        <button class="tab-btn" data-tab="cartTab">&#128722; Cart & Delivery Date</button>
+        <button class="tab-btn" data-tab="adminTab">&#128188; Florist Admin</button>
+      </div>
+
+      <!-- Catalog Tab -->
+      <div id="catalogTab" class="tab-pane active">
+        <div class="card" style="margin-bottom:1.5rem;">
+          <div class="card-body">
+            <div class="grid grid-3">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Occasion</label>
+                <select id="occSelect" class="form-select" onchange="renderGifts()">
+                  <option value="All">All Occasions</option>
+                  <option value="Birthday">Birthday Wishes</option>
+                  <option value="Anniversary">Anniversary Romance</option>
+                  <option value="Congratulations">Congratulations</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Recipient</label>
+                <select id="recipSelect" class="form-select" onchange="renderGifts()">
+                  <option value="All">Anyone</option>
+                  <option value="Her">For Her</option>
+                  <option value="Him">For Him</option>
+                  <option value="Parents">For Parents</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Max Price (Rs.)</label>
+                <input type="number" id="giftMaxPrice" class="form-control" value="2500" oninput="renderGifts()">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-3" id="giftsGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Cart Tab -->
+      <div id="cartTab" class="tab-pane">
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="card-header">Selected Hampers & Flowers</div>
+            <div class="card-body" id="giftCartList">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">Custom Delivery & Greeting Message</div>
+            <div class="card-body">
+              <form onsubmit="handleGiftOrder(event)">
+                <div class="grid grid-2">
+                  <div class="form-group">
+                    <label class="form-label">Delivery Date</label>
+                    <input type="date" id="giftDelDate" class="form-control" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Delivery Slot</label>
+                    <select class="form-select">
+                      <option>Morning (08:00 - 11:00 AM)</option>
+                      <option>Afternoon (01:00 - 04:00 PM)</option>
+                      <option>Evening (06:00 - 09:00 PM)</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Custom Greeting Card Message</label>
+                  <textarea class="form-control" rows="3" placeholder="Write your heartfelt note here..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Send Gift Now</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab -->
+      <div id="adminTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Florist Stock Inventory</div>
+          <div class="card-body">
+            <p style="font-size:0.9rem; color:var(--text-muted);">Manage fresh seasonal blooms, update bouquet prices, and track pending dispatches.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-13: BlossomGifts Flowers & Gifts Ordering</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let giftItems = [
+      { id: 1, name: "Crimson Velvet 20-Rose Bouquet", occ: "Anniversary", recip: "Her", price: 1200, icon: "&#127801;" },
+      { id: 2, name: "Sunshine Yellow Lilies & Ferrero", occ: "Birthday", recip: "Her", price: 1650, icon: "&#127803;" },
+      { id: 3, name: "Gourmet Artisan Fruit & Nut Hamper", occ: "Congratulations", recip: "Parents", price: 1950, icon: "&#127873;" }
+    ];
+
+    let giftCart = [];
+
+    function renderGifts() {
+      const grid = document.getElementById('giftsGrid');
+      const occ = document.getElementById('occSelect').value;
+      const recip = document.getElementById('recipSelect').value;
+      const maxP = parseFloat(document.getElementById('giftMaxPrice').value) || 99999;
+      grid.innerHTML = '';
+
+      const filtered = giftItems.filter(g => {
+        return (occ === 'All' || g.occ === occ) &&
+               (recip === 'All' || g.recip === recip) &&
+               g.price <= maxP;
+      });
+
+      filtered.forEach(g => {
+        const card = document.createElement('div');
+        card.className = 'flower-card';
+        card.innerHTML = `
+          <div class="flower-img">${g.icon}</div>
+          <div style="padding:1.25rem;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:0.35rem;">
+              <h4 style="margin:0;">${g.name}</h4>
+              <span class="badge badge-primary">${g.occ}</span>
+            </div>
+            <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.75rem;">Recipient: ${g.recip}</div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:1.3rem; font-weight:800; color:var(--primary);">Rs. ${g.price}</span>
+              <button class="btn btn-sm btn-primary" onclick="addGiftToCart(${g.id})">Add Gift</button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function addGiftToCart(id) {
+      const g = giftItems.find(item => item.id === id);
+      giftCart.push(g);
+      renderGiftCart();
+      showToast(`Added ${g.name} to cart!`, 'success');
+    }
+
+    function renderGiftCart() {
+      const list = document.getElementById('giftCartList');
+      list.innerHTML = '';
+      if (giftCart.length === 0) {
+        list.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:1.5rem;">Cart is empty.</p>';
+        return;
+      }
+      giftCart.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.style.padding = '0.75rem';
+        div.style.borderBottom = '1px solid var(--border)';
+        div.style.display = 'flex';
+        div.style.justifyContent = 'space-between';
+        div.style.alignItems = 'center';
+        div.innerHTML = `
+          <div>
+            <strong>${item.name}</strong>
+            <div style="font-size:0.8rem; color:var(--text-muted);">Rs. ${item.price}</div>
+          </div>
+          <button class="btn btn-sm btn-danger" onclick="removeGift(${idx})">&times;</button>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    function removeGift(idx) {
+      giftCart.splice(idx, 1);
+      renderGiftCart();
+    }
+
+    function handleGiftOrder(e) {
+      e.preventDefault();
+      if (giftCart.length === 0) {
+        showToast('Please add gifts to cart first!', 'danger');
+        return;
+      }
+      showToast('Gift order scheduled with custom greetings!', 'success');
+      giftCart = [];
+      renderGiftCart();
+      e.target.reset();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('giftDelDate').value = new Date(Date.now() + 2*24*60*60*1000).toISOString().split('T')[0];
+      renderGifts();
+      renderGiftCart();
+    });
+  </script>
+</body>
+</html>

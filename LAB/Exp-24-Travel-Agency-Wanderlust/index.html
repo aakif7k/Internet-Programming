@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 24: Wanderlust Travels - Travel Agency & Booking</title>
+  <link rel="stylesheet" href="../assets/common.css">
+  <style>
+    .tour-card { border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; background:#fff; display:flex; flex-direction:column; }
+    .tour-img { height:160px; background:linear-gradient(135deg, #0ea5e9, #0284c7); display:flex; align-items:center; justify-content:center; color:#fff; font-size:3rem; }
+  </style>
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon">&#127757;</div>
+        <span>Wanderlust Travels</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 24</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">Wanderlust Travels - Online Travel Agency</h1>
+        <p class="lab-hero-desc">All-in-one travel agency platform: curated destinations, hotel & route details, dining packages, online booking confirmation vouchers, and tourism administration controls.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="packagesTab">&#127958; Tour Packages</button>
+        <button class="tab-btn" data-tab="myBookingsTab">&#127915; My Booked Trips</button>
+        <button class="tab-btn" data-tab="adminTab">&#9881; Tourism Admin</button>
+      </div>
+
+      <!-- Packages Tab -->
+      <div id="packagesTab" class="tab-pane active">
+        <div class="grid grid-3" id="toursGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- My Bookings Tab -->
+      <div id="myBookingsTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Confirmed Vacation Bookings</div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-responsive" style="border:none;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Voucher Ref</th>
+                    <th>Destination</th>
+                    <th>Duration</th>
+                    <th>Hotel Stay</th>
+                    <th>Total Cost</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="vouchersTbody">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab -->
+      <div id="adminTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Admin Tourism & Hotel Contracting</div>
+          <div class="card-body">
+            <p style="font-size:0.9rem; color:var(--text-muted);">Manage vacation routes, negotiate dining contracts, and oversee agency revenue logs.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-24: Wanderlust Travels Online Agency</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let tours = [
+      { id: 1, dest: "Swiss Alps & Lucerne", days: "5 Days / 4 Nights", hotel: "5-Star Alpine Resort + Breakfast", price: 1450, icon: "&#127956;" },
+      { id: 2, dest: "Bali Tropical Paradise", days: "6 Days / 5 Nights", hotel: "Private Beach Villa + Island Tour", price: 890, icon: "&#127958;" },
+      { id: 3, dest: "Kyoto Heritage & Mount Fuji", days: "7 Days / 6 Nights", hotel: "Traditional Ryokan + Bullet Train", price: 1650, icon: "&#127800;" }
+    ];
+
+    let bookings = [
+      { id: "TRV-8901", dest: "Swiss Alps & Lucerne", days: "5D / 4N", hotel: "Alpine Resort", cost: "$1,450", status: "Confirmed" }
+    ];
+
+    function renderTours() {
+      const grid = document.getElementById('toursGrid');
+      grid.innerHTML = '';
+      tours.forEach(t => {
+        const c = document.createElement('div');
+        c.className = 'tour-card';
+        c.innerHTML = `
+          <div class="tour-img">${t.icon}</div>
+          <div style="padding:1.25rem;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:0.35rem;">
+              <h4 style="margin:0;">${t.dest}</h4>
+              <span class="badge badge-primary">${t.days}</span>
+            </div>
+            <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.75rem;">${t.hotel}</div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:1.3rem; font-weight:800; color:var(--primary);">$${t.price}</span>
+              <button class="btn btn-sm btn-primary" onclick="bookTour('${t.dest}', '${t.days}', '${t.hotel}', ${t.price})">Book Package</button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(c);
+      });
+    }
+
+    function bookTour(dest, days, hotel, price) {
+      const vId = 'TRV-' + Math.floor(1000 + Math.random() * 9000);
+      bookings.push({ id: vId, dest, days, hotel, cost: '$' + price, status: "Confirmed" });
+      renderBookings();
+      showToast(`Vacation booked! Voucher ${vId} generated.`, 'success');
+    }
+
+    function renderBookings() {
+      const tbody = document.getElementById('vouchersTbody');
+      tbody.innerHTML = '';
+      bookings.forEach(b => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${b.id}</strong></td>
+          <td>${b.dest}</td>
+          <td>${b.days}</td>
+          <td>${b.hotel}</td>
+          <td>${b.cost}</td>
+          <td><span class="badge badge-success">${b.status}</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderTours();
+      renderBookings();
+    });
+  </script>
+</body>
+</html>

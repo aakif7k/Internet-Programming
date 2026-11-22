@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exp 19: VetCare - Animal Healthcare Consultation</title>
+  <link rel="stylesheet" href="../assets/common.css">
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <a href="../index.html" class="lab-brand">
+        <div class="lab-brand-icon">&#128046;</div>
+        <span>VetCare Tele-Clinic</span>
+      </a>
+      <div class="lab-nav-actions">
+        <span class="lab-badge-exp">Experiment 19</span>
+        <a href="../index.html" class="btn btn-outline btn-sm">&larr; Back to Lab Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="lab-hero">
+        <h1 class="lab-hero-title">VetCare - Animal Healthcare & Tele-Consultation</h1>
+        <p class="lab-hero-desc">Farmers report livestock symptoms (audio, video, photos & text) for veterinary diagnosis. Features free Govt CVH vs paid private clinic consultations, prescriptions, and regional disease analytics.</p>
+      </div>
+
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="farmerPost">&#128046; Report Animal Symptoms</button>
+        <button class="tab-btn" data-tab="doctorPortal">&#129658; Veterinarian Doctor</button>
+        <button class="tab-btn" data-tab="analyticsTab">&#128202; Regional Disease Analytics</button>
+      </div>
+
+      <!-- Farmer Post Tab -->
+      <div id="farmerPost" class="tab-pane active">
+        <div class="card" style="max-width:700px; margin:0 auto;">
+          <div class="card-header">Post Livestock Medical Symptoms to Veterinarian</div>
+          <div class="card-body">
+            <form onsubmit="handleVetPost(event)">
+              <div class="grid grid-2">
+                <div class="form-group">
+                  <label class="form-label">Animal Type</label>
+                  <select id="vetAnimal" class="form-select">
+                    <option>Dairy Cow / Cattle</option>
+                    <option>Sheep / Goat</option>
+                    <option>Poultry / Chicken</option>
+                    <option>Pet Dog / Cat</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Consultation Tier</label>
+                  <select id="vetTier" class="form-select" onchange="updateTierFee()">
+                    <option value="0">Govt. CVH (Free Public Service)</option>
+                    <option value="250">Private Specialist (Rs. 250 fee)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Observable Symptoms</label>
+                <textarea id="vetSymptoms" class="form-control" rows="3" placeholder="e.g. High fever, reduced milk yield, limping on front right leg..." required></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Attach Image / Video Link Proof</label>
+                <input type="text" id="vetProof" class="form-control" value="https://vetcare.org/cases/cow_hoof_photo.jpg">
+              </div>
+              <div id="feeNote" style="margin-bottom:1rem; font-size:0.9rem; color:var(--text-muted);">
+                Fee: <strong>Free (Govt Supported)</strong>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Submit Animal Case</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Doctor Tab -->
+      <div id="doctorPortal" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Assigned Animal Complaints & Clinical Remedies</div>
+          <div class="card-body" id="docCasesList">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Analytics Tab -->
+      <div id="analyticsTab" class="tab-pane">
+        <div class="card">
+          <div class="card-header">Epidemiological Analysis - Prevalent Livestock Diseases</div>
+          <div class="card-body">
+            <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:1rem;">Regional disease frequency derived from reported veterinary complaints:</p>
+            <div style="margin-bottom:0.75rem;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:0.25rem;">
+                <strong>Foot and Mouth Disease (FMD)</strong>
+                <span>42% of cases in District</span>
+              </div>
+              <div style="height:10px; background:var(--surface-2); border-radius:5px;"><div style="width:42%; height:100%; background:var(--danger);"></div></div>
+            </div>
+            <div style="margin-bottom:0.75rem;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:0.25rem;">
+                <strong>Bovine Mastitis (Udder Infection)</strong>
+                <span>35% of cases</span>
+              </div>
+              <div style="height:10px; background:var(--surface-2); border-radius:5px;"><div style="width:35%; height:100%; background:var(--warning);"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab &bull; Exp-19: VetCare Animal Healthcare Consultation</p>
+    </div>
+  </footer>
+
+  <script src="../assets/common.js"></script>
+  <script>
+    let vetCases = [
+      { id: "VET-102", animal: "Dairy Cow", symptoms: "Fever and blisters around mouth and hooves", tier: "Govt CVH", status: "Prescribed", remedy: "Isolate cow. Administer Antiseptic Footbath + Oxytetracycline 20ml." }
+    ];
+
+    function updateTierFee() {
+      const val = document.getElementById('vetTier').value;
+      document.getElementById('feeNote').innerHTML = val === "0" ? "Fee: <strong>Free (Govt Supported)</strong>" : "Fee: <strong>Rs. 250 (Payable via Bank Transfer or EasyPaisa)</strong>";
+    }
+
+    function handleVetPost(e) {
+      e.preventDefault();
+      const animal = document.getElementById('vetAnimal').value;
+      const symptoms = document.getElementById('vetSymptoms').value;
+      const tierVal = document.getElementById('vetTier').value;
+      const tier = tierVal === "0" ? "Govt CVH" : "Private (Rs. 250 Paid)";
+      const cId = 'VET-' + Math.floor(100 + Math.random() * 900);
+
+      vetCases.push({
+        id: cId,
+        animal: animal,
+        symptoms: symptoms,
+        tier: tier,
+        status: "Under Review",
+        remedy: "Doctor diagnosing case..."
+      });
+
+      renderCases();
+      showToast(`Case ${cId} lodged! Dr. Vet assigned.`, 'success');
+      e.target.reset();
+    }
+
+    function renderCases() {
+      const container = document.getElementById('docCasesList');
+      container.innerHTML = '';
+      vetCases.forEach(v => {
+        const div = document.createElement('div');
+        div.style.padding = '1rem';
+        div.style.border = '1px solid var(--border)';
+        div.style.borderRadius = 'var(--radius)';
+        div.style.marginBottom = '1rem';
+        div.innerHTML = `
+          <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+            <strong>${v.id}: ${v.animal} (${v.tier})</strong>
+            <span class="badge ${v.status === 'Prescribed' ? 'badge-success' : 'badge-warning'}">${v.status}</span>
+          </div>
+          <p style="font-size:0.9rem; margin-bottom:0.5rem;"><strong>Symptoms:</strong> ${v.symptoms}</p>
+          <div style="background:var(--surface-2); padding:0.75rem; border-radius:6px; font-size:0.85rem;">
+            <strong>Doctor Prescription:</strong> ${v.remedy}
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderCases();
+    });
+  </script>
+</body>
+</html>

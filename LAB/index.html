@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Internet Programming Lab Experiments Hub (46 Experiments)</title>
+  <link rel="stylesheet" href="./assets/common.css">
+  <style>
+    .hub-hero {
+      background: linear-gradient(135deg, #1e1b4b, #312e81, #1e293b);
+      color: #fff;
+      border-radius: var(--radius-lg);
+      padding: 3rem 2rem;
+      margin-bottom: 2.5rem;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+    }
+    .hub-hero h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.75rem;
+    }
+    .hub-hero p {
+      color: #cbd5e1;
+      font-size: 1.1rem;
+      max-width: 850px;
+      line-height: 1.6;
+    }
+    .search-bar-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .filter-pills {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .filter-pill {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 0.4rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .filter-pill:hover, .filter-pill.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+    .exp-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1.5rem;
+    }
+    .exp-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .exp-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--border-focus);
+    }
+    .exp-card-header {
+      padding: 1rem 1.25rem;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .exp-badge {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--primary);
+      background: var(--primary-light);
+      padding: 0.25rem 0.6rem;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .exp-card-body {
+      padding: 1.25rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .exp-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.5rem;
+      line-height: 1.35;
+    }
+    .exp-desc {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      line-height: 1.5;
+      flex: 1;
+    }
+    .exp-roles {
+      font-size: 0.8rem;
+      color: var(--text-light);
+      background: var(--surface-2);
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm);
+      margin-bottom: 0.5rem;
+    }
+    .exp-card-footer {
+      padding: 0.85rem 1.25rem;
+      border-top: 1px solid var(--border);
+      background: #fafafa;
+    }
+  </style>
+</head>
+<body>
+  <header class="lab-navbar">
+    <div class="lab-container lab-navbar-inner">
+      <div class="lab-brand">
+        <div class="lab-brand-icon">IP</div>
+        <span>Internet Programming Laboratory</span>
+      </div>
+      <div class="lab-nav-actions">
+        <span class="badge badge-success">46 Experiments Completed</span>
+        <a href="../README.md" class="btn btn-outline btn-sm">Repo Readme</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lab-main">
+    <div class="lab-container">
+      <div class="hub-hero">
+        <h1>Internet Programming Lab Experiments</h1>
+        <p>A comprehensive repository containing complete, production-grade interactive implementations of all 46 laboratory experiments from the engineering syllabus. Each project features dedicated role-based dashboards, realistic workflows, mathematical calculations, responsive layouts, and thorough documentation.</p>
+        <div style="display:flex; gap:1.5rem; margin-top:1.5rem; flex-wrap:wrap;">
+          <div><span style="font-size:1.6rem; font-weight:800;">46</span> <span style="font-size:0.9rem; color:#94a3b8;">Total Experiments</span></div>
+          <div><span style="font-size:1.6rem; font-weight:800;">100%</span> <span style="font-size:0.9rem; color:#94a3b8;">Interactive Web Apps</span></div>
+          <div><span style="font-size:1.6rem; font-weight:800;">0</span> <span style="font-size:0.9rem; color:#94a3b8;">External Dependencies</span></div>
+        </div>
+      </div>
+
+      <!-- Search & Filters -->
+      <div class="search-bar-container">
+        <input type="text" id="hubSearchInput" class="form-control" style="font-size:1rem; padding:0.75rem 1rem;" placeholder="Search 46 experiments by title, category, keywords, or experiment number..." onkeyup="filterHub()">
+        <div class="filter-pills" id="categoryFilterPills">
+          <button class="filter-pill active" onclick="setCategoryFilter('All', this)">All (46)</button>
+          <button class="filter-pill" onclick="setCategoryFilter('Booking & Reservations', this)">Booking & Reservations (9)</button>
+          <button class="filter-pill" onclick="setCategoryFilter('E-Commerce & Marketplaces', this)">E-Commerce & Marketplaces (10)</button>
+          <button class="filter-pill" onclick="setCategoryFilter('Portals & Management', this)">Portals & Management (12)</button>
+          <button class="filter-pill" onclick="setCategoryFilter('Utilities & Calculations', this)">Utilities & Calculations (9)</button>
+          <button class="filter-pill" onclick="setCategoryFilter('Portfolios, Blogs & Content', this)">Portfolios, Blogs & Content (6)</button>
+        </div>
+      </div>
+
+      <!-- Experiments Grid -->
+      <div class="exp-grid" id="experimentsGrid">
+        
+        <div class="exp-card" data-category="Portals & Management" data-search="exp 1 01 local library management system portals & management a streamlined library system with catalog search, user accounts for borrowing and managing books, librarian admin dashboard for inventory, issuing/returning books, fine calculation (rs. 5/day), and semester-wise study material downloads.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 01</span>
+            <span class="badge badge-secondary">Portals & Management</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">Local Library Management System</h3>
+            <p class="exp-desc">A streamlined library system with catalog search, user accounts for borrowing and managing books, librarian admin dashboard for in...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Librarian Admin, Student User
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-01-Library-Management/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-01-Library-Management/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Booking & Reservations" data-search="exp 2 02 online hotel room booking system booking & reservations responsive hotel booking portal allowing users to search by destination, dates, and guests across 4 room types. features strict 3-day cancellation/change policy enforcement, availability tracking, and admin dashboard for pricing and static page management.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 02</span>
+            <span class="badge badge-secondary">Booking & Reservations</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">Online Hotel Room Booking System</h3>
+            <p class="exp-desc">Responsive hotel booking portal allowing users to search by destination, dates, and guests across 4 room types. Features strict 3-...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Customer User, Hotel Administrator
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-02-Hotel-Room-Booking/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-02-Hotel-Room-Booking/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Booking & Reservations" data-search="exp 3 03 online bus ticket booking system booking & reservations online bus ticketing platform with route search, seat selection grid, passenger info, payment gateway, bus categories (volvo, sleeper, coach), passenger review/comments, and admin bus & report management.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 03</span>
+            <span class="badge badge-secondary">Booking & Reservations</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">Online Bus Ticket Booking System</h3>
+            <p class="exp-desc">Online bus ticketing platform with route search, seat selection grid, passenger info, payment gateway, bus categories (Volvo, Slee...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Passenger User, Bus Administrator
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-03-Bus-Ticket-Booking/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-03-Bus-Ticket-Booking/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Booking & Reservations" data-search="exp 4 04 online train reservation system booking & reservations comprehensive railway reservation portal with route/class search, real-time seat availability, pnr generation, pnr status tracker (cnf/rac/wl), ticket printing, cancellation with refund rules, and admin train master management.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 04</span>
+            <span class="badge badge-secondary">Booking & Reservations</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">Online Train Reservation System</h3>
+            <p class="exp-desc">Comprehensive railway reservation portal with route/class search, real-time seat availability, PNR generation, PNR status tracker ...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Passenger, Railway Administrator
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-04-Train-Reservation/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-04-Train-Reservation/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Booking & Reservations" data-search="exp 5 05 online flight reservation system booking & reservations web-based airline reservation system consolidating flight data, real-time seat inventory, fare classes, payment simulation, e-ticket generation, cancellation with refund, customer feedback, and admin flight analytics.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 05</span>
+            <span class="badge badge-secondary">Booking & Reservations</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">Online Flight Reservation System</h3>
+            <p class="exp-desc">Web-based airline reservation system consolidating flight data, real-time seat inventory, fare classes, payment simulation, e-tick...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Passenger, Airlines Admin
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-05-Flight-Reservation/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-05-Flight-Reservation/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="E-Commerce & Marketplaces" data-search="exp 6 06 online cake ordering system e-commerce & marketplaces e-commerce platform for ordering cakes with category/flavor/occasion filters, custom cake sizes & messages, eggless options, shopping cart, shipping address management, delivery tracking, and bakery admin product manager.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 06</span>
+            <span class="badge badge-secondary">E-Commerce & Marketplaces</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">Online Cake Ordering System</h3>
+            <p class="exp-desc">E-commerce platform for ordering cakes with category/flavor/occasion filters, custom cake sizes & messages, eggless options, shopp...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Customer, Bakery Admin
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-06-Cake-Ordering/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-06-Cake-Ordering/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Booking & Reservations" data-search="exp 7 07 beauty parlour appointment booking system booking & reservations online appointment system for beauty salons featuring service catalog, stylist profiles, interactive reservation calendar with lockout hours, partial deposit or full payment (stripe/paypal), and salon manager dashboard.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 07</span>
+            <span class="badge badge-secondary">Booking & Reservations</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">Beauty Parlour Appointment Booking System</h3>
+            <p class="exp-desc">Online appointment system for beauty salons featuring service catalog, stylist profiles, interactive reservation calendar with loc...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Customer, Salon Manager / Stylist
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-07-Beauty-Parlour-Booking/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-07-Beauty-Parlour-Booking/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Booking & Reservations" data-search="exp 8 08 medcare hospital online appointment booking booking & reservations hospital appointment booking platform allowing patients to search doctors by specialty and location, schedule convenient slots, submit online check-in details, view past medical visits, and rate doctors.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 08</span>
+            <span class="badge badge-secondary">Booking & Reservations</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">MedCare Hospital Online Appointment Booking</h3>
+            <p class="exp-desc">Hospital appointment booking platform allowing patients to search doctors by specialty and location, schedule convenient slots, su...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Patient User, Hospital Admin / Doctor
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-08-Hospital-Appointment-Booking/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-08-Hospital-Appointment-Booking/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="E-Commerce & Marketplaces" data-search="exp 9 09 techsavvy - electronics shopping platform e-commerce & marketplaces feature-rich electronics e-commerce store with categorized gadget catalog (smartphones, laptops, tablets, audio), search/filter, dynamic cart, order checkout, order tracking, and admin product/pricing controls.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 09</span>
+            <span class="badge badge-secondary">E-Commerce & Marketplaces</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">TechSavvy - Electronics Shopping Platform</h3>
+            <p class="exp-desc">Feature-rich electronics e-commerce store with categorized gadget catalog (Smartphones, Laptops, Tablets, Audio), search/filter, d...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Shopper, Store Admin
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-09-Electronic-Gadgets-Shopping/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-09-Electronic-Gadgets-Shopping/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="E-Commerce & Marketplaces" data-search="exp 10 10 stylehub - online fashion retailer e-commerce & marketplaces premier fashion e-commerce platform offering clothing, footwear, and accessories for men, women, and kids with size guides, customer reviews, wishlist, cart, returns policy, and admin inventory management.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 10</span>
+            <span class="badge badge-secondary">E-Commerce & Marketplaces</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">StyleHub - Online Fashion Retailer</h3>
+            <p class="exp-desc">Premier fashion e-commerce platform offering clothing, footwear, and accessories for Men, Women, and Kids with size guides, custom...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Fashion Shopper, Store Admin
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-10-Fashion-Store-StyleHub/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-10-Fashion-Store-StyleHub/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Portals & Management" data-search="exp 11 11 home finder - real estate platform portals & management real estate discovery platform for residential and commercial properties with advanced search filters, saved criteria, interactive map visualization, mortgage emi calculator, and viewing scheduler.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 11</span>
+            <span class="badge badge-secondary">Portals & Management</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">Home Finder - Real Estate Platform</h3>
+            <p class="exp-desc">Real estate discovery platform for residential and commercial properties with advanced search filters, saved criteria, interactive...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Property Buyer / Renter, Real Estate Agent / Admin
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-11-Real-Estate-HomeFinder/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-11-Real-Estate-HomeFinder/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Portals & Management" data-search="exp 12 12 insureeasy - online insurance platform portals & management cutting-edge insurance management platform enabling customers to compare and buy health, auto, and home policies, calculate premiums, file claims, and receive automated sms renewal alerts via agents.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 12</span>
+            <span class="badge badge-secondary">Portals & Management</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">InsureEasy - Online Insurance Platform</h3>
+            <p class="exp-desc">Cutting-edge insurance management platform enabling customers to compare and buy Health, Auto, and Home policies, calculate premiu...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Customer, Insurance Agent, System Admin
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-12-Insurance-Management-InsureEasy/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-12-Insurance-Management-InsureEasy/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="E-Commerce & Marketplaces" data-search="exp 13 13 blossomgifts - flowers & gifts ordering e-commerce & marketplaces user-friendly gift and flower shop categorized by occasion, recipient, and price range, with custom delivery date scheduler, personalized card messages, cart, order summary, and admin inventory control.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 13</span>
+            <span class="badge badge-secondary">E-Commerce & Marketplaces</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">BlossomGifts - Flowers & Gifts Ordering</h3>
+            <p class="exp-desc">User-friendly gift and flower shop categorized by occasion, recipient, and price range, with custom delivery date scheduler, perso...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Customer, Store Admin
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-13-Flowers-Gifts-BlossomGifts/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-13-Flowers-Gifts-BlossomGifts/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="E-Commerce & Marketplaces" data-search="exp 14 14 renewmarket - second-hand goods marketplace e-commerce & marketplaces sustainable peer-to-peer marketplace connecting buyers and sellers for pre-loved electronics, furniture, clothing, and books with listing creation, price negotiation simulator, and logistics tracking.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 14</span>
+            <span class="badge badge-secondary">E-Commerce & Marketplaces</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">ReNewMarket - Second-Hand Goods Marketplace</h3>
+            <p class="exp-desc">Sustainable peer-to-peer marketplace connecting buyers and sellers for pre-loved electronics, furniture, clothing, and books with ...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Buyer, Seller, Market Administrator
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-14-Second-Hand-Market-ReNewMarket/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-14-Second-Hand-Market-ReNewMarket/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Utilities & Calculations" data-search="exp 15 15 easytoll - online toll payment system utilities & calculations advanced toll management system allowing drivers to recharge e-wallets, buy advance toll e-tickets, apply for monthly toll passes with qr codes, and enable toll booth operators to scan & verify passes instantly.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 15</span>
+            <span class="badge badge-secondary">Utilities & Calculations</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">EasyToll - Online Toll Payment System</h3>
+            <p class="exp-desc">Advanced toll management system allowing drivers to recharge e-Wallets, buy advance toll e-Tickets, apply for monthly toll passes ...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Driver User, Toll Booth Officer, Toll Admin
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-15-Toll-Payment-EasyToll/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-15-Toll-Payment-EasyToll/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Portals & Management" data-search="exp 16 16 complainease - grievance redressal system portals & management online public grievance filing platform with category classification, interactive map pin location marking, proof-of-work status updates by municipal officers, and full administrative governance.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 16</span>
+            <span class="badge badge-secondary">Portals & Management</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">ComplainEase - Grievance Redressal System</h3>
+            <p class="exp-desc">Online public grievance filing platform with category classification, interactive map pin location marking, proof-of-work status u...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Citizen User, Municipal Officer, System Admin
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-16-Grievance-Redressal-ComplainEase/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-16-Grievance-Redressal-ComplainEase/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Utilities & Calculations" data-search="exp 17 17 voteonline - secure e-voting platform utilities & calculations secure and transparent e-voting platform featuring voter id authentication, 2-factor otp verification, candidate manifestos, one-person-one-vote cryptographic ballot casting, and real-time election results.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 17</span>
+            <span class="badge badge-secondary">Utilities & Calculations</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">VoteOnline - Secure E-Voting Platform</h3>
+            <p class="exp-desc">Secure and transparent e-voting platform featuring Voter ID authentication, 2-factor OTP verification, candidate manifestos, one-p...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Registered Voter, Election Administrator
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-17-E-Voting-VoteOnline/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-17-E-Voting-VoteOnline/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="E-Commerce & Marketplaces" data-search="exp 18 18 agrimart - farmer supplies marketplace e-commerce & marketplaces agricultural commerce portal empowering farmers to sell produce and buy seeds, fertilizers, and equipment. features farmer sales dashboard, buyer shopping cart, wallet balance, and shipping tracker.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 18</span>
+            <span class="badge badge-secondary">E-Commerce & Marketplaces</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">AgriMart - Farmer Supplies Marketplace</h3>
+            <p class="exp-desc">Agricultural commerce portal empowering farmers to sell produce and buy seeds, fertilizers, and equipment. Features farmer sales d...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Farmer / Producer, Public Buyer
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-18-AgriMart-Farmer-Market/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-18-AgriMart-Farmer-Market/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Utilities & Calculations" data-search="exp 19 19 vetcare - animal healthcare consultation utilities & calculations tele-veterinary platform where farmers upload animal illness symptoms (text, images, audio/video links) for diagnosis. features free govt cvh vs paid private clinic consultations with payment integration and disease analytics.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 19</span>
+            <span class="badge badge-secondary">Utilities & Calculations</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">VetCare - Animal Healthcare Consultation</h3>
+            <p class="exp-desc">Tele-veterinary platform where farmers upload animal illness symptoms (text, images, audio/video links) for diagnosis. Features fr...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Farmer / Pet Owner, Veterinary Doctor
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-19-Animal-Healthcare-VetCare/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-19-Animal-Healthcare-VetCare/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Booking & Reservations" data-search="exp 20 20 rentride - modern vehicle rental platform booking & reservations vehicle rental platform offering a fleet of sedans, suvs, and trucks with date-range rental booking, check-in forms with driver's license verification, booking history, and admin fleet management.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 20</span>
+            <span class="badge badge-secondary">Booking & Reservations</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">RentRide - Modern Vehicle Rental Platform</h3>
+            <p class="exp-desc">Vehicle rental platform offering a fleet of sedans, SUVs, and trucks with date-range rental booking, check-in forms with driver's ...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Customer, Rental Admin
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-20-Vehicle-Rental-RentRide/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-20-Vehicle-Rental-RentRide/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Portals & Management" data-search="exp 21 21 jobportal - vacancy & recruitment platform portals & management online employment platform enabling company directors to post job vacancies and review candidate resumes, while job seekers search vacancies, filter by category/location, and submit online applications.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 21</span>
+            <span class="badge badge-secondary">Portals & Management</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">JobPortal - Vacancy & Recruitment Platform</h3>
+            <p class="exp-desc">Online employment platform enabling company directors to post job vacancies and review candidate resumes, while job seekers search...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Job Seeker, Company Director / HR, Portal Admin
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-21-Job-Portal-Vacancy/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-21-Job-Portal-Vacancy/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Portals & Management" data-search="exp 22 22 smart solid waste management system portals & management smart municipal waste management platform tracking sensor-monitored garbage bins, calculating optimal truck collection routes to dumping sites, logging driver loads, and processing public overflow complaints.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 22</span>
+            <span class="badge badge-secondary">Portals & Management</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">Smart Solid Waste Management System</h3>
+            <p class="exp-desc">Smart municipal waste management platform tracking sensor-monitored garbage bins, calculating optimal truck collection routes to d...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Municipal Administrator, Sanitation Truck Driver, General Public
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-22-Solid-Waste-Management/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-22-Solid-Waste-Management/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Portals & Management" data-search="exp 23 23 blood management information system portals & management national blood donor registry and hospital inventory system facilitating rapid donor discovery, real-time blood bank stock tracking (a, b, ab, o +/-), and emergency hospital blood requisition management.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 23</span>
+            <span class="badge badge-secondary">Portals & Management</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">Blood Management Information System</h3>
+            <p class="exp-desc">National blood donor registry and hospital inventory system facilitating rapid donor discovery, real-time blood bank stock trackin...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Blood Donor / User, Hospital & Blood Bank Admin
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-23-Blood-Bank-Management/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-23-Blood-Bank-Management/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Booking & Reservations" data-search="exp 24 24 wanderlust travels - online travel agency booking & reservations all-in-one travel agency platform for booking vacation packages, hotels, flights, and food itineraries with interactive destination guides, booking vouchers, and tourism administration controls.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 24</span>
+            <span class="badge badge-secondary">Booking & Reservations</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">Wanderlust Travels - Online Travel Agency</h3>
+            <p class="exp-desc">All-in-one travel agency platform for booking vacation packages, hotels, flights, and food itineraries with interactive destinatio...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Traveler User, Tourism Admin
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-24-Travel-Agency-Wanderlust/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-24-Travel-Agency-Wanderlust/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Utilities & Calculations" data-search="exp 25 25 on-road breakdown assistance system utilities & calculations emergency road assistance platform connecting stranded drivers with nearby certified mechanics via gps location simulation, breakdown service requests (tire, battery, towing), and mechanic rating reviews.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 25</span>
+            <span class="badge badge-secondary">Utilities & Calculations</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">On-Road Breakdown Assistance System</h3>
+            <p class="exp-desc">Emergency road assistance platform connecting stranded drivers with nearby certified mechanics via GPS location simulation, breakd...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Stranded Driver, Licensed Mechanic, System Admin
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-25-Breakdown-Assistance/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-25-Breakdown-Assistance/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Portals & Management" data-search="exp 26 26 traffic squad - e-challan & penalty management portals & management traffic police e-challan enforcement portal enabling officers to issue violation cases with photographic evidence, allowing citizens to search and pay fines online, with live traffic advisory updates.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 26</span>
+            <span class="badge badge-secondary">Portals & Management</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">Traffic Squad - E-Challan & Penalty Management</h3>
+            <p class="exp-desc">Traffic police e-challan enforcement portal enabling officers to issue violation cases with photographic evidence, allowing citize...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Citizen Vehicle Owner, Traffic Police Officer, Admin
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-26-Traffic-Challan-Management/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-26-Traffic-Challan-Management/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Portals & Management" data-search="exp 27 27 bus pass management system with qr code portals & management digital bus pass issuing system with student concession passes (free for govt schools) and route employee passes, monthly renewal with e-wallet deduction, dynamic qr code pass generation, and conductor verification scanner.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 27</span>
+            <span class="badge badge-secondary">Portals & Management</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">Bus Pass Management System with QR Code</h3>
+            <p class="exp-desc">Digital bus pass issuing system with student concession passes (free for govt schools) and route employee passes, monthly renewal ...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Passenger / Student, Transport Admin, Bus Conductor
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-27-Bus-Pass-Management/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-27-Bus-Pass-Management/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Portfolios, Blogs & Content" data-search="exp 28 28 artistryhub - emily harris artist portfolio portfolios, blogs & content bespoke digital portfolio celebrating artist emily harris featuring high-res artwork gallery, career biography timeline, discography/bibliography archives, media interview gallery, exhibition updates, and print store.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 28</span>
+            <span class="badge badge-secondary">Portfolios, Blogs & Content</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">ArtistryHub - Emily Harris Artist Portfolio</h3>
+            <p class="exp-desc">Bespoke digital portfolio celebrating artist Emily Harris featuring high-res artwork gallery, career biography timeline, discograp...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Art Enthusiast / Collector, Artist / Curator
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-28-Artist-Portfolio-ArtistryHub/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-28-Artist-Portfolio-ArtistryHub/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Portfolios, Blogs & Content" data-search="exp 29 29 techcon - event landing & registration page portfolios, blogs & content modern conference landing page with featured keynote speakers, conference agenda schedule chunks (morning/afternoon), venue information with map, audience breakdown, and ticket registration form.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 29</span>
+            <span class="badge badge-secondary">Portfolios, Blogs & Content</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">TechCon - Event Landing & Registration Page</h3>
+            <p class="exp-desc">Modern conference landing page with featured keynote speakers, conference agenda schedule chunks (morning/afternoon), venue inform...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Event Attendee, Event Organizer
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-29-Event-Registration-Page/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-29-Event-Registration-Page/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Portals & Management" data-search="exp 30 30 ijsse - academic journal publishing portal portals & management official publisher portal for the international journal of scientific and social excellence (issn 2395-1443 / 2395-1451) with dedicated author, reviewer, and editor workflows, manuscript tracking, and article archives.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 30</span>
+            <span class="badge badge-secondary">Portals & Management</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">IJSSE - Academic Journal Publishing Portal</h3>
+            <p class="exp-desc">Official publisher portal for the International Journal of Scientific and Social Excellence (ISSN 2395-1443 / 2395-1451) with dedi...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Author, Peer Reviewer, Managing Editor, Reader
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-30-Academic-Journal-IJSSE/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-30-Academic-Journal-IJSSE/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="E-Commerce & Marketplaces" data-search="exp 31 31 ko-matha smart dairy farm management e-commerce & marketplaces smart dairy farm portal showcasing indian a1 cow milk products (milk, curd, cova-sweet, butter, ghee), customer online ordering, daily/monthly stock inventory reports, and milk vendor collection records.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 31</span>
+            <span class="badge badge-secondary">E-Commerce & Marketplaces</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">Ko-Matha Smart Dairy Farm Management</h3>
+            <p class="exp-desc">Smart dairy farm portal showcasing Indian A1 cow milk products (milk, curd, cova-sweet, butter, ghee), customer online ordering, d...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Customer, Farm Administrator, Milk Vendor
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-31-Dairy-Farm-KoMatha/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-31-Dairy-Farm-KoMatha/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="E-Commerce & Marketplaces" data-search="exp 32 32 ram infotech - laptop sales & service portal e-commerce & marketplaces dual laptop sales and service management system featuring detailed model specs, service repair booking & ticket tracking, laptop rental agreement generator, and shop stock inventory control.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 32</span>
+            <span class="badge badge-secondary">E-Commerce & Marketplaces</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">Ram Infotech - Laptop Sales & Service Portal</h3>
+            <p class="exp-desc">Dual laptop sales and service management system featuring detailed model specs, service repair booking & ticket tracking, laptop r...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Customer, Service Technician, Store Admin
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-32-Laptop-Sales-Service-RamInfotech/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-32-Laptop-Sales-Service-RamInfotech/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Booking & Reservations" data-search="exp 33 33 kodaikanaleats - restaurant & resort booking booking & reservations kodaikanal hospitality platform for booking dining tables and resort suites (single, double, deluxe) with seasonal/non-seasonal pricing, room boy availability tracking, and menu ordering.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 33</span>
+            <span class="badge badge-secondary">Booking & Reservations</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">KodaikanalEats - Restaurant & Resort Booking</h3>
+            <p class="exp-desc">Kodaikanal hospitality platform for booking dining tables and resort suites (Single, Double, Deluxe) with seasonal/non-seasonal pr...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Guest / Tourist, Resort & Restaurant Admin
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-33-Restaurant-Booking-KodaikanalEats/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-33-Restaurant-Booking-KodaikanalEats/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Portals & Management" data-search="exp 34 34 learnwell tuition centre management system portals & management comprehensive tuition centre management website managing course offerings, online/offline student enrollments, fee payment tracking, teacher allocations, academic progress reports, and maintenance requests.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 34</span>
+            <span class="badge badge-secondary">Portals & Management</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">LearnWell Tuition Centre Management System</h3>
+            <p class="exp-desc">Comprehensive tuition centre management website managing course offerings, online/offline student enrollments, fee payment trackin...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Student / Parent, Teacher / Tutor, Centre Admin
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-34-Tuition-Centre-LearnWell/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-34-Tuition-Centre-LearnWell/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Portals & Management" data-search="exp 35 35 educonnect - interactive teaching platform portals & management interactive learning management system featuring course catalog, student/instructor registration, subject allocation, video lecture streaming, downloadable materials, quizzes, and timetable management.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 35</span>
+            <span class="badge badge-secondary">Portals & Management</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">EduConnect - Interactive Teaching Platform</h3>
+            <p class="exp-desc">Interactive learning management system featuring course catalog, student/instructor registration, subject allocation, video lectur...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Student, Instructor / Teacher, Academic Admin
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-35-Online-Teaching-EduConnect/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-35-Online-Teaching-EduConnect/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="E-Commerce & Marketplaces" data-search="exp 36 36 bookhaven - online bookstore e-commerce & marketplaces online bookstore featuring bestseller book carousel, genre catalog filters (fiction, non-fiction, academic), book preview modal, shopping cart, faqs accordion, customer reviews, and literary blog.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 36</span>
+            <span class="badge badge-secondary">E-Commerce & Marketplaces</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">BookHaven - Online Bookstore</h3>
+            <p class="exp-desc">Online bookstore featuring bestseller book carousel, genre catalog filters (Fiction, Non-fiction, Academic), book preview modal, s...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Reader / Customer, Bookstore Admin
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-36-Bookstore-BookHaven/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-36-Bookstore-BookHaven/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Portfolios, Blogs & Content" data-search="exp 37 37 myprofessionalshowcase - portfolio & resume portfolios, blogs & content portfolio website presenting professional bio, categorized skill bars, featured projects gallery with live demos, interactive career timeline, downloadable resume, testimonials, and contact form.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 37</span>
+            <span class="badge badge-secondary">Portfolios, Blogs & Content</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">MyProfessionalShowcase - Portfolio & Resume</h3>
+            <p class="exp-desc">Portfolio website presenting professional bio, categorized skill bars, featured projects gallery with live demos, interactive care...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Recruiter / Client, Portfolio Owner
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-37-Professional-Showcase-Portfolio/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-37-Professional-Showcase-Portfolio/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Portfolios, Blogs & Content" data-search="exp 38 38 gourmet haven - fine dining restaurant portfolios, blogs & content restaurant website featuring rotating ambiance carousel, categorized fine dining menu with prices, online table reservation calendar, executive chef profile, culinary philosophy, and patron reviews.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 38</span>
+            <span class="badge badge-secondary">Portfolios, Blogs & Content</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">Gourmet Haven - Fine Dining Restaurant</h3>
+            <p class="exp-desc">Restaurant website featuring rotating ambiance carousel, categorized fine dining menu with prices, online table reservation calend...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Dining Guest, Restaurant Manager
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-38-Fine-Dining-GourmetHaven/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-38-Fine-Dining-GourmetHaven/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="E-Commerce & Marketplaces" data-search="exp 39 39 techstore - clean product catalog & cart e-commerce & marketplaces e-commerce product catalog with category navigation, real-time search, price filtering, dynamic cart drawer, tax/shipping calculations, streamlined checkout, and simulated email confirmation.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 39</span>
+            <span class="badge badge-secondary">E-Commerce & Marketplaces</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">TechStore - Clean Product Catalog & Cart</h3>
+            <p class="exp-desc">E-commerce product catalog with category navigation, real-time search, price filtering, dynamic cart drawer, tax/shipping calculat...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Customer, Store Operator
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-39-Product-Catalog-Cart/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-39-Product-Catalog-Cart/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Portfolios, Blogs & Content" data-search="exp 40 40 travel explorer - interactive travel blog portfolios, blogs & content travel blog with interactive world map highlighting visited destinations, filterable adventure narratives, rich photo galleries, reader comment threads, travel packing tools, and author biography.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 40</span>
+            <span class="badge badge-secondary">Portfolios, Blogs & Content</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">Travel Explorer - Interactive Travel Blog</h3>
+            <p class="exp-desc">Travel blog with interactive world map highlighting visited destinations, filterable adventure narratives, rich photo galleries, r...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Travel Reader, Travel Blogger
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-40-Travel-Blog-Interactive-Map/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-40-Travel-Blog-Interactive-Map/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Portfolios, Blogs & Content" data-search="exp 41 41 culinarydelight - digital recipe book portfolios, blogs & content digital culinary platform featuring categorized recipes, dynamic serving size ingredient scaler, step-by-step cooking mode, user reviews, recipe search/filter, and weekly meal planner with shopping list export.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 41</span>
+            <span class="badge badge-secondary">Portfolios, Blogs & Content</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">CulinaryDelight - Digital Recipe Book</h3>
+            <p class="exp-desc">Digital culinary platform featuring categorized recipes, dynamic serving size ingredient scaler, step-by-step cooking mode, user r...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Home Cook, Recipe Creator
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-41-Digital-Recipe-Book/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-41-Digital-Recipe-Book/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Utilities & Calculations" data-search="exp 42 42 online electricity bill payment system utilities & calculations online electricity bill calculation and payment system implementing exact domestic and commercial tariff slabs, bi-monthly billing cycles, late payment fine calculation (rs. 10/day), and receipt generator.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 42</span>
+            <span class="badge badge-secondary">Utilities & Calculations</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">Online Electricity Bill Payment System</h3>
+            <p class="exp-desc">Online electricity bill calculation and payment system implementing exact domestic and commercial tariff slabs, bi-monthly billing...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Electricity Consumer, Board Billing Admin
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-42-Electricity-Bill-Payment/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-42-Electricity-Bill-Payment/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Utilities & Calculations" data-search="exp 43 43 online placement examination system utilities & calculations online placement examination platform featuring admin exam scheduling & question bank, candidate timed test interface with countdown timer, automatic evaluation, scorecard generation, and merit rank list.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 43</span>
+            <span class="badge badge-secondary">Utilities & Calculations</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">Online Placement Examination System</h3>
+            <p class="exp-desc">Online placement examination platform featuring admin exam scheduling & question bank, candidate timed test interface with countdo...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Candidate Student, Placement Exam Admin
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-43-Online-Placement-Exam/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-43-Online-Placement-Exam/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Portfolios, Blogs & Content" data-search="exp 44 44 painting rating & review platform portfolios, blogs & content art review platform where admin uploads paintings under scheduled packages, painting owners track audience critiques, and customers rate paintings 1 to 5 stars with positive and negative sentiment analysis.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 44</span>
+            <span class="badge badge-secondary">Portfolios, Blogs & Content</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">Painting Rating & Review Platform</h3>
+            <p class="exp-desc">Art review platform where admin uploads paintings under scheduled packages, painting owners track audience critiques, and customer...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Art Customer, Painting Owner / Artist, Art Admin
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-44-Painting-Rating-Review/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-44-Painting-Rating-Review/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Utilities & Calculations" data-search="exp 45 45 income tax calculation web application utilities & calculations income tax calculation system implementing exact government tax formulas and slabs: gross pay, hra, standard deduction (rs. 50,000), pension (capped at rs. 150,000), health insurance, with slab tax rates and report download.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 45</span>
+            <span class="badge badge-secondary">Utilities & Calculations</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">Income Tax Calculation Web Application</h3>
+            <p class="exp-desc">Income tax calculation system implementing exact government tax formulas and slabs: Gross Pay, HRA, Standard Deduction (Rs. 50,000...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Salaried Employee, Tax Admin
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-45-Income-Tax-Calculation/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-45-Income-Tax-Calculation/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+        <div class="exp-card" data-category="Utilities & Calculations" data-search="exp 46 46 online phone bill payment system utilities & calculations online telecommunications billing and payment platform with monthly billing duration, last date overdue fine calculation (rs. 10/day), flexible full/custom amount payments, and receipt generator.">
+          <div class="exp-card-header">
+            <span class="exp-badge">Experiment 46</span>
+            <span class="badge badge-secondary">Utilities & Calculations</span>
+          </div>
+          <div class="exp-card-body">
+            <h3 class="exp-title">Online Phone Bill Payment System</h3>
+            <p class="exp-desc">Online telecommunications billing and payment platform with monthly billing duration, last date overdue fine calculation (Rs. 10/d...</p>
+            <div class="exp-roles">
+              <strong>Roles:</strong> Telecom Customer, Telecom Billing Admin
+            </div>
+          </div>
+          <div class="exp-card-footer">
+            <a href="./Exp-46-Phone-Bill-Payment/index.html" class="btn btn-primary btn-sm btn-block">Launch Web App &rarr;</a>
+            <a href="./Exp-46-Phone-Bill-Payment/README.md" class="btn btn-outline btn-sm btn-block" style="margin-top:0.35rem;">Documentation</a>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </main>
+
+  <footer class="lab-footer">
+    <div class="lab-container">
+      <p>Internet Programming Lab Experiments Hub &bull; Designed & Built for Academic Excellence</p>
+    </div>
+  </footer>
+
+  <script src="./assets/common.js"></script>
+  <script>
+    let activeCategory = 'All';
+
+    function setCategoryFilter(cat, btn) {
+      activeCategory = cat;
+      document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      filterHub();
+    }
+
+    function filterHub() {
+      const q = document.getElementById('hubSearchInput').value.toLowerCase().trim();
+      const cards = document.querySelectorAll('.exp-card');
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const cardCat = card.getAttribute('data-category');
+        const cardSearch = card.getAttribute('data-search');
+
+        const matchesCat = activeCategory === 'All' || cardCat === activeCategory;
+        const matchesQuery = !q || cardSearch.includes(q);
+
+        if (matchesCat && matchesQuery) {
+          card.style.display = 'flex';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>
