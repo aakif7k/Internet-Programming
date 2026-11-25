@@ -2,7 +2,16 @@
 $ErrorActionPreference = "Stop"
 
 $Root = Split-Path -Parent $PSScriptRoot
-$Rscript = if ($env:RSCRIPT_PATH) { $env:RSCRIPT_PATH } else { "C:\Program Files\R\R-4.6.2\bin\Rscript.exe" }
+$DetectedR = (Get-Item "C:\Program Files\R\R-*\bin\Rscript.exe" -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1).FullName
+$Rscript = if ($env:RSCRIPT_PATH) { 
+    $env:RSCRIPT_PATH 
+} elseif ($DetectedR) { 
+    $DetectedR 
+} elseif (Get-Command Rscript -ErrorAction SilentlyContinue) { 
+    (Get-Command Rscript).Source 
+} else { 
+    "C:\Program Files\R\R-4.5.0\bin\Rscript.exe" 
+}
 $SessionDir = if ($env:SESSION_DIR) { $env:SESSION_DIR } else { Join-Path $Root "temp_sessions" }
 $LibDir = Join-Path $Root "r-library"
 

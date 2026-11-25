@@ -17,3 +17,4 @@ The **Customer Purchasing Analysis** project is an end-to-end full-stack data an
 - **`scripts/`**: Automation and deployment utilities.
 
 For complete setup instructions, API documentation, and execution steps, refer to [Customer Purchasing Analysis Documentation](./Customer_purchasing_analysis/README.md).
+
