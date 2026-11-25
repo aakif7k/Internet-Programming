@@ -63,5 +63,14 @@ Welcome to the **Internet Programming** laboratory experiments repository. This 
 
 ---
 
+## Capstone Project
+
+In addition to the 46 laboratory experiments, this repository contains the course Capstone Project:
+- **Project:** [Customer Purchasing Analysis](./Capstone/Customer_purchasing_analysis) (cloned from [Sooriyavelb/Customer_purchasing_analysis](https://github.com/Sooriyavelb/Customer_purchasing_analysis))
+- **Documentation:** See [Capstone README](./Capstone/README.md) for architecture, analytics pipelines, and frontend/backend setup.
+
+---
+
 ## How to Run
 Simply open any experiment's `index.html` file or launch [`LAB/index.html`](./LAB/index.html) directly in your favorite browser (Chrome, Edge, Firefox, Safari) or serve via any static HTTP server (e.g. `python -m http.server 8000`).
+
