@@ -18,4 +18,4 @@ print(.libPaths())
 cat("Starting R Plumber Analytics Service on port 8001...\n")
 
 pr <- plumber::plumb("plumber.R")
-pr$run(host = "0.0.0.0", port = 8001)
+pr$run(host = "127.0.0.1", port = 8001)

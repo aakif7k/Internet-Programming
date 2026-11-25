@@ -21,4 +21,4 @@ Write-Host " R Service:   $($env:R_SERVICE_URL)"
 Write-Host "=================================================" -ForegroundColor Green
 
 Set-Location (Join-Path $Root "backend")
-& "$PythonExe" -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+& "$PythonExe" -m uvicorn main:app --host 127.0.0.1 --port 8000 --reload
